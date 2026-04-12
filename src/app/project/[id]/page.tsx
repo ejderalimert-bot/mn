@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import { useSession } from 'next-auth/react';
+import { useParams } from 'next/navigation';
 import { Bookmark, Heart, ThumbsUp, MoreVertical, Play, Pause, Video as VideoIcon, Music, Image as ImageIcon } from 'lucide-react';
 import CustomVideoPlayer from '@/components/CustomVideoPlayer';
 import CustomAudioPlayer from '@/components/CustomAudioPlayer';
@@ -54,8 +55,9 @@ const MarkdownVideo = ({ src }: { src: string }) => {
   );
 };
 
-export default function ProjectDetailPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = React.use(params);
+export default function ProjectDetailPage() {
+  const params = useParams();
+  const id = params?.id as string;
   const { data: session } = useSession();
   const [project, setProject] = useState<any>(null);
   const [loading, setLoading] = useState(true);

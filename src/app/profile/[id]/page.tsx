@@ -1,11 +1,13 @@
 "use client";
 
-import React, { use } from 'react';
+import React from 'react';
 import Navbar from '@/components/Navbar';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 
-export default function UserProfilePage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function UserProfilePage() {
+  const params = useParams();
+  const id = params?.id as string;
   const [userInfo, setUserInfo] = React.useState<{name: string, image: string, id: string} | null>(null);
   const [favorites, setFavorites] = React.useState<any[]>([]);
   const [likes, setLikes] = React.useState<any[]>([]);
