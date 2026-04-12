@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize, Minimize } from 'lucide-react';
 import ReactPlayer from 'react-player';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function CustomVideoPlayer({ src, autoPlay = false }: { src: string, autoPlay?: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -122,9 +123,12 @@ export default function CustomVideoPlayer({ src, autoPlay = false }: { src: stri
     : (src?.startsWith('http') ? src : `/api/stream?f=${typeof window !== 'undefined' ? btoa(src || '') : ''}`);
 
   return (
-    <div 
+    <motion.div 
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
       ref={containerRef}
-      className={`relative w-full h-full bg-black group overflow-hidden flex items-center justify-center absolute inset-0 select-none ${isFullscreen ? '' : 'rounded-lg border border-white/5'}`}
+      className={`relative w-full h-full bg-black group overflow-hidden flex items-center justify-center absolute inset-0 select-none ${isFullscreen ? '' : 'rounded-[2rem] border-[3px] border-white/5'}`}
       onContextMenu={(e) => e.preventDefault()}
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
@@ -186,26 +190,39 @@ export default function CustomVideoPlayer({ src, autoPlay = false }: { src: stri
           />
         )}
       </div>
-      
       {/* Heavy click shield MUST handle togglePlay to intercept internal pausing mechanism if NOT light preview */}
       <div 
-        className={`absolute inset-0 z-10 flex items-center justify-center ${ytId && !isPlaying ? 'pointer-events-none' : 'cursor-pointer'}`}
+        className={`absolute inset-0 z-10 flex items-center justify-center transition-all ${ytId && !isPlaying ? 'pointer-events-none' : 'cursor-pointer'}`}
         onClick={togglePlay}
         onContextMenu={(e) => e.preventDefault()}
       >
-        {!isPlaying && !ytId && (
-          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-dublio-purple to-pink-500 text-white flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.8)] transition-transform hover:scale-110">
-             <Play className="w-10 h-10 ml-2 fill-current" />
-          </div>
-        )}
+        <AnimatePresence>
+          {!isPlaying && !ytId && (
+            <motion.div 
+              initial={{ scale: 0, opacity: 0, rotate: -45 }}
+              animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              exit={{ scale: 0, opacity: 0, rotate: 45 }}
+              transition={{ type: "spring", bounce: 0.6 }}
+              className="w-24 h-24 rounded-full bg-gradient-to-tr from-dublio-purple to-pink-500 text-white flex items-center justify-center shadow-[0_0_50px_rgba(168,85,247,0.8)] transition-transform hover:scale-125"
+            >
+               <Play className="w-12 h-12 ml-2 fill-current" />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      <div 
-        className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent transition-opacity duration-300 z-50 ${showControls || !isPlaying ? 'opacity-100' : 'opacity-0'}`}
-        onContextMenu={(e) => e.preventDefault()}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center gap-4 mb-3">
+      <AnimatePresence>
+        {(showControls || !isPlaying) && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ type: "spring", bounce: 0, duration: 0.4 }}
+            className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/90 via-black/50 to-transparent z-50"
+            onContextMenu={(e) => e.preventDefault()}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center gap-4 mb-4">
             <span className="text-white font-bold text-xs w-10 text-right">{formatTime(currentTime)}</span>
             <div className="relative flex-1 h-3 group/slider flex items-center cursor-pointer">
               <div className="absolute w-full h-1.5 bg-white/20 rounded-full overflow-hidden pointer-events-none">
@@ -232,12 +249,14 @@ export default function CustomVideoPlayer({ src, autoPlay = false }: { src: stri
               </button>
            </div>
            <div>
-              <button onClick={handleFullscreen} className="text-white hover:text-dublio-purple transition-transform hover:scale-110 outline-none focus:outline-none">
-                 {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
-              </button>
-           </div>
-        </div>
-      </div>
-    </div>
+               <button onClick={handleFullscreen} className="text-white hover:text-dublio-purple transition-transform hover:scale-110 outline-none focus:outline-none">
+                  {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
+               </button>
+            </div>
+         </div>
+       </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }

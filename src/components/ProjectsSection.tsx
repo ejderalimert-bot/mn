@@ -115,15 +115,15 @@ const ProjectsSection = ({ mods }: { mods: any[] }) => {
   return (
     <section className="py-32 px-8 container mx-auto">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
-        <div>
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-1 bg-dublio-purple rounded-full"></div>
-            <span className="text-[12px] font-black text-dublio-purple tracking-[0.4em] uppercase">KEŞFET</span>
-          </div>
-          <h2 className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter text-white leading-tight">
-            Geleceğin <br /> <span className="dublio-gradient-text">Projelerini</span> Yakala
-          </h2>
-        </div>
+        <motion.div initial={{ opacity: 0, x: -100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 1.5, type: "spring" }}>
+          <motion.div initial={{ width: 0 }} whileInView={{ width: "3rem" }} transition={{ delay: 0.5, duration: 1 }} className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-1 bg-dublio-purple rounded-full shrink-0"></div>
+            <span className="text-[12px] font-black text-dublio-purple tracking-[0.4em] uppercase whitespace-nowrap">KEŞFET</span>
+          </motion.div>
+          <motion.h2 initial={{ opacity: 0, y: 50, filter: "blur(10px)" }} whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ delay: 0.2, duration: 1.5, type: "spring", bounce: 0.5 }} className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter text-white leading-tight">
+            Geleceğin <br /> <span className="dublio-gradient-text inline-block hover:scale-105 transition-transform duration-500 cursor-default">Projelerini</span> Yakala
+          </motion.h2>
+        </motion.div>
 
         <div className="flex flex-col gap-4 items-end">
           <p className="text-dublio-text-dark font-medium text-right max-w-sm mb-4 leading-relaxed">

@@ -43,7 +43,7 @@ const HeroSection = () => {
         className="absolute top-0 left-0 w-[600px] h-[600px] bg-dublio-cyan/10 blur-[120px] rounded-full pointer-events-none z-0 mix-blend-screen"
         style={{ x: spotlightX, y: spotlightY, translateX: "-50%", translateY: "-50%" }}
       />
-      
+
       {/* Background Cinematic Particles */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         {particles.map((p) => (
@@ -67,13 +67,13 @@ const HeroSection = () => {
       </div>
       {/* Background elements (Parallax UP) */}
       <motion.div style={{ y: yBg }} className="absolute inset-0 z-0 bg-transparent flex items-center justify-center -space-y-32">
-        <motion.div 
-          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }} 
+        <motion.div
+          animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
           transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
           className="w-[1200px] h-[600px] bg-dublio-purple/20 blur-[150px] rounded-full absolute -top-1/4 -right-1/4"
         ></motion.div>
-        <motion.div 
-          animate={{ scale: [1, 1.5, 1], rotate: [0, -90, 0] }} 
+        <motion.div
+          animate={{ scale: [1, 1.5, 1], rotate: [0, -90, 0] }}
           transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
           className="w-[800px] h-[500px] bg-blue-500/10 blur-[120px] rounded-full absolute -bottom-1/4 -left-1/4 opacity-50"
         ></motion.div>
@@ -89,7 +89,7 @@ const HeroSection = () => {
       </motion.div>
 
       {/* Main Content (Parallax DOWN and Fade out) */}
-      <motion.div 
+      <motion.div
         initial="hidden"
         animate="visible"
         style={{ y: yText, opacity: opacityText, scale: scaleText }}
@@ -103,7 +103,7 @@ const HeroSection = () => {
 
         <motion.h1 variants={{ hidden: { opacity: 0, scale: 0.6, rotateX: 90 }, visible: { opacity: 1, scale: 1, rotateX: 0, transition: { type: "spring", stiffness: 100, damping: 10 } } }} className="text-5xl md:text-8xl font-black text-white leading-[1.1] mb-8 tracking-tighter uppercase italic drop-shadow-2xl relative group">
           TÜRKİYENİN<br />
-          <motion.span 
+          <motion.span
             animate={{ skewX: [0, -10, 5, 0], x: [0, 5, -5, 0], color: ['#fff', '#ec4899', '#6affeb', '#fff'] }}
             transition={{ repeat: Infinity, duration: 4, ease: "linear", repeatDelay: 2 }}
             className="inline-block dublio-gradient-text drop-shadow-[0_0_30px_rgba(168,85,247,0.5)]"
@@ -133,14 +133,14 @@ const HeroSection = () => {
       {/* Marquee effect at bottom (TILTED 3D) */}
       <div className="w-full mt-32 relative flex justify-center [perspective:1000px] z-10 pointer-events-none">
         <div className="w-[150vw] bg-[#1d1d1f] border-y-4 border-dublio-cyan py-8 overflow-hidden whitespace-nowrap shadow-[0_0_100px_rgba(106,255,235,0.2)]" style={{ transform: 'rotateX(50deg) rotateZ(-5deg)' }}>
-          <motion.div 
-            animate={{ x: ["0%", "-50%"] }} 
+          <motion.div
+            animate={{ x: ["0%", "-50%"] }}
             transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
             className="flex gap-20"
           >
             {[...Array(20)].map((_, i) => (
               <span key={i} className="text-8xl font-black text-white/5 tracking-widest uppercase italic">
-                STAR DUBLAJ • MODS • DUBLAJ • SEO • AI • GEMINI • STAR DUBLAJ •
+                STAR DUBLAJ • MODLAR • DUBLAJ • SEO • STAR DUBLAJ • MODLAR • DUBLAJ • SEO
               </span>
             ))}
           </motion.div>

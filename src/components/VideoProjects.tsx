@@ -118,13 +118,15 @@ const VideoProjects = ({ projects }: { projects: any[] }) => {
 
       <div className="container mx-auto relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
-          <div>
-            <div className="flex items-center gap-2 mb-4">
-              <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse shadow-[0_0_10px_#ef4444]"></span>
-              <span className="text-[10px] font-black text-red-500 tracking-[0.3em] uppercase">STÜDYO OPERASYONLARI</span>
-            </div>
-            <h2 className="text-4xl md:text-5xl font-black italic uppercase tracking-tighter text-white">Video Projeleri</h2>
-          </div>
+          <motion.div initial={{ opacity: 0, x: -100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 1.5, type: "spring" }}>
+            <motion.div initial={{ width: 0 }} whileInView={{ width: "3rem" }} transition={{ delay: 0.5, duration: 1 }} className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-1 bg-pink-500 rounded-full shrink-0"></div>
+              <span className="text-[12px] font-black text-pink-500 tracking-[0.4em] uppercase whitespace-nowrap">YENİ NESİL</span>
+            </motion.div>
+            <motion.h2 initial={{ opacity: 0, y: 50, filter: "blur(10px)" }} whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ delay: 0.2, duration: 1.5, type: "spring", bounce: 0.5 }} className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter text-white leading-tight">
+              VİDEO <br /> <span className="bg-gradient-to-r from-pink-500 to-red-500 bg-clip-text text-transparent inline-block hover:scale-105 transition-transform duration-500 cursor-default">YAPIMLARINI</span> İZLE
+            </motion.h2>
+          </motion.div>
 
           <div className="flex flex-col text-right">
             <span className="text-white/40 text-[10px] font-black tracking-widest uppercase mb-1">TOTAL ETKİLEŞİM</span>
