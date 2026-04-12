@@ -2,11 +2,14 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useSession, signOut } from "next-auth/react";
 import { Bell } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
   const { data: session } = useSession();
+  const pathname = usePathname();
   const [searchTerm, setSearchTerm] = useState('');
   const [projects, setProjects] = useState<any[]>([]);
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -80,10 +83,19 @@ const Navbar = () => {
             <span className="font-bold text-xl text-white tracking-tight">STAR DUBLAJ</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="/news" className="text-sm font-medium text-white/70 hover:text-white transition-colors">Haberler</Link>
-            <Link href="/mods" className="text-sm font-medium text-white/70 hover:text-white transition-colors">Modlar</Link>
-            <Link href="/dubbing" className="text-sm font-medium text-white/70 hover:text-white transition-colors">Seslendirme</Link>
+          <nav className="hidden md:flex items-center gap-8">
+            <Link href="/news" className={`relative text-sm font-medium transition-colors pb-1 ${pathname?.startsWith('/news') ? 'text-white' : 'text-white/70 hover:text-white'}`}>
+              Haberler
+              {pathname?.startsWith('/news') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-dublio-cyan shadow-[0_0_10px_rgba(106,255,235,0.7)]"></motion.span>}
+            </Link>
+            <Link href="/mods" className={`relative text-sm font-medium transition-colors pb-1 ${pathname?.startsWith('/mods') ? 'text-white' : 'text-white/70 hover:text-white'}`}>
+              Modlar
+              {pathname?.startsWith('/mods') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-dublio-cyan shadow-[0_0_10px_rgba(106,255,235,0.7)]"></motion.span>}
+            </Link>
+            <Link href="/dubbing" className={`relative text-sm font-medium transition-colors pb-1 ${pathname?.startsWith('/dubbing') ? 'text-white' : 'text-white/70 hover:text-white'}`}>
+              Seslendirme
+              {pathname?.startsWith('/dubbing') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-dublio-cyan shadow-[0_0_10px_rgba(106,255,235,0.7)]"></motion.span>}
+            </Link>
           </nav>
         </div>
 

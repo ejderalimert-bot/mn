@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import CustomHoverPlayer from './CustomHoverPlayer';
+import { motion } from 'framer-motion';
 
 const VideoCard = ({ project }: { project: any }) => {
   const displayImage = project.displayImage || project.image || project.thumbnail;
@@ -31,12 +32,15 @@ const VideoCard = ({ project }: { project: any }) => {
   }
 
   return (
-    <Link
-      href={`/project/${project.slug || project.id}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="group flex flex-col bg-[#1a1c23] border border-transparent rounded-xl overflow-hidden hover:scale-[1.03] hover:border-white/10 transition-all duration-300 shadow-md hover:shadow-2xl relative z-0 hover:z-10"
+    <motion.div
+      variants={{ hidden: { opacity: 0, y: 50 }, visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } } }}
     >
+      <Link
+        href={`/project/${project.slug || project.id}`}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="group flex flex-col bg-[#1a1c23] border border-transparent rounded-xl overflow-hidden hover:scale-[1.03] hover:border-white/10 transition-all duration-300 shadow-md hover:shadow-2xl relative z-0 hover:z-10"
+      >
       <div className="w-full h-48 bg-[#15151a] relative overflow-hidden shrink-0">
         <img 
           src={finalImage} 
@@ -99,7 +103,8 @@ const VideoCard = ({ project }: { project: any }) => {
           </div>
         </div>
       </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 };
 
@@ -125,11 +130,17 @@ const VideoProjects = ({ projects }: { projects: any[] }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        >
           {projects.map((project) => (
             <VideoCard key={project.id} project={project} />
           ))}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

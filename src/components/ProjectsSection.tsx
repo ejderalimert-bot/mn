@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import React, { useState } from 'react';
 import CustomHoverPlayer from './CustomHoverPlayer';
+import { motion } from 'framer-motion';
 
 const getYoutubeEmbedUrl = (url: string, autoPlaySnippet: boolean = false) => {
   const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([^"&?\/\s]{11})/);
@@ -40,12 +41,15 @@ const ModCard = ({ id, slug, title, category, team, downloads, thumbnail, image,
   }
 
   return (
-    <Link 
-      href={`/project/${slug || id}`} 
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="group flex flex-col bg-[#1a1c23] border border-transparent rounded-xl overflow-hidden hover:scale-[1.03] hover:border-white/10 transition-all duration-300 shadow-md hover:shadow-2xl relative z-0 hover:z-10"
+    <motion.div
+      variants={{ hidden: { opacity: 0, y: 50 }, visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } } }}
     >
+      <Link 
+        href={`/project/${slug || id}`} 
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="group flex flex-col bg-[#1a1c23] border border-transparent rounded-xl overflow-hidden hover:scale-[1.03] hover:border-white/10 transition-all duration-300 shadow-md hover:shadow-2xl relative z-0 hover:z-10"
+      >
       <div className="w-full h-48 bg-[#15151a] relative overflow-hidden shrink-0">
         <img 
           src={finalImage} 
@@ -100,7 +104,8 @@ const ModCard = ({ id, slug, title, category, team, downloads, thumbnail, image,
           </div>
         </div>
       </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 };
 
@@ -130,11 +135,17 @@ const ProjectsSection = ({ mods }: { mods: any[] }) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <motion.div 
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
         {mods.map(mod => (
           <ModCard key={mod.id} {...mod} />
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 };

@@ -10,6 +10,7 @@ import CustomAudioPlayer from '@/components/CustomAudioPlayer';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { motion } from 'framer-motion';
 
 const getYoutubeEmbedUrl = (url: string) => {
   const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([^"&?\/\s]{11})/);
@@ -408,12 +409,12 @@ export default function ProjectDetailPage() {
                         <div className="flex items-center gap-10 border-b border-white/10 pb-6 mb-10 relative z-10">
                           <button onClick={() => setActiveTab('genel')} className={`text-sm md:text-base font-black transition-all uppercase tracking-[0.2em] relative ${activeTab === 'genel' ? 'text-white' : 'text-white/30 hover:text-white/60'}`}>
                             Hikaye & Detaylar
-                            {activeTab === 'genel' && <span className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-gradient-to-r from-dublio-purple to-dublio-cyan shadow-[0_0_20px_rgba(168,85,247,0.8)]"></span>}
+                            {activeTab === 'genel' && <motion.span layoutId="tab-underline" className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-gradient-to-r from-dublio-purple to-dublio-cyan shadow-[0_0_20px_rgba(168,85,247,0.8)]"></motion.span>}
                           </button>
                           {!isVideo && (
                             <button onClick={() => setActiveTab('mod')} className={`text-sm md:text-base font-black transition-all uppercase tracking-[0.2em] relative ${activeTab === 'mod' ? 'text-white' : 'text-white/30 hover:text-white/60'}`}>
                               MOD / İNDİR
-                              {activeTab === 'mod' && <span className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-gradient-to-r from-dublio-purple to-dublio-cyan shadow-[0_0_20px_rgba(168,85,247,0.8)]"></span>}
+                              {activeTab === 'mod' && <motion.span layoutId="tab-underline" className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-gradient-to-r from-dublio-purple to-dublio-cyan shadow-[0_0_20px_rgba(168,85,247,0.8)]"></motion.span>}
                             </button>
                           )}
                         </div>
@@ -526,11 +527,13 @@ export default function ProjectDetailPage() {
                         <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-500/10 blur-[100px] pointer-events-none rounded-full"></div>
                         
                         <div className="flex gap-8 border-b border-white/10 pb-6 mb-10 relative z-10">
-                          <button onClick={() => setActiveMediaTab('video')} className={`flex items-center gap-3 text-sm font-black uppercase tracking-widest transition-all ${activeMediaTab === 'video' ? 'text-white' : 'text-white/30 hover:text-white/70'}`}>
-                            <VideoIcon className="w-5 h-5" /> Videolar <span className="bg-white/10 px-2 py-0.5 rounded text-[10px]">{project.videoDemos?.length || 0}</span>
+                          <button onClick={() => setActiveMediaTab('video')} className={`flex items-center gap-3 text-sm font-black uppercase tracking-widest transition-all relative ${activeMediaTab === 'video' ? 'text-white' : 'text-white/30 hover:text-white/70'}`}>
+                            <VideoIcon className="w-5 h-5 relative z-10" /> <span className="relative z-10">Videolar</span> <span className="bg-white/10 px-2 py-0.5 rounded text-[10px] relative z-10">{project.videoDemos?.length || 0}</span>
+                            {activeMediaTab === 'video' && <motion.span layoutId="media-tab-underline" className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-white"></motion.span>}
                           </button>
-                          <button onClick={() => setActiveMediaTab('audio')} className={`flex items-center gap-3 text-sm font-black uppercase tracking-widest transition-all ${activeMediaTab === 'audio' ? 'text-white' : 'text-white/30 hover:text-white/70'}`}>
-                            <Music className="w-5 h-5" /> Sesler <span className="bg-white/10 px-2 py-0.5 rounded text-[10px]">{project.audioDemos?.length || 0}</span>
+                          <button onClick={() => setActiveMediaTab('audio')} className={`flex items-center gap-3 text-sm font-black uppercase tracking-widest transition-all relative ${activeMediaTab === 'audio' ? 'text-white' : 'text-white/30 hover:text-white/70'}`}>
+                            <Music className="w-5 h-5 relative z-10" /> <span className="relative z-10">Sesler</span> <span className="bg-white/10 px-2 py-0.5 rounded text-[10px] relative z-10">{project.audioDemos?.length || 0}</span>
+                            {activeMediaTab === 'audio' && <motion.span layoutId="media-tab-underline" className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-white"></motion.span>}
                           </button>
                         </div>
 
