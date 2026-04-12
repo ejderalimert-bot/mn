@@ -1,0 +1,54 @@
+"use client";
+
+import Link from "next/link";
+import { ArrowRight, Newspaper } from "lucide-react";
+
+export default function HomeNews({ news }: { news: any[] }) {
+  if (!news || news.length === 0) return null;
+
+  return (
+    <section className="py-24 px-8 relative overflow-hidden text-center bg-[#0d0d12]">
+      <div className="absolute inset-0 bg-gradient-to-b from-[#161313] via-[#0d0d12] to-[#161313]"></div>
+      <div className="container mx-auto relative z-10 max-w-6xl">
+        <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4 text-white drop-shadow-md flex items-center justify-center gap-4">
+          <Newspaper className="w-12 h-12 md:w-16 md:h-16 text-pink-500" />
+          Güncel Haberler
+        </h2>
+        <div className="h-1 w-24 bg-pink-500 mx-auto mb-16 shadow-[0_0_15px_#ec4899]"></div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+          {news.slice(0, 3).map((item) => (
+            <Link key={item.id} href={`/news/${item.id}`} className="group relative bg-[#1a1c23] rounded-3xl overflow-hidden border border-white/5 hover:border-pink-500/50 transition-colors shadow-xl h-96 flex flex-col cursor-pointer">
+              <div className="h-[55%] w-full bg-black relative overflow-hidden shrink-0">
+                {item.image ? (
+                  <img src={item.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-tr from-pink-900/30 to-purple-900/30 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
+                    <Newspaper className="w-16 h-16 text-pink-500/20" />
+                  </div>
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+              </div>
+              <div className="p-6 flex flex-col flex-1 bg-gradient-to-b from-black/80 to-transparent relative -top-10 -mb-10 w-full h-[45%]">
+                <span className="text-xs font-bold text-pink-500 tracking-wider mb-2">{new Date(item.createdAt).toLocaleDateString('tr-TR')}</span>
+                <h3 className="text-xl font-bold text-white mb-2 line-clamp-2 leading-tight group-hover:text-pink-500 transition-colors">{item.title}</h3>
+                <p className="text-sm font-medium text-white/50 line-clamp-2">{item.content}</p>
+                <div className="mt-auto pt-4 flex items-center gap-2 text-white/70 group-hover:text-pink-500 font-bold text-sm uppercase tracking-wide transition-colors">
+                  Haberi Oku <ArrowRight className="w-4 h-4 ml-1" />
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+        
+        {news.length > 3 && (
+          <div className="mt-12 flex justify-center">
+            <Link href="/news" className="px-8 py-4 bg-transparent border border-white/20 text-white hover:border-pink-500 hover:text-pink-500 font-bold uppercase tracking-widest text-sm rounded-full transition-all">
+              Tüm Haberleri Gör
+            </Link>
+          </div>
+        )}
+      </div>
+    </section>
+  );
+}

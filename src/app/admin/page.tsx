@@ -1,0 +1,1011 @@
+"use client";
+
+import React, { useState } from 'react';
+import { useSession } from "next-auth/react";
+import { redirect } from 'next/navigation';
+import Navbar from '@/components/Navbar';
+import { Shield, Plus, Pencil, Trash2, LayoutGrid, Users, Newspaper, ListTree, Gamepad2, ArrowLeft, Search, Download, Activity, Eye } from 'lucide-react';
+
+// Local data is fetched now
+
+const tabs = [
+  { id: 'Analizler', icon: Activity, label: 'Site Analizleri' },
+  { id: 'Projeler', icon: LayoutGrid, label: 'Projeler' },
+  { id: 'Oyun Ekle', icon: Download, label: 'Oyun Dublajı Ekle' },
+  { id: 'Ekip', icon: Users, label: 'Ekip' },
+  { id: 'Haberler', icon: Newspaper, label: 'Haberler' },
+  { id: 'Seriler', icon: ListTree, label: 'Seriler' },
+  { id: 'Oyun Türleri', icon: Gamepad2, label: 'Oyun Türleri' },
+];
+
+export default function AdminDashboardPage() {
+  const { data: session, status } = useSession();
+  
+  const [activeTab, setActiveTab] = useState('Analizler');
+  const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, top: 0, width: 0, height: 0, opacity: 0 });
+  const navRefs = React.useRef<(HTMLButtonElement | null)[]>([]);
+  const [view, setView] = useState('list'); // 'list', 'form'
+  const [projects, setProjects] = useState<any[]>([]);
+  const [editingProject, setEditingProject] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [steamQuery, setSteamQuery] = useState('');
+  const [steamResults, setSteamResults] = useState<any[]>([]);
+  const [steamLoading, setSteamLoading] = useState(false);
+  const [steamAdding, setSteamAdding] = useState<string | null>(null);
+
+  // Users & Team
+  const [usersList, setUsersList] = useState<any[]>([]);
+  const [teamFormLoading, setTeamFormLoading] = useState(false);
+
+  // News
+  const [newsList, setNewsList] = useState<any[]>([]);
+  const [newsTitle, setNewsTitle] = useState('');
+  const [newsContent, setNewsContent] = useState('');
+  const [newsImage, setNewsImage] = useState('');
+  const [newsVideo, setNewsVideo] = useState('');
+  const [newsAdding, setNewsAdding] = useState(false);
+
+  const [formTitle, setFormTitle] = useState('');
+  const [formDescription, setFormDescription] = useState('');
+  const [formTags, setFormTags] = useState<string[]>([]);
+  const [formCategory, setFormCategory] = useState<string>('Oyunlar');
+  const [formTrailer, setFormTrailer] = useState<string>('');
+  const [formGeminiLink, setFormGeminiLink] = useState<string>('');
+  const [formFocusKeyword, setFormFocusKeyword] = useState<string>('');
+  const [formSeoTitle, setFormSeoTitle] = useState<string>('');
+  const [formSeoDesc, setFormSeoDesc] = useState<string>('');
+  const [formSlug, setFormSlug] = useState<string>('');
+  const [geminiEnhancing, setGeminiEnhancing] = useState(false);
+  
+  const [stats, setStats] = useState({
+    totalAccounts: 0,
+    activeUsers: 0,
+    totalViews: 0,
+    totalDownloads: 0,
+    monthlyTraffic: Array(12).fill(0)
+  });
+
+  React.useEffect(() => {
+    if (status === "unauthenticated" || (session && (session.user as any).role !== "admin")) {
+      redirect('/');
+    }
+  }, [session, status]);
+
+  React.useEffect(() => {
+    fetch('/api/projects')
+      .then(res => res.json())
+      .then(data => {
+        setProjects(data);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+
+    fetch('/api/analytics')
+      .then(res => res.json())
+      .then(data => {
+        if (!data.error) setStats(data);
+      })
+      .catch(() => {});
+
+    fetch('/api/team?action=users').then(res => res.json()).then(data => setUsersList(data)).catch(()=>{});
+    fetch('/api/news').then(res => res.json()).then(data => setNewsList(data)).catch(()=>{});
+  }, []);
+
+  React.useEffect(() => {
+    const activeIndex = tabs.findIndex(t => t.id === activeTab);
+    const el = navRefs.current[activeIndex];
+    if (el) {
+      setIndicatorStyle({
+        left: el.offsetLeft,
+        top: el.offsetTop,
+        width: el.offsetWidth,
+        height: el.offsetHeight,
+        opacity: 1
+      });
+    }
+  }, [activeTab]);
+
+  React.useEffect(() => {
+    if (!steamQuery.trim()) {
+      setSteamResults([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      setSteamLoading(true);
+      try {
+        const res = await fetch(`/api/steam?action=search&q=${encodeURIComponent(steamQuery)}`);
+        const data = await res.json();
+        setSteamResults(data.items || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setSteamLoading(false);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [steamQuery]);
+
+  const handleGeminiEnhance = async () => {
+    if (!formTitle) {
+      alert("Gemini SEO için Başlık zorunludur!");
+      return;
+    }
+    setGeminiEnhancing(true);
+    try {
+      const res = await fetch('/api/gemini/enhance', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: formTitle, description: formDescription, category: formCategory, trailer: formGeminiLink, focusKeyword: formFocusKeyword })
+      });
+      const data = await res.json();
+      if (data.description) setFormDescription(data.description);
+      if (data.tags) setFormTags(data.tags);
+      if (data.seoTitle) setFormSeoTitle(data.seoTitle);
+      if (data.seoDesc) setFormSeoDesc(data.seoDesc);
+      if (data.slug) setFormSlug(data.slug);
+    } catch (err) {
+      alert("Gemini bağlantısında hata oluştu.");
+    } finally {
+      setGeminiEnhancing(false);
+    }
+  };
+
+  if (status === "loading" || loading || !session) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#0d0f14]">
+        <div className="w-8 h-8 rounded-full border-4 border-t-white border-white/20 animate-spin"></div>
+      </div>
+    );
+  }
+
+  const handleAddNew = () => {
+    setEditingProject(null);
+    setFormTitle('');
+    setFormDescription('');
+    setFormCategory('Oyunlar');
+    setFormTrailer('');
+    setFormGeminiLink('');
+    setFormTags([]);
+    setFormFocusKeyword('');
+    setFormSeoTitle('');
+    setFormSeoDesc('');
+    setFormSlug('');
+    setView('form');
+  };
+
+  const handleEdit = (project: any) => {
+    setEditingProject(project);
+    setFormTitle(project.title || '');
+    setFormDescription(project.description || '');
+    setFormCategory(project.category || 'Oyunlar');
+    setFormTrailer(project.trailer || '');
+    setFormGeminiLink('');
+    setFormTags(project.tags || []);
+    setFormFocusKeyword(project.focusKeyword || '');
+    setFormSeoTitle(project.seoTitle || '');
+    setFormSeoDesc(project.seoDesc || '');
+    setFormSlug(project.slug || '');
+    setView('form');
+  };
+
+  const handleDelete = async (id: number) => {
+    if(confirm("Projeyi silmek istediğinize emin misiniz?")) {
+      await fetch(`/api/projects?id=${id}`, { method: 'DELETE' });
+      setProjects(projects.filter(p => String(p.id) !== String(id)));
+    }
+  };
+
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    async function uploadSingleFile(f: File) {
+      const fd = new FormData();
+      fd.append('file', f);
+      const res = await fetch('/api/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      return data.urls[0];
+    }
+
+    const file = formData.get('image') as File;
+    let imageBase64 = editingProject?.image || '';
+    if (file && file.size > 0) imageBase64 = await uploadSingleFile(file);
+
+    const file2 = formData.get('image2') as File;
+    let image2Base64 = editingProject?.image2 || '';
+    if (file2 && file2.size > 0) image2Base64 = await uploadSingleFile(file2);
+
+    const coverFile = formData.get('coverImage') as File;
+    let coverImageBase64 = editingProject?.coverImage || '';
+    if (coverFile && coverFile.size > 0) coverImageBase64 = await uploadSingleFile(coverFile);
+
+    const coverFile2 = formData.get('coverImage2') as File;
+    let coverImage2Base64 = editingProject?.coverImage2 || '';
+    if (coverFile2 && coverFile2.size > 0) coverImage2Base64 = await uploadSingleFile(coverFile2);
+
+    let trailer = formData.get('trailer') as string;
+    const trailerFile = formData.get('trailerFile') as File;
+    if (trailerFile && trailerFile.size > 0) {
+       trailer = await uploadSingleFile(trailerFile);
+    }
+    
+    let galleryBase64: string[] = editingProject?.gallery || [];
+    const galleryFiles = formData.getAll('gallery') as File[];
+    const validGallery = galleryFiles.filter(f => f && f.size > 0);
+    if (validGallery.length > 0) {
+      const fd = new FormData();
+      validGallery.forEach(f => fd.append('file', f));
+      const res = await fetch('/api/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      galleryBase64 = [...galleryBase64, ...data.urls];
+    }
+
+    let audioDemosBase64: string[] = editingProject?.audioDemos || [];
+    const audioFiles = formData.getAll('audioDemos') as File[];
+    const validAudio = audioFiles.filter(f => f && f.size > 0);
+    if (validAudio.length > 0) {
+      const fd = new FormData();
+      validAudio.forEach(f => fd.append('file', f));
+      const res = await fetch('/api/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      audioDemosBase64 = [...audioDemosBase64, ...data.urls];
+    }
+
+    let videoDemosBase64: string[] = editingProject?.videoDemos || [];
+    const videoFiles = formData.getAll('videoDemos') as File[];
+    const validVideo = videoFiles.filter(f => f && f.size > 0);
+    if (validVideo.length > 0) {
+      const fd = new FormData();
+      validVideo.forEach(f => fd.append('file', f));
+      const res = await fetch('/api/upload', { method: 'POST', body: fd });
+      const data = await res.json();
+      videoDemosBase64 = [...videoDemosBase64, ...data.urls];
+    }
+
+    const projData = {
+      title: formData.get('title'),
+      category: formData.get('category'),
+      status: formData.get('status'),
+      description: formData.get('description'),
+      retention: formData.get('retention') ? formData.get('retention') + '%' : '0%',
+      // defaults for now
+      views: '0', swiped: '0%', stayed: '0%', downloads: '0', 
+      team: 'Star Dublaj', 
+      image: imageBase64, image2: image2Base64, 
+      coverImage: coverImageBase64, coverImage2: coverImage2Base64,
+      trailer: trailer,
+      gallery: galleryBase64,
+      audioDemos: audioDemosBase64,
+      videoDemos: videoDemosBase64,
+      tags: formTags,
+      focusKeyword: formFocusKeyword,
+      seoTitle: formSeoTitle,
+      seoDesc: formSeoDesc,
+      slug: formSlug
+    };
+
+    if (editingProject) {
+      const res = await fetch('/api/projects', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...editingProject, ...projData })
+      });
+      const updated = await res.json();
+      setProjects(projects.map(p => p.id === updated.id ? updated : p));
+    } else {
+      const res = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(projData)
+      });
+      const added = await res.json();
+      setProjects([...projects, added]);
+    }
+
+    setView('list');
+  };
+
+  const searchSteam = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // Arama işlemi artık useEffect içerisinde otomatik (harf girildikçe) yapılıyor.
+  };
+
+  const addFromSteam = async (item: any) => {
+    setSteamAdding(item.id.toString());
+    try {
+      const res = await fetch(`/api/steam?action=details&appid=${item.id}`);
+      const data = await res.json();
+      const details = data[item.id]?.data;
+      
+      const image = details?.header_image || item.tiny_image;
+      let description = details?.short_description || item.name;
+      const gallery = details?.screenshots?.map((s: any) => s.path_full) || [];
+      // Trailer verisi Steam'den çekilmeyecek, kullanıcı manuel ekleyecek
+      let trailer = '';
+      let tags: string[] = [];
+      let seoTitle = '';
+      let seoDesc = '';
+      let slug = '';
+      let focusKeyword = item.name;
+
+      const customTitle = `${item.name} Türkçe Dublaj`;
+
+      try {
+        const geminiRes = await fetch('/api/gemini/enhance', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: customTitle, description, category: 'Oyunlar', trailer: '', focusKeyword })
+        });
+        
+        if (geminiRes.ok) {
+          const geminiData = await geminiRes.json();
+          if (geminiData.description) description = geminiData.description;
+          if (geminiData.tags) tags = geminiData.tags;
+          if (geminiData.seoTitle) seoTitle = geminiData.seoTitle;
+          if (geminiData.seoDesc) seoDesc = geminiData.seoDesc;
+          if (geminiData.slug) slug = geminiData.slug;
+        }
+      } catch (geminiErr) {
+        console.error("Gemini enhance failed during steam add:", geminiErr);
+      }
+
+      const projData = {
+        title: customTitle,
+        category: 'Oyunlar',
+        status: 'Devam Ediyor',
+        description,
+        retention: '0%',
+        views: '0', 
+        swiped: '0%', 
+        stayed: '0%', 
+        downloads: '0', 
+        team: 'Star Dublaj', 
+        image,
+        trailer,
+        gallery,
+        tags,
+        focusKeyword,
+        seoTitle,
+        seoDesc,
+        slug
+      };
+
+      const addRes = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(projData)
+      });
+      const added = await addRes.json();
+      setProjects([...projects, added]);
+
+      alert(item.name + ' başarıyla eklendi!');
+    } catch (err) {
+      console.error(err);
+      alert('Eklenirken bir hata oluştu');
+    } finally {
+      setSteamAdding(null);
+    }
+  };
+
+  const handleToggleTeamMember = async (userId: string, roleTitle: string, isCurrentlyMember: boolean, memberId?: string) => {
+    setTeamFormLoading(true);
+    try {
+      if (isCurrentlyMember && memberId) {
+        await fetch(`/api/team?id=${memberId}`, { method: 'DELETE' });
+        setUsersList(usersList.map(u => u.id === userId ? { ...u, teamMember: null } : u));
+      } else {
+        const title = prompt("Ekip görevini yazınız (Örn: Çevirmen, Kodlayan, Seslendirmen)", roleTitle || "Ekip Üyesi");
+        if (!title) return;
+        const res = await fetch('/api/team', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId, roleTitle: title })
+        });
+        const newMember = await res.json();
+        setUsersList(usersList.map(u => u.id === userId ? { ...u, teamMember: newMember } : u));
+      }
+    } finally {
+      setTeamFormLoading(false);
+    }
+  };
+
+  const handleSaveNews = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newsTitle || !newsContent) {
+      alert("Lütfen başlık ve içerik giriniz.");
+      return;
+    }
+    setNewsAdding(true);
+    try {
+      let imageBase64 = "";
+      if (newsImage) {
+        // assume it is a URL or handle upload
+      }
+      
+      const formData = new FormData(e.target as HTMLFormElement);
+      const imgFile = formData.get('newsImageFile') as File;
+      if (imgFile && imgFile.size > 0) {
+        const fd = new FormData(); fd.append('file', imgFile);
+        const res = await fetch('/api/upload', { method: 'POST', body: fd });
+        imageBase64 = (await res.json()).urls[0];
+      }
+
+      let videoBase64 = "";
+      const vidFile = formData.get('newsVideoFile') as File;
+      if (vidFile && vidFile.size > 0) {
+        const fd = new FormData(); fd.append('file', vidFile);
+        const res = await fetch('/api/upload', { method: 'POST', body: fd });
+        videoBase64 = (await res.json()).urls[0];
+      }
+
+      const res = await fetch('/api/news', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title: newsTitle, content: newsContent, image: imageBase64, video: videoBase64 })
+      });
+      const added = await res.json();
+      if (!added.error) {
+        setNewsList([added, ...newsList]);
+        setNewsTitle('');
+        setNewsContent('');
+        alert("Haber başarıyla eklendi! Kullanıcılara bildirim gidebilir.");
+      } else {
+        alert(added.error);
+      }
+    } catch {
+      alert("Hata");
+    } finally {
+      setNewsAdding(false);
+    }
+  };
+
+  const handleDeleteNews = async (id: string) => {
+    if (confirm("Haberi silmek istediğinize emin misiniz?")) {
+      await fetch(`/api/news?id=${id}`, { method: 'DELETE' });
+      setNewsList(newsList.filter(n => n.id !== id));
+    }
+  };
+
+  return (
+    <main className="min-h-screen bg-[#0b0c10] text-white">
+      <Navbar />
+      
+      <div className="container mx-auto px-6 py-10 max-w-7xl">
+        
+        {/* Header Section */}
+        <div className="flex items-center gap-3 mb-8">
+          <Shield className="w-8 h-8 text-[#00ff00]" />
+          <h1 className="text-3xl font-black tracking-tight text-[#00ff00]">Admin Panel</h1>
+        </div>
+
+        {/* Tabs */}
+        <div className="relative flex flex-wrap items-center gap-2 mb-8 bg-[#15171e] p-2 rounded-xl border border-white/5 inline-flex w-full overflow-x-auto">
+          
+          {/* Sliding Indicator */}
+          <div 
+             className="absolute bg-dublio-purple rounded-lg shadow-[0_0_15px_rgba(168,85,247,0.4)] pointer-events-none transition-all duration-300 ease-in-out"
+             style={{ 
+               left: `${indicatorStyle.left}px`, 
+               top: `${indicatorStyle.top}px`,
+               width: `${indicatorStyle.width}px`, 
+               height: `${indicatorStyle.height}px`,
+               opacity: indicatorStyle.opacity 
+             }}
+          />
+
+          {tabs.map((tab, idx) => (
+            <button
+              key={tab.id}
+              ref={(el) => { navRefs.current[idx] = el; }}
+              onClick={() => { setActiveTab(tab.id); setView('list'); }}
+              className={`relative z-10 flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors duration-300 whitespace-nowrap ${
+                activeTab === tab.id 
+                  ? 'text-white' 
+                  : 'text-white/50 hover:text-white hover:bg-white/5'
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Main Content Area */}
+        {activeTab === 'Projeler' && view === 'list' && (
+          <div className="bg-[#15171e] border border-dublio-purple rounded-xl overflow-hidden shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
+             
+             {/* Header */}
+             <div className="flex items-center justify-between p-6 border-b border-white/5">
+                <h2 className="text-lg font-bold text-[#00ff00]">Projeler ({projects.length})</h2>
+                <button 
+                  onClick={handleAddNew}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-[#d946ef] to-[#a855f7] hover:to-[#9333ea] text-white font-bold text-sm rounded-lg transition-all shadow-[0_0_15px_rgba(217,70,239,0.4)]"
+                >
+                  <Plus className="w-4 h-4" />
+                  Yeni Proje
+                </button>
+             </div>
+
+             {/* Project List */}
+             <div className="p-6 space-y-4">
+                {projects.map(project => (
+                  <div key={project.id} className="flex flex-col md:flex-row items-center justify-between p-4 bg-[#1a1c23] border border-white/5 hover:border-white/10 rounded-xl transition-colors gap-4">
+                     <div className="flex items-center gap-4 w-full md:w-auto">
+                        {project.image || project.coverImage ? (
+                          <div className="w-16 h-16 rounded-lg overflow-hidden bg-black/50 border border-white/10 shrink-0">
+                            <img src={project.image || project.coverImage} alt={project.title} className="w-full h-full object-cover" />
+                          </div>
+                        ) : (
+                          <div className="w-20 h-10 rounded shadow-inner bg-[url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=200&auto=format&fit=crop')] bg-cover bg-center border border-white/10 shrink-0">
+                          </div>
+                        )}
+                        <div className="flex flex-col">
+                           <h3 className="text-[#e2b714] font-bold text-lg mb-1">{project.title}</h3>
+                           <div className="flex items-center gap-2">
+                              <span className="px-2.5 py-1 bg-white/10 rounded text-[10px] font-bold uppercase tracking-wider text-white/80">{project.category}</span>
+                              <span className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider ${
+                                project.status === 'Tamamlandı' ? 'bg-[#00ff00]/20 text-[#00ff00]' : 'bg-[#e2b714]/20 text-[#e2b714]'
+                              }`}>
+                                {project.status}
+                              </span>
+                           </div>
+                        </div>
+                     </div>
+                     <div className="flex items-center gap-3 w-full md:w-auto justify-end">
+                        <button onClick={() => handleEdit(project)} className="w-10 h-10 flex items-center justify-center bg-white text-black rounded-lg hover:bg-gray-200 transition-colors">
+                          <Pencil className="w-5 h-5" />
+                        </button>
+                        <button onClick={() => handleDelete(project.id)} className="w-10 h-10 flex items-center justify-center bg-[#ef4444] text-white rounded-lg hover:bg-[#dc2626] transition-colors">
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                     </div>
+                  </div>
+                ))}
+
+                {projects.length === 0 && (
+                  <div className="text-center py-10 text-white/30 font-medium">Kayıtlı proje bulunamadı.</div>
+                )}
+             </div>
+          </div>
+        )}
+
+        {/* Form View (Add / Edit) */}
+        {activeTab === 'Projeler' && view === 'form' && (
+           <div className="bg-[#15171e] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
+              <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/5">
+                 <button onClick={() => setView('list')} className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors">
+                   <ArrowLeft className="w-5 h-5" />
+                 </button>
+                 <h2 className="text-2xl font-black italic tracking-tight text-dublio-purple uppercase">
+                   {editingProject ? 'PROJEYİ DÜZENLE' : 'YENİ PROJE EKLE'}
+                 </h2>
+              </div>
+              
+              <form onSubmit={handleSave} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Video URL'si (YouTube / Shorts)</label>
+                    <div className="flex">
+                      <input 
+                        type="text" 
+                        placeholder="https://www.youtube.com..." 
+                        className="flex-1 bg-[#1a1c23] border border-white/10 rounded-l-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple"
+                      />
+                      <button type="button" className="bg-white text-black font-bold px-6 rounded-r-lg text-sm transition-colors hover:bg-gray-200">
+                        Kapak Çek
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Proje Başlığı <span className="text-red-500">*</span></label>
+                    <input 
+                      type="text" 
+                      name="title"
+                      value={formTitle}
+                      onChange={(e) => setFormTitle(e.target.value)}
+                      required
+                      placeholder="Proje başlığı" 
+                      className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-dublio-purple text-sm font-bold tracking-wide">SEO Odak Anahtar Kelime <span className="text-red-500">*</span></label>
+                  <input 
+                    type="text" 
+                    name="focusKeyword"
+                    value={formFocusKeyword}
+                    onChange={(e) => setFormFocusKeyword(e.target.value)}
+                    required
+                    placeholder="Örn: The Witcher 3" 
+                    className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple"
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Açıklama</label>
+                    <button 
+                      type="button"
+                      onClick={handleGeminiEnhance}
+                      disabled={geminiEnhancing}
+                      className="flex items-center gap-2 bg-gradient-to-r from-dublio-purple to-[#9333ea] px-3 py-1.5 rounded-lg text-xs font-bold text-white hover:scale-105 transition-all w-fit"
+                    >
+                      {geminiEnhancing ? 'Gemini Düşünüyor...' : '✨ Gemini ile Düzenle'}
+                    </button>
+                  </div>
+                  <textarea 
+                    name="description"
+                    rows={6}
+                    value={formDescription}
+                    onChange={(e) => setFormDescription(e.target.value)}
+                    placeholder="Projeler hakkında detaylı bilgi"
+                    className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none"
+                  ></textarea>
+                  <p className={`text-[10px] text-right mt-1 font-bold ${formDescription.length < 600 ? 'text-red-500' : 'text-green-400'}`}>
+                    {formDescription.length} / 600
+                  </p>
+                </div>
+                
+                {formTags && formTags.length > 0 && (
+                  <div className="space-y-2">
+                     <label className="text-dublio-purple text-sm font-bold tracking-wide">Gemini Tarafından Üretilen Etiketler</label>
+                     <div className="flex flex-wrap gap-2 p-3 bg-[#1a1c23] border border-white/10 rounded-lg">
+                        {formTags.map((t, i) => (
+                           <span key={i} className="px-3 py-1 bg-white/10 text-white text-xs font-bold rounded-md">{t}</span>
+                        ))}
+                     </div>
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-[#1a1c23]/50 p-4 rounded-xl border border-dublio-purple/20">
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">SEO Başlığı</label>
+                    <input type="text" value={formSeoTitle} onChange={(e) => setFormSeoTitle(e.target.value)} className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                    <p className={`text-[10px] text-right mt-1 ${formSeoTitle.length > 60 ? 'text-red-500' : 'text-white/40'}`}>
+                      {formSeoTitle.length} / 60
+                    </p>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">SEO URL (Slug)</label>
+                    <input type="text" value={formSlug} onChange={(e) => setFormSlug(e.target.value)} className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                  </div>
+                  <div className="space-y-2 md:col-span-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">SEO Meta Açıklaması</label>
+                    <textarea value={formSeoDesc} onChange={(e) => setFormSeoDesc(e.target.value)} rows={2} className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none"></textarea>
+                    <p className={`text-[10px] text-right mt-1 ${formSeoDesc.length > 150 ? 'text-red-500' : 'text-white/40'}`}>
+                      {formSeoDesc.length} / 150
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Yatay Ana Sayfa Görseli 1 (%50 İhtimal)</label>
+                    <input type="file" name="image" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Yatay Ana Sayfa Görseli 2 (%50 İhtimal)</label>
+                    <input type="file" name="image2" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Dikey Sayfa İçi Görsel 1 (%50 İhtimal)</label>
+                    <input type="file" name="coverImage" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Dikey Sayfa İçi Görsel 2 (%50 İhtimal)</label>
+                    <input type="file" name="coverImage2" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Kategori</label>
+                    <select name="category" value={formCategory} onChange={(e) => setFormCategory(e.target.value)} className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple appearance-none">
+                      <option value="Oyunlar">Oyunlar</option>
+                      <option value="Videolar">Videolar</option>
+                      <option value="Yamalar">Yamalar</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Durum</label>
+                    <select name="status" defaultValue={editingProject?.status || 'Devam Ediyor'} className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple appearance-none">
+                      <option>Devam Ediyor</option>
+                      <option>Tamamlandı</option>
+                      <option>İptal Edildi</option>
+                    </select>
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Seri</label>
+                    <select className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple appearance-none">
+                      <option>Seçilmedi</option>
+                      <option>GTA Serisi</option>
+                      <option>Witcher Serisi</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Gemini YouTube Analiz Linki</label>
+                    <input type="text" value={formGeminiLink} onChange={(e) => setFormGeminiLink(e.target.value)} placeholder="YouTube linkini yapıştırın (Sadece YZ analizi için)" className="mb-2 w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Fragman / Video (MP4 Yükle)</label>
+                    <input type="file" name="trailerFile" accept="video/mp4,video/webm" className="mb-2 w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                    <input type="hidden" name="trailer" value={formTrailer} />
+                  </div>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">ModVideoları (Çoklu)</label>
+                    <input type="file" name="videoDemos" multiple accept="video/mp4,video/webm" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Mod Ses Örnekleri</label>
+                    <input type="file" name="audioDemos" multiple accept="audio/mp3,audio/wav,audio/ogg" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Oyun İçi Görseller</label>
+                    <input type="file" name="gallery" multiple accept="image/*" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Tarih</label>
+                    <input type="date" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple [color-scheme:dark]" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">İlerleme Yüzdesi (0-100)</label>
+                    <input name="retention" type="number" min="0" max="100" defaultValue={editingProject ? parseInt(editingProject.retention) : 0} className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                  </div>
+                </div>
+                
+                <div className="pt-8 flex justify-end gap-4">
+                   <button type="button" onClick={() => setView('list')} className="px-8 py-4 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-colors font-bold">
+                      İPTAL
+                   </button>
+                   <button type="submit" className="px-10 py-4 bg-gradient-to-r from-dublio-purple to-[#9333ea] hover:scale-105 text-white font-black italic tracking-widest rounded-xl transition-all shadow-lg shadow-dublio-purple/20">
+                      {editingProject ? 'GÜNCELLE' : 'KAYDET'}
+                   </button>
+                </div>
+              </form>
+           </div>
+        )}
+
+        {/* Steam Integration Tab */}
+        {activeTab === 'Oyun Ekle' && (
+          <div className="bg-[#15171e] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
+            <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/5">
+              <Gamepad2 className="w-8 h-8 text-dublio-purple" />
+              <h2 className="text-2xl font-black italic tracking-tight text-dublio-purple uppercase">
+                STEAM'DEN OYUN ÇEK
+              </h2>
+            </div>
+
+            <form onSubmit={searchSteam} className="mb-8 flex gap-4">
+              <input 
+                type="text" 
+                value={steamQuery}
+                onChange={(e) => setSteamQuery(e.target.value)}
+                placeholder="Oyun adı ara (örn: The Witcher 3)" 
+                className="flex-1 bg-[#1a1c23] border border-white/10 rounded-lg py-4 px-6 text-white focus:outline-none focus:border-dublio-purple"
+              />
+              <button 
+                type="submit" 
+                disabled={steamLoading}
+                className="px-8 py-4 bg-gradient-to-r from-dublio-purple to-[#9333ea] hover:scale-105 text-white font-bold rounded-lg transition-all shadow-lg shadow-dublio-purple/20 flex items-center gap-2"
+              >
+                <Search className="w-5 h-5" />
+                {steamLoading ? 'Aranıyor...' : 'Ara'}
+              </button>
+            </form>
+
+            <div className="space-y-4">
+              {steamResults.map((item: any) => (
+                <div key={item.id} className="flex flex-col md:flex-row items-center justify-between p-4 bg-[#1a1c23] border border-white/5 rounded-xl gap-4">
+                  <div className="flex items-center gap-4 w-full">
+                    <img src={item.tiny_image} alt={item.name} className="w-24 h-12 object-cover rounded" />
+                    <div>
+                      <h3 className="text-white font-bold">{item.name}</h3>
+                      <p className="text-white/50 text-sm">App ID: {item.id}</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => addFromSteam(item)}
+                    disabled={steamAdding === item.id.toString()}
+                    className="w-full md:w-auto px-6 py-2.5 bg-white/10 hover:bg-white/20 disabled:opacity-50 text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2 shrink-0"
+                  >
+                    <Download className="w-4 h-4" />
+                    {steamAdding === item.id.toString() ? 'Ekleniyor...' : 'Kayıt Ekle'}
+                  </button>
+                </div>
+              ))}
+              
+              {!steamLoading && steamResults.length === 0 && steamQuery && (
+                 <div className="text-center py-10 text-white/30 font-medium">Oyun bulunamadı veya arama yapmadınız.</div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Site Analytics Tab */}
+        {activeTab === 'Analizler' && (
+          <div className="space-y-6">
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="bg-[#15171e] p-6 rounded-2xl border border-white/5 shadow-lg relative overflow-hidden group">
+                   <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#00ff00]/10 rounded-full blur-3xl group-hover:bg-[#00ff00]/30 transition-all duration-500"></div>
+                   <h3 className="text-white/50 font-bold mb-4 flex items-center gap-2"><Eye className="w-5 h-5 text-[#00ff00]" /> Toplam Görüntülenme</h3>
+                   <p className="text-4xl text-white font-black">{stats.totalViews}</p>
+                   <p className="text-[#00ff00] text-sm font-bold mt-2">Sitenin Toplam Trafiği</p>
+                </div>
+                <div className="bg-[#15171e] p-6 rounded-2xl border border-white/5 shadow-lg relative overflow-hidden group">
+                   <div className="absolute -top-10 -right-10 w-32 h-32 bg-dublio-purple/10 rounded-full blur-3xl group-hover:bg-dublio-purple/30 transition-all duration-500"></div>
+                   <h3 className="text-white/50 font-bold mb-4 flex items-center gap-2"><Activity className="w-5 h-5 text-dublio-purple" /> Aktif Ziyaretçi</h3>
+                   <p className="text-4xl text-white font-black flex items-center gap-3">
+                     <span className="w-3 h-3 rounded-full bg-dublio-purple animate-[pulse_1.5s_infinite]"></span>
+                     {stats.activeUsers}
+                   </p>
+                   <p className="text-white/30 text-sm font-bold mt-2">Şu an sitede gezenler</p>
+                </div>
+                <div className="bg-[#15171e] p-6 rounded-2xl border border-white/5 shadow-lg relative overflow-hidden group">
+                   <div className="absolute -top-10 -right-10 w-32 h-32 bg-pink-500/10 rounded-full blur-3xl group-hover:bg-pink-500/30 transition-all duration-500"></div>
+                   <h3 className="text-white/50 font-bold mb-4 flex items-center gap-2"><Users className="w-5 h-5 text-pink-500" /> Kayıtlı Hesap</h3>
+                   <p className="text-4xl text-white font-black">{stats.totalAccounts}</p>
+                   <p className="text-pink-500 text-sm font-bold mt-2">Gerçek kayıtlı üyeler</p>
+                </div>
+                <div className="bg-[#15171e] p-6 rounded-2xl border border-white/5 shadow-lg relative overflow-hidden group">
+                   <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#e2b714]/10 rounded-full blur-3xl group-hover:bg-[#e2b714]/30 transition-all duration-500"></div>
+                   <h3 className="text-white/50 font-bold mb-4 flex items-center gap-2"><Download className="w-5 h-5 text-[#e2b714]" /> Toplam Mod/Yama Oynatma</h3>
+                   <p className="text-4xl text-white font-black">{stats.totalDownloads}</p>
+                   <p className="text-[#e2b714] text-sm font-bold mt-2">Kayıtlı tıklanmalar</p>
+                </div>
+             </div>
+             
+             {/* Extended Dummy Chart Area */}
+             <div className="bg-[#15171e] border border-white/5 rounded-2xl p-6 md:p-10 shadow-[0_0_20px_rgba(0,0,0,0.5)] mt-6">
+                <div className="flex items-center justify-between mb-8">
+                  <h3 className="text-xl font-bold text-white">Yıllık Trafik İstatistiği</h3>
+                  <select className="bg-white/5 border border-white/10 text-white text-sm font-bold rounded-lg px-4 py-2 outline-none">
+                     <option>2026 Yılı</option>
+                     <option>2025 Yılı</option>
+                  </select>
+                </div>
+                <div className="w-full h-64 flex items-end justify-between gap-1 md:gap-4 border-b border-white/10 pb-4">
+                  {stats.monthlyTraffic.map((h, i) => (
+                     <div key={i} className="w-full bg-gradient-to-t from-dublio-purple/20 to-dublio-purple hover:to-pink-500 rounded-t-md transition-all duration-300 relative group cursor-pointer" style={{ height: `${Math.max(h > 0 ? (h / Math.max(...stats.monthlyTraffic)) * 100 : 5, 5)}%` }}>
+                       <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-white text-black text-xs font-bold px-3 py-1.5 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap shadow-[0_5px_15px_rgba(0,0,0,0.3)]">
+                         {h} Ziyaret
+                       </div>
+                     </div>
+                  ))}
+                </div>
+                <div className="flex justify-between mt-4 text-white/40 text-xs md:text-sm font-bold px-2">
+                   <span>Oca</span><span>Şub</span><span>Mar</span><span>Nis</span><span>May</span><span>Haz</span><span>Tem</span><span>Ağu</span><span>Eyl</span><span>Eki</span><span>Kas</span><span>Ara</span>
+                </div>
+             </div>
+          </div>
+        )}
+
+        {/* Tab Placeholder */}
+        {activeTab === 'Ekip' && (
+          <div className="bg-[#15171e] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
+            <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/5">
+              <Users className="w-8 h-8 text-dublio-purple" />
+              <div className="flex flex-col">
+                <h2 className="text-2xl font-black italic tracking-tight text-dublio-purple uppercase">
+                  EKİBİMİZİ YÖNET
+                </h2>
+                <p className="text-white/40 text-sm font-bold">Kayıtlı kullanıcılara tıklayarak onları ekip üyesi yapabilirsiniz.</p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {usersList.length === 0 ? <p className="text-white/30 text-sm font-bold p-4">Hiç kayıtlı kullanıcı yok.</p> : usersList.map(u => (
+                <div 
+                  key={u.id} 
+                  className={`flex items-center gap-4 p-4 rounded-xl border ${u.teamMember ? 'bg-dublio-purple/10 border-dublio-purple' : 'bg-[#1a1c23] border-white/5'} transition-all`}
+                >
+                  <img src={u.image || '/globe.svg'} alt={u.name} className="w-12 h-12 rounded-full object-cover shrink-0 bg-black/50" />
+                  <div className="flex flex-col flex-1 min-w-0" onClick={() => handleToggleTeamMember(u.id, u.teamMember?.roleTitle, !!u.teamMember, u.teamMember?.id)}>
+                    <span className="font-bold text-white truncate">{u.name}</span>
+                    <span className="text-xs text-white/50 truncate w-full">{u.email}</span>
+                  </div>
+                  {u.teamMember && (
+                    <div className="flex flex-wrap shrink-0 gap-1" onClick={() => handleToggleTeamMember(u.id, u.teamMember?.roleTitle, !!u.teamMember, u.teamMember?.id)}>
+                      {u.teamMember.roleTitle.split(',').map((role: string, idx: number) => (
+                        <span key={idx} className="text-[10px] font-black uppercase text-dublio-purple border border-dublio-purple/30 bg-dublio-purple/10 px-2 py-1 rounded">
+                          {role.trim()}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {u.teamMember && (
+                    <a href={`/user/${u.id}`} target="_blank" rel="noopener noreferrer" className="ml-2 w-8 h-8 rounded-full bg-dublio-cyan/10 border border-dublio-cyan/30 flex items-center justify-center hover:bg-dublio-cyan hover:text-black text-dublio-cyan transition-colors" title="Profile Git">
+                       <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'Haberler' && (
+          <div className="bg-[#15171e] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative flex flex-col md:flex-row gap-6">
+            
+            {/* Ekleme Formu */}
+            <div className="md:w-1/2 flex flex-col space-y-6">
+              <div className="flex items-center gap-4 mb-2 pb-6 border-b border-white/5">
+                <Newspaper className="w-8 h-8 text-dublio-purple" />
+                <h2 className="text-2xl font-black italic tracking-tight text-dublio-purple uppercase">Haber Ekle</h2>
+              </div>
+              <form onSubmit={handleSaveNews} className="space-y-4">
+                <div>
+                  <label className="text-dublio-purple text-sm font-bold tracking-wide">Haber Başlığı</label>
+                  <input type="text" value={newsTitle} onChange={e=>setNewsTitle(e.target.value)} required className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple mt-1" />
+                </div>
+                <div>
+                  <label className="text-dublio-purple text-sm font-bold tracking-wide">Haber İçeriği</label>
+                  <textarea rows={5} value={newsContent} onChange={e=>setNewsContent(e.target.value)} required className="w-full resize-none bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple mt-1" />
+                </div>
+                <div>
+                  <label className="text-dublio-purple text-sm font-bold tracking-wide">Görsel Yükle (İsteğe Bağlı)</label>
+                  <input type="file" name="newsImageFile" accept="image/*" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer mt-1" />
+                </div>
+                <div>
+                  <label className="text-dublio-purple text-sm font-bold tracking-wide">Video Yükle (İsteğe Bağlı)</label>
+                  <input type="file" name="newsVideoFile" accept="video/mp4" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer mt-1" />
+                </div>
+                <button type="submit" disabled={newsAdding} className="w-full py-4 mt-2 bg-gradient-to-r from-dublio-purple to-[#9333ea] hover:scale-105 text-white font-black italic tracking-widest rounded-xl transition-all shadow-lg shadow-dublio-purple/20">
+                  {newsAdding ? 'EKLENİYOR...' : 'HABERİ YAYINLA'}
+                </button>
+              </form>
+            </div>
+
+            {/* Mevcut Haberler */}
+            <div className="md:w-1/2 flex flex-col space-y-4">
+              <h3 className="text-xl font-bold text-white mb-2 pt-8 md:pt-0">Yayınlanmış Haberler</h3>
+              <div className="flex flex-col space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
+                {newsList.map(n => (
+                  <div key={n.id} className="bg-[#1a1c23] border border-white/5 rounded-xl p-4 flex gap-4 items-start group hover:border-dublio-purple/30 transition-colors">
+                    {n.image && <img src={n.image} className="w-20 h-16 object-cover rounded bg-black/50 shrink-0" />}
+                    <div className="flex flex-col flex-1 min-w-0">
+                      <h4 className="text-white font-bold text-sm truncate">{n.title}</h4>
+                      <p className="text-white/40 text-xs mt-1 line-clamp-2">{n.content}</p>
+                      <span className="text-[10px] text-white/20 mt-2 font-bold">{new Date(n.createdAt).toLocaleDateString('tr-TR')}</span>
+                    </div>
+                    <button onClick={() => handleDeleteNews(n.id)} className="w-8 h-8 rounded bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white flex items-center justify-center transition-colors shrink-0">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+                {newsList.length === 0 && <p className="text-white/30 text-xs font-bold text-center py-4">Henüz haber yok.</p>}
+              </div>
+            </div>
+
+          </div>
+        )}
+
+        {activeTab !== 'Projeler' && activeTab !== 'Oyun Ekle' && activeTab !== 'Analizler' && activeTab !== 'Ekip' && activeTab !== 'Haberler' && (
+          <div className="bg-[#15171e] border border-white/5 rounded-2xl p-20 text-center shadow-xl flex flex-col items-center justify-center gap-4">
+             <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center">
+               <h3 className="text-white/20">Yakında</h3>
+             </div>
+             <p className="text-white/40"><strong className="text-white">{activeTab}</strong> bölümü yapım aşamasında.</p>
+          </div>
+        )}
+
+      </div>
+    </main>
+  );
+}

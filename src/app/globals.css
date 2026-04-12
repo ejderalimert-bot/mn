@@ -1,0 +1,102 @@
+@import "tailwindcss";
+
+
+:root {
+  --dublio-dark: #1d1d1f;
+  --dublio-gray: #212122;
+  --dublio-light: #2f2f38;
+  --dublio-medium: #161313;
+  --dublio-purple: #8e3dda;
+  --dublio-purple-glow: rgba(142, 61, 218, 0.5);
+  --dublio-cyan: #6affeb;
+  --dublio-text-light: #f5f5f5;
+  --dublio-text-dark: #9a99b0;
+  
+  --background: var(--dublio-dark);
+  --foreground: var(--dublio-text-light);
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer utilities {
+  .bg-dublio-dark { background-color: var(--dublio-dark); }
+  .bg-dublio-gray { background-color: var(--dublio-gray); }
+  .bg-dublio-light { background-color: var(--dublio-light); }
+  .text-dublio-cyan { color: var(--dublio-cyan); }
+  .text-dublio-text-dark { color: var(--dublio-text-dark); }
+  .border-dublio-light { border-color: rgba(47, 47, 56, 0.2); }
+  
+  .glass-panel {
+    background: rgba(47, 47, 56, 0.5);
+    border: 1px solid rgba(47, 47, 56, 0.3);
+    backdrop-filter: blur(12px);
+  }
+  
+  .dublio-gradient-text {
+    background: linear-gradient(to right, #fff, #9a99b0);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-right: 0.15em;
+  }
+
+  .purple-glow {
+    box-shadow: 0 0 20px var(--dublio-purple-glow);
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--dublio-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--dublio-light);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dublio-purple);
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes pageEnter {
+  0% {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.animate-page-enter {
+  animation: pageEnter 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Global Interaction Animations */
+a, button {
+  transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+
+a:active, button:active {
+  transform: scale(0.96) !important;
+  transition: transform 0.05s ease-out !important;
+}
