@@ -32,6 +32,12 @@ model Project {
   tags        String     @default("[]") // JSON stringified array of SEO tags
   audioDemos  String     @default("[]") // JSON stringified array of audio URLs
   videoDemos  String     @default("[]") // JSON stringified array of video URLs
+  
+  progressTranslation String @default("0")
+  progressVoice       String @default("0")
+  progressMix         String @default("0")
+  modLink             String?
+
   createdAt   DateTime   @default(now())
 
   // Relations

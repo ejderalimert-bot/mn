@@ -81,7 +81,11 @@ GÖREVLER VE KESİN SEO KURALLARI:
         gallery: JSON.stringify(body.gallery || []),
         tags: JSON.stringify(body.tags || []),
         audioDemos: JSON.stringify(body.audioDemos || []),
-        videoDemos: JSON.stringify(body.videoDemos || [])
+        videoDemos: JSON.stringify(body.videoDemos || []),
+        progressTranslation: body.progressTranslation || "0",
+        progressVoice: body.progressVoice || "0",
+        progressMix: body.progressMix || "0",
+        modLink: body.modLink || null,
       } as any
     });
     return NextResponse.json({ 

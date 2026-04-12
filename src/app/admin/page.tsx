@@ -219,7 +219,11 @@ export default function AdminDashboardPage() {
       focusKeyword: formFocusKeyword,
       seoTitle: formSeoTitle,
       seoDesc: formSeoDesc,
-      slug: formSlug
+      slug: formSlug,
+      progressTranslation: formData.get('progressTranslation')?.toString() || '0',
+      progressVoice: formData.get('progressVoice')?.toString() || '0',
+      progressMix: formData.get('progressMix')?.toString() || '0',
+      modLink: formData.get('modLink')?.toString() || ''
     };
 
     if (editingProject) {
@@ -686,8 +690,24 @@ export default function AdminDashboardPage() {
                     <input type="date" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple [color-scheme:dark]" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">İlerleme Yüzdesi (0-100)</label>
-                    <input name="retention" type="number" min="0" max="100" defaultValue={editingProject ? parseInt(editingProject.retention) : 0} className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Mod İndirme Linki (URL)</label>
+                    <input name="modLink" type="text" defaultValue={editingProject?.modLink || ''} placeholder="https://..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                  </div>
+                </div>
+                
+                <h3 className="text-white mt-8 mb-4 font-bold border-b border-white/5 pb-2">Proje Mod İlerlemesi (%)</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-2">
+                    <label className="text-dublio-cyan text-xs font-bold tracking-wide uppercase">Çeviri Yüzdesi</label>
+                    <input name="progressTranslation" type="number" min="0" max="100" defaultValue={editingProject?.progressTranslation || 0} className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-cyan" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-green-500 text-xs font-bold tracking-wide uppercase">Dublaj Yüzdesi</label>
+                    <input name="progressVoice" type="number" min="0" max="100" defaultValue={editingProject?.progressVoice || 0} className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-green-500" />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-purple-500 text-xs font-bold tracking-wide uppercase">Miksaj Yüzdesi</label>
+                    <input name="progressMix" type="number" min="0" max="100" defaultValue={editingProject?.progressMix || 0} className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-purple-500" />
                   </div>
                 </div>
                 

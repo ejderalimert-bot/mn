@@ -338,7 +338,11 @@ export default function ProjectDetailPage() {
                     {/* The Player Area */}
                     <div className="w-full h-[350px] md:h-[550px] lg:h-[700px] relative bg-black">
                       {activeMedia?.type === 'video' ? (
-                        <CustomVideoPlayer src={activeMedia.url} autoPlay />
+                        (activeMedia.url.includes('youtube.com') || activeMedia.url.includes('youtu.be')) ? (
+                          <iframe src={`${getYoutubeEmbedUrl(activeMedia.url)}?autoplay=1&mute=0`} allow="autoplay; encrypted-media; fullscreen" allowFullScreen className="w-full h-full border-none"></iframe>
+                        ) : (
+                          <CustomVideoPlayer src={activeMedia.url} autoPlay />
+                        )
                       ) : activeMedia?.type === 'image' ? (
                         <img src={activeMedia.url} className="w-full h-full object-contain absolute inset-0 bg-[#0a0a0c]" />
                       ) : (
@@ -436,12 +440,18 @@ export default function ProjectDetailPage() {
                                       <h3 className="text-2xl md:text-3xl font-black text-white mb-2 uppercase tracking-wide">TÜRKÇE DUBLAJ MODU</h3>
                                       <p className="text-white/60 font-medium">Büyük ustalıkla hazırlanan Türkçe Dublaj mod dosyasını şimdi indir ve oyununa entegre et.</p>
                                     </div>
-                                    <button className="shrink-0 relative z-10 group overflow-hidden bg-white text-black font-black text-lg px-8 py-5 rounded-2xl transition-transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.2)]">
-                                      <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-dublio-cyan via-[#60a5fa] to-dublio-purple opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                                      <span className="relative z-10 flex items-center justify-center gap-3 group-hover:text-white transition-colors">
-                                        <Download className="w-6 h-6" /> DOSYAYI İNDİR
-                                      </span>
-                                    </button>
+                                    {project.modLink ? (
+                                      <a href={project.modLink} target="_blank" rel="noopener noreferrer" className="shrink-0 relative z-10 group overflow-hidden bg-white text-black font-black text-lg px-8 py-5 rounded-2xl transition-transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.2)] block">
+                                        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-dublio-cyan via-[#60a5fa] to-dublio-purple opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                        <span className="relative z-10 flex items-center justify-center gap-3 group-hover:text-white transition-colors">
+                                          <Download className="w-6 h-6" /> DOSYAYI İNDİR
+                                        </span>
+                                      </a>
+                                    ) : (
+                                      <button disabled className="shrink-0 relative z-10 opacity-60 cursor-not-allowed bg-white/10 text-white/50 font-black text-lg px-8 py-5 rounded-2xl border border-white/10 flex items-center justify-center">
+                                        LİNK BEKLENİYOR
+                                      </button>
+                                    )}
                                   </div>
                                 </div>
 
@@ -455,10 +465,10 @@ export default function ProjectDetailPage() {
                                     <div className="space-y-3 relative z-10">
                                       <div className="flex justify-between items-end">
                                         <span className="text-white font-bold text-xs md:text-sm tracking-widest uppercase">Metin Yerelleştirme & Senaryo Çevirisi</span>
-                                        <span className="text-[#3b82f6] font-black text-lg">100%</span>
+                                        <span className="text-[#3b82f6] font-black text-lg">{project.progressTranslation || '0'}%</span>
                                       </div>
                                       <div className="w-full h-4 bg-white/[0.02] rounded-full overflow-hidden border border-white/[0.05]">
-                                        <div className="h-full bg-gradient-to-r from-[#1d4ed8] to-[#3b82f6] shadow-[0_0_20px_rgba(59,130,246,0.6)] rounded-full relative" style={{ width: '100%' }}>
+                                        <div className="h-full bg-gradient-to-r from-[#1d4ed8] to-[#3b82f6] shadow-[0_0_20px_rgba(59,130,246,0.6)] rounded-full relative" style={{ width: `${project.progressTranslation || 0}%` }}>
                                             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwTDggOFoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+Cjwvc3ZnPg==')] opacity-50"></div>
                                         </div>
                                       </div>
@@ -468,10 +478,10 @@ export default function ProjectDetailPage() {
                                     <div className="space-y-3 relative z-10">
                                       <div className="flex justify-between items-end">
                                         <span className="text-white font-bold text-xs md:text-sm tracking-widest uppercase">Dublaj & Stüdyo Kayıtları</span>
-                                        <span className="text-[#10b981] font-black text-lg">95%</span>
+                                        <span className="text-[#10b981] font-black text-lg">{project.progressVoice || '0'}%</span>
                                       </div>
                                       <div className="w-full h-4 bg-white/[0.02] rounded-full overflow-hidden border border-white/[0.05]">
-                                        <div className="h-full bg-gradient-to-r from-[#047857] to-[#10b981] shadow-[0_0_20px_rgba(16,185,129,0.6)] rounded-full relative" style={{ width: '95%' }}>
+                                        <div className="h-full bg-gradient-to-r from-[#047857] to-[#10b981] shadow-[0_0_20px_rgba(16,185,129,0.6)] rounded-full relative" style={{ width: `${project.progressVoice || 0}%` }}>
                                             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwTDggOFoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+Cjwvc3ZnPg==')] opacity-50"></div>
                                         </div>
                                       </div>
@@ -481,10 +491,10 @@ export default function ProjectDetailPage() {
                                     <div className="space-y-3 relative z-10">
                                       <div className="flex justify-between items-end">
                                         <span className="text-white font-bold text-xs md:text-sm tracking-widest uppercase">Post-Prodüksiyon & Miksaj</span>
-                                        <span className="text-dublio-purple font-black text-lg">95%</span>
+                                        <span className="text-dublio-purple font-black text-lg">{project.progressMix || '0'}%</span>
                                       </div>
                                       <div className="w-full h-4 bg-white/[0.02] rounded-full overflow-hidden border border-white/[0.05]">
-                                        <div className="h-full bg-gradient-to-r from-[#7e22ce] to-[#a855f7] shadow-[0_0_20px_rgba(168,85,247,0.6)] rounded-full relative" style={{ width: '95%' }}>
+                                        <div className="h-full bg-gradient-to-r from-[#7e22ce] to-[#a855f7] shadow-[0_0_20px_rgba(168,85,247,0.6)] rounded-full relative" style={{ width: `${project.progressMix || 0}%` }}>
                                             <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwTDggOFoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+Cjwvc3ZnPg==')] opacity-50"></div>
                                         </div>
                                       </div>
@@ -515,7 +525,11 @@ export default function ProjectDetailPage() {
                             <div className="flex flex-col gap-8">
                               {project.videoDemos?.length > 0 ? project.videoDemos.map((url: string, i: number) => (
                                   <div key={i} className="bg-black rounded-3xl overflow-hidden border border-white/10 aspect-video relative shadow-2xl">
-                                    <CustomVideoPlayer src={url} autoPlay={false} />
+                                    {(url.includes('youtube.com') || url.includes('youtu.be')) ? (
+                                      <iframe src={getYoutubeEmbedUrl(url)} allow="autoplay; encrypted-media; fullscreen" allowFullScreen className="w-full h-full border-none absolute inset-0"></iframe>
+                                    ) : (
+                                      <CustomVideoPlayer src={url} autoPlay={false} />
+                                    )}
                                   </div>
                                 )) : (
                                 <div className="flex flex-col items-center justify-center py-20 opacity-30">
