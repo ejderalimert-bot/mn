@@ -2,10 +2,11 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize, Minimize } from 'lucide-react';
+import ReactPlayer from 'react-player';
 
 export default function CustomVideoPlayer({ src, autoPlay = false }: { src: string, autoPlay?: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const playerRef = useRef<any>(null);
   
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [progress, setProgress] = useState(0);
@@ -31,48 +32,26 @@ export default function CustomVideoPlayer({ src, autoPlay = false }: { src: stri
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
   }, []);
 
-  // Utility to extract YouTube ID
   const getYoutubeId = (url: string) => {
     const match = url?.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([^"&?\/\s]{11})/);
     return match ? match[1] : null;
   };
-  
+
   const ytId = getYoutubeId(src);
 
-  // --- NATIVE VIDEO HANDLERS ---
-  const togglePlay = () => {
-    if (!videoRef.current) return;
-    if (videoRef.current.paused) {
-      videoRef.current.play().catch(console.error);
-      setIsPlaying(true);
-    } else {
-      videoRef.current.pause();
-      setIsPlaying(false);
-    }
+  const togglePlay = () => setIsPlaying(!isPlaying);
+  const toggleMute = () => setIsMuted(!isMuted);
+
+  const handleProgress = (state: { playedSeconds: number, loadedSeconds: number }) => {
+    setCurrentTime(state.playedSeconds);
+    if (duration > 0) setProgress((state.playedSeconds / duration) * 100);
   };
 
-  const toggleMute = () => {
-    if (!videoRef.current) return;
-    videoRef.current.muted = !isMuted;
-    setIsMuted(!isMuted);
-  };
-
-  const handleTimeUpdate = () => {
-    if (!videoRef.current) return;
-    const current = videoRef.current.currentTime;
-    const dur = videoRef.current.duration || 0;
-    setCurrentTime(current);
-    if (dur > 0) setProgress((current / dur) * 100);
-  };
-
-  const handleLoadedMetadata = () => {
-    if (videoRef.current) setDuration(videoRef.current.duration);
-  };
+  const handleDuration = (dur: number) => setDuration(dur);
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!videoRef.current) return;
     const seekTo = (Number(e.target.value) / 100) * duration;
-    videoRef.current.currentTime = seekTo;
+    playerRef.current?.seekTo(seekTo, 'seconds');
     setProgress(Number(e.target.value));
   };
   
@@ -88,22 +67,10 @@ export default function CustomVideoPlayer({ src, autoPlay = false }: { src: stri
     return <div className="w-full h-full bg-[#1a1c23] border border-white/5 rounded-lg animate-pulse" />;
   }
 
-  // YOUTUBE FALLBACK STRATEGY
-  if (ytId) {
-    return (
-      <div className="relative w-full h-full bg-black rounded-lg overflow-hidden border border-white/5">
-        <iframe
-          src={`https://www.youtube.com/embed/${ytId}?rel=0&modestbranding=1&controls=1&showinfo=0`}
-          className="absolute inset-0 w-full h-full"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-        />
-      </div>
-    );
-  }
-
-  // NATIVE MP4 / URL STRATEGY (WITH OUR GLOWING UI)
-  const finalSrc = src.startsWith('http') ? src : `/api/stream?f=${typeof window !== 'undefined' ? btoa(src || '') : ''}`;
+  // GUARANTEED STABLE URL FOR REACT PLAYER -> Normalizes ANY weird youtube URL into standard watch link
+  const finalSrc = ytId 
+    ? `https://www.youtube.com/watch?v=${ytId}` 
+    : (src?.startsWith('http') ? src : `/api/stream?f=${typeof window !== 'undefined' ? btoa(src || '') : ''}`);
 
   return (
     <div 
@@ -113,20 +80,39 @@ export default function CustomVideoPlayer({ src, autoPlay = false }: { src: stri
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      <video
-        ref={videoRef}
-        src={finalSrc}
-        className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none z-0" 
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
-        onEnded={() => setIsPlaying(false)}
-        playsInline
-        controlsList="nodownload nofullscreen noremoteplayback"
-        disablePictureInPicture
-      />
+      <div className="absolute inset-x-0 inset-y-0 w-full h-full z-0 overflow-hidden pointer-events-none" style={{ minHeight: '100%' }}>
+        <ReactPlayer
+          ref={playerRef}
+          url={finalSrc}
+          playing={isPlaying}
+          muted={isMuted}
+          controls={false}
+          width="100%"
+          height={ytId ? '135%' : '100%'} // Massive scale to hide youtube title bars/watermarks top & bottom
+          style={ytId ? { position: 'absolute', top: '-17.5%' } : {}}
+          // @ts-ignore
+          onProgress={handleProgress}
+          onDuration={handleDuration}
+          onEnded={() => setIsPlaying(false)}
+          playsinline
+          config={{
+            youtube: {
+              playerVars: { 
+                showinfo: 0, 
+                rel: 0, 
+                modestbranding: 1,
+                iv_load_policy: 3,
+                disablekb: 1,
+                fs: 0
+              }
+            }
+          } as any}
+        />
+      </div>
       
+      {/* Heavy click shield MUST handle togglePlay to intercept YouTube's internal pausing mechanism */}
       <div 
-        className="absolute inset-0 z-10 cursor-pointer flex items-center justify-center"
+        className="absolute inset-0 z-10 flex items-center justify-center cursor-pointer"
         onClick={togglePlay}
         onContextMenu={(e) => e.preventDefault()}
       >
