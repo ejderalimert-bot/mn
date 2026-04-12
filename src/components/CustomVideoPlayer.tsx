@@ -7,6 +7,7 @@ import ReactPlayer from 'react-player';
 export default function CustomVideoPlayer({ src, autoPlay = false }: { src: string, autoPlay?: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [progress, setProgress] = useState(0);
@@ -39,20 +40,69 @@ export default function CustomVideoPlayer({ src, autoPlay = false }: { src: stri
 
   const ytId = getYoutubeId(src);
 
-  const togglePlay = () => setIsPlaying(!isPlaying);
-  const toggleMute = () => setIsMuted(!isMuted);
+  // --- SYNCHRONOUS BYPASS PLAY HANDLER ---
+  const togglePlay = () => {
+    const nextState = !isPlaying;
+    setIsPlaying(nextState);
 
-  const handleProgress = (state: { playedSeconds: number, loadedSeconds: number }) => {
+    // If it's YouTube, force a synchronous API call to bypass React 19 async blocking Chrome
+    if (ytId && playerRef.current) {
+        try {
+            const internal = playerRef.current.getInternalPlayer();
+            if (internal) {
+                if (nextState && typeof internal.playVideo === 'function') internal.playVideo();
+                if (!nextState && typeof internal.pauseVideo === 'function') internal.pauseVideo();
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+    
+    // NATIVE fallback handling
+    if (!ytId && videoRef.current) {
+        if (nextState) videoRef.current.play().catch(() => {});
+        else videoRef.current.pause();
+    }
+  };
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+    if (!ytId && videoRef.current) {
+        videoRef.current.muted = !isMuted;
+    }
+  };
+
+  // NATIVE
+  const handleTimeUpdateNative = () => {
+    if (!videoRef.current) return;
+    const current = videoRef.current.currentTime;
+    const dur = videoRef.current.duration || 0;
+    setCurrentTime(current);
+    if (dur > 0) setProgress((current / dur) * 100);
+  };
+  const handleLoadedMetadataNative = () => {
+    if (videoRef.current) setDuration(videoRef.current.duration);
+  };
+
+  // YOUTUBE
+  const handleProgressYT = (state: { playedSeconds: number, loadedSeconds: number }) => {
     setCurrentTime(state.playedSeconds);
     if (duration > 0) setProgress((state.playedSeconds / duration) * 100);
   };
-
-  const handleDuration = (dur: number) => setDuration(dur);
+  const handleDurationYT = (dur: number) => setDuration(dur);
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const seekTo = (Number(e.target.value) / 100) * duration;
-    playerRef.current?.seekTo(seekTo, 'seconds');
-    setProgress(Number(e.target.value));
+    const percentage = Number(e.target.value);
+    const seekTo = (percentage / 100) * duration;
+    
+    setProgress(percentage);
+    setCurrentTime(seekTo);
+
+    if (ytId) {
+        playerRef.current?.seekTo(seekTo, 'seconds');
+    } else if (videoRef.current) {
+        videoRef.current.currentTime = seekTo;
+    }
   };
   
   const handleFullscreen = () => {
@@ -67,7 +117,6 @@ export default function CustomVideoPlayer({ src, autoPlay = false }: { src: stri
     return <div className="w-full h-full bg-[#1a1c23] border border-white/5 rounded-lg animate-pulse" />;
   }
 
-  // GUARANTEED STABLE URL FOR REACT PLAYER -> Normalizes ANY weird youtube URL into standard watch link
   const finalSrc = ytId 
     ? `https://www.youtube.com/watch?v=${ytId}` 
     : (src?.startsWith('http') ? src : `/api/stream?f=${typeof window !== 'undefined' ? btoa(src || '') : ''}`);
@@ -80,43 +129,71 @@ export default function CustomVideoPlayer({ src, autoPlay = false }: { src: stri
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      <div className="absolute inset-x-0 inset-y-0 w-full h-full z-0 overflow-hidden pointer-events-none" style={{ minHeight: '100%' }}>
-        <ReactPlayer
-          ref={playerRef}
-          url={finalSrc}
-          playing={isPlaying}
-          muted={isMuted}
-          controls={false}
-          width="100%"
-          height={ytId ? '135%' : '100%'} // Massive scale to hide youtube title bars/watermarks top & bottom
-          style={ytId ? { position: 'absolute', top: '-17.5%' } : {}}
-          // @ts-ignore
-          onProgress={handleProgress}
-          onDuration={handleDuration}
-          onEnded={() => setIsPlaying(false)}
-          playsinline
-          config={{
-            youtube: {
-              playerVars: { 
-                showinfo: 0, 
-                rel: 0, 
-                modestbranding: 1,
-                iv_load_policy: 3,
-                disablekb: 1,
-                fs: 0
-              }
+      {/* RENDER DUAL ENGINES */}
+      <div className="absolute inset-0 w-full h-full z-0 overflow-hidden" style={ytId ? { transform: 'scale(1.35)' } : {}}>
+        {ytId ? (
+          <ReactPlayer
+            ref={playerRef}
+            url={finalSrc}
+            playing={isPlaying}
+            muted={isMuted}
+            controls={false}
+            width="100%"
+            height="100%"
+            // Use Light mode thumbnail pattern - guarantees correct initialization and native click handling
+            light={
+              <div className="w-full h-full absolute inset-0 group-hover:opacity-100 bg-[#111]">
+                 <img src={`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`} className="w-full h-full object-cover opacity-60" onError={(e) => (e.currentTarget.src = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`)} />
+                 <div className="absolute inset-0 flex items-center justify-center pointer-events-none group-hover:scale-110 transition-transform">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-dublio-purple to-pink-500 text-white flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.8)]">
+                       <Play className="w-10 h-10 ml-2 fill-current" />
+                    </div>
+                 </div>
+              </div>
             }
-          } as any}
-        />
+            onClickPreview={() => setIsPlaying(true)}
+            // @ts-ignore
+            onProgress={handleProgressYT}
+            onDuration={handleDurationYT}
+            onEnded={() => setIsPlaying(false)}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            playsinline
+            config={{
+              youtube: {
+                playerVars: { 
+                  showinfo: 0, 
+                  rel: 0, 
+                  modestbranding: 1,
+                  iv_load_policy: 3,
+                  disablekb: 1,
+                  fs: 0
+                }
+              }
+            } as any}
+          />
+        ) : (
+          <video
+            ref={videoRef}
+            src={finalSrc}
+            className="w-full h-full object-contain pointer-events-none" 
+            onTimeUpdate={handleTimeUpdateNative}
+            onLoadedMetadata={handleLoadedMetadataNative}
+            onEnded={() => setIsPlaying(false)}
+            playsInline
+            controlsList="nodownload nofullscreen noremoteplayback"
+            disablePictureInPicture
+          />
+        )}
       </div>
       
-      {/* Heavy click shield MUST handle togglePlay to intercept YouTube's internal pausing mechanism */}
+      {/* Heavy click shield MUST handle togglePlay to intercept internal pausing mechanism if NOT light preview */}
       <div 
-        className="absolute inset-0 z-10 flex items-center justify-center cursor-pointer"
+        className={`absolute inset-0 z-10 flex items-center justify-center ${ytId && !isPlaying ? 'pointer-events-none' : 'cursor-pointer'}`}
         onClick={togglePlay}
         onContextMenu={(e) => e.preventDefault()}
       >
-        {!isPlaying && (
+        {!isPlaying && !ytId && (
           <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-dublio-purple to-pink-500 text-white flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.8)] transition-transform hover:scale-110">
              <Play className="w-10 h-10 ml-2 fill-current" />
           </div>
