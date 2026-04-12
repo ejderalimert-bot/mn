@@ -66,6 +66,7 @@ export default function ProjectDetailPage() {
   const scaleCover = useTransform(scrollY, [0, 1000], [1, 1.3]);
   const yText = useTransform(scrollY, [0, 800], [0, 200]);
   const rotateXText = useTransform(scrollY, [0, 800], [0, -30]);
+  const yTitle = useTransform(scrollY, [0, 500], [0, -50]);
   const id = params?.id as string;
   const { data: session } = useSession();
   const [project, setProject] = useState<any>(null);
@@ -352,7 +353,7 @@ export default function ProjectDetailPage() {
                             <motion.span animate={{ boxShadow: ["0px 0px 0px rgba(6,182,212,0)", "0px 0px 30px rgba(6,182,212,0.8)", "0px 0px 0px rgba(6,182,212,0)"] }} transition={{ duration: 3, repeat: Infinity }} className="px-4 py-1.5 bg-[#06b6d4]/10 text-[#06b6d4] border border-[#06b6d4]/20 rounded-full text-xs font-black uppercase tracking-widest">{project.category}</motion.span>
                             <span className="text-white/30 text-xs font-bold tracking-widest bg-white/[0.03] px-3 py-1.5 rounded-lg border border-white/[0.05]">RC-104710 ˅</span>
                         </div>
-                        <motion.h1 style={{ y: useTransform(scrollY, [0, 500], [0, -50]) }} className="text-4xl md:text-6xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-white/90 to-white/40 tracking-tight mb-8 drop-shadow-[0_0_40px_rgba(255,255,255,0.4)] hover:skew-x-3 hover:drop-shadow-[0_0_80px_rgba(255,255,255,0.8)] transition-all duration-500">
+                        <motion.h1 style={{ y: yTitle }} className="text-4xl md:text-6xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-white/90 to-white/40 tracking-tight mb-8 drop-shadow-[0_0_40px_rgba(255,255,255,0.4)] hover:skew-x-3 hover:drop-shadow-[0_0_80px_rgba(255,255,255,0.8)] transition-all duration-500">
                           {project.title}
                         </motion.h1>
                         
