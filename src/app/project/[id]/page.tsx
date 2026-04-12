@@ -66,6 +66,17 @@ export default function ProjectDetailPage() {
   const [activeTab, setActiveTab] = useState('genel'); // 'genel', 'lokalizasyon'
   const [activeMedia, setActiveMedia] = useState<{ type: 'video' | 'image', url: string } | null>(null);
   const [activeMediaTab, setActiveMediaTab] = useState<'video' | 'audio' | 'image'>('video');
+  const [animatedProgress, setAnimatedProgress] = useState(false);
+
+  useEffect(() => {
+    if (activeTab === 'mod') {
+      const timer = setTimeout(() => setAnimatedProgress(true), 150);
+      return () => clearTimeout(timer);
+    } else {
+      setAnimatedProgress(false);
+    }
+  }, [activeTab]);
+
   const [comments, setComments] = useState<any[]>([]);
   const [commentText, setCommentText] = useState("");
   const [displayCover, setDisplayCover] = useState<string | null>(null);
@@ -206,7 +217,7 @@ export default function ProjectDetailPage() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        projectId: id,
+        projectId: project?.id, // Ensure we send the actual ID, not the slug
         userId: session.user.id,
         userName: session.user.name,
         userAvatar: session.user.image,
@@ -257,9 +268,9 @@ export default function ProjectDetailPage() {
         ) : (
           <div className={`transition-opacity duration-[1500ms] ease-out ${fadeOverlay ? 'opacity-100' : 'opacity-0'}`}>
             <Navbar />
-            <div className="w-full relative pb-12">
+            <div className="w-full relative pb-12 animate-in fade-in duration-1000 fill-mode-both">
               {/* Cinematic Header Section (Full Width Bleed) */}
-              <div className="relative w-full h-[55vh] min-h-[450px] shadow-[0_10px_50px_rgba(0,0,0,0.8)] overflow-hidden bg-[#0a0a0c]">
+              <div className="relative w-full h-[55vh] min-h-[450px] shadow-[0_10px_50px_rgba(0,0,0,0.8)] overflow-hidden bg-[#0a0a0c] animate-in fade-in slide-in-from-top-4 duration-1000 delay-200 fill-mode-both">
                 {displayCover && (
                   <img src={displayCover} alt={project.title} className="absolute inset-0 w-full h-full object-cover opacity-20 select-none pointer-events-none scale-105" />
                 )}
@@ -334,7 +345,7 @@ export default function ProjectDetailPage() {
                  </div>
 
                  {/* Media Player Showcase - FULL HORIZONTAL REDESIGN */}
-                 <div className="w-full bg-[#0a0a0c] rounded-[2.5rem] overflow-hidden border border-white/5 shadow-[0_0_60px_rgba(0,0,0,0.5)] mb-20 relative group">
+                 <div className="w-full bg-[#0a0a0c] rounded-[2.5rem] overflow-hidden border border-white/5 shadow-[0_0_60px_rgba(0,0,0,0.5)] mb-20 relative group animate-in fade-in zoom-in-[0.98] duration-1000 delay-300 fill-mode-both">
                     {/* The Player Area */}
                     <div className="w-full h-[350px] md:h-[550px] lg:h-[700px] relative bg-black">
                       {activeMedia?.type === 'video' ? (
@@ -386,7 +397,7 @@ export default function ProjectDetailPage() {
                  </div>
 
                  {/* Content & Layout Grid */}
-                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-16 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-700 fill-mode-both">
                    {/* Left 2 Columns: Description & Media Tabs */}
                    <div className="lg:col-span-2 space-y-16">
                       
@@ -462,40 +473,43 @@ export default function ProjectDetailPage() {
                                     <div className="absolute -inset-20 bg-gradient-to-br from-[#1d4ed8]/5 to-[#a855f7]/5 blur-3xl pointer-events-none"></div>
                                     
                                     {/* Bar 1 */}
-                                    <div className="space-y-3 relative z-10">
+                                    <div className="space-y-3 relative z-10 group/bar">
                                       <div className="flex justify-between items-end">
-                                        <span className="text-white font-bold text-xs md:text-sm tracking-widest uppercase">Metin Yerelleştirme & Senaryo Çevirisi</span>
-                                        <span className="text-[#3b82f6] font-black text-lg">{project.progressTranslation || '0'}%</span>
+                                        <span className="text-white font-bold text-xs md:text-sm tracking-widest uppercase transition-colors group-hover/bar:text-white/80">Metin Yerelleştirme & Senaryo Çevirisi</span>
+                                        <span className="text-[#3b82f6] font-black text-lg drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">{project?.progressTranslation || '0'}%</span>
                                       </div>
                                       <div className="w-full h-4 bg-white/[0.02] rounded-full overflow-hidden border border-white/[0.05]">
-                                        <div className="h-full bg-gradient-to-r from-[#1d4ed8] to-[#3b82f6] shadow-[0_0_20px_rgba(59,130,246,0.6)] rounded-full relative" style={{ width: `${project.progressTranslation || 0}%` }}>
-                                            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwTDggOFoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+Cjwvc3ZnPg==')] opacity-50"></div>
+                                        <div className="h-full bg-gradient-to-r from-[#1d4ed8] to-[#3b82f6] shadow-[0_0_20px_rgba(59,130,246,0.6)] rounded-full relative transition-all duration-[1500ms] ease-out flex items-center justify-end pr-2 overflow-hidden" style={{ width: animatedProgress ? `${project?.progressTranslation || 0}%` : '0%' }}>
+                                            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwTDggOFoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+Cjwvc3ZnPg==')] opacity-50 mix-blend-overlay mix-blend-mode-overlay mix-blend-color-dodge animate-pulse"></div>
+                                            <div className="w-2 h-2 rounded-full bg-white/50 blur-sm shadow-[0_0_10px_white]"></div>
                                         </div>
                                       </div>
                                     </div>
 
                                     {/* Bar 2 */}
-                                    <div className="space-y-3 relative z-10">
+                                    <div className="space-y-3 relative z-10 group/bar">
                                       <div className="flex justify-between items-end">
-                                        <span className="text-white font-bold text-xs md:text-sm tracking-widest uppercase">Dublaj & Stüdyo Kayıtları</span>
-                                        <span className="text-[#10b981] font-black text-lg">{project.progressVoice || '0'}%</span>
+                                        <span className="text-white font-bold text-xs md:text-sm tracking-widest uppercase transition-colors group-hover/bar:text-white/80">Dublaj & Stüdyo Kayıtları</span>
+                                        <span className="text-[#10b981] font-black text-lg drop-shadow-[0_0_10px_rgba(16,185,129,0.5)]">{project?.progressVoice || '0'}%</span>
                                       </div>
                                       <div className="w-full h-4 bg-white/[0.02] rounded-full overflow-hidden border border-white/[0.05]">
-                                        <div className="h-full bg-gradient-to-r from-[#047857] to-[#10b981] shadow-[0_0_20px_rgba(16,185,129,0.6)] rounded-full relative" style={{ width: `${project.progressVoice || 0}%` }}>
-                                            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwTDggOFoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+Cjwvc3ZnPg==')] opacity-50"></div>
+                                        <div className="h-full bg-gradient-to-r from-[#047857] to-[#10b981] shadow-[0_0_20px_rgba(16,185,129,0.6)] rounded-full relative transition-all duration-[1800ms] ease-out flex items-center justify-end pr-2 overflow-hidden" style={{ width: animatedProgress ? `${project?.progressVoice || 0}%` : '0%' }}>
+                                            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwTDggOFoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+Cjwvc3ZnPg==')] opacity-50 mix-blend-overlay mix-blend-mode-overlay mix-blend-color-dodge animate-pulse"></div>
+                                            <div className="w-2 h-2 rounded-full bg-white/50 blur-sm shadow-[0_0_10px_white]"></div>
                                         </div>
                                       </div>
                                     </div>
 
                                     {/* Bar 3 */}
-                                    <div className="space-y-3 relative z-10">
+                                    <div className="space-y-3 relative z-10 group/bar">
                                       <div className="flex justify-between items-end">
-                                        <span className="text-white font-bold text-xs md:text-sm tracking-widest uppercase">Post-Prodüksiyon & Miksaj</span>
-                                        <span className="text-dublio-purple font-black text-lg">{project.progressMix || '0'}%</span>
+                                        <span className="text-white font-bold text-xs md:text-sm tracking-widest uppercase transition-colors group-hover/bar:text-white/80">Post-Prodüksiyon & Miksaj</span>
+                                        <span className="text-dublio-purple font-black text-lg drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]">{project?.progressMix || '0'}%</span>
                                       </div>
                                       <div className="w-full h-4 bg-white/[0.02] rounded-full overflow-hidden border border-white/[0.05]">
-                                        <div className="h-full bg-gradient-to-r from-[#7e22ce] to-[#a855f7] shadow-[0_0_20px_rgba(168,85,247,0.6)] rounded-full relative" style={{ width: `${project.progressMix || 0}%` }}>
-                                            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwTDggOFoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+Cjwvc3ZnPg==')] opacity-50"></div>
+                                        <div className="h-full bg-gradient-to-r from-[#7e22ce] to-[#a855f7] shadow-[0_0_20px_rgba(168,85,247,0.6)] rounded-full relative transition-all duration-[2100ms] ease-out flex items-center justify-end pr-2 overflow-hidden" style={{ width: animatedProgress ? `${project?.progressMix || 0}%` : '0%' }}>
+                                            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwTDggOFoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+Cjwvc3ZnPg==')] opacity-50 mix-blend-overlay mix-blend-mode-overlay mix-blend-color-dodge animate-pulse"></div>
+                                            <div className="w-2 h-2 rounded-full bg-white/50 blur-sm shadow-[0_0_10px_white]"></div>
                                         </div>
                                       </div>
                                     </div>
