@@ -64,8 +64,9 @@ export default function CustomVideoPlayer({ src, autoPlay = true }: { src: strin
     }
   };
 
-  // Convert raw URL to proper format if needed, though ReactPlayer handles most well.
-  const isYoutube = src.includes('youtube.com') || src.includes('youtu.be');
+  // Proxy local files internally to support byte-range streaming exactly like before.
+  const isYoutubePlayer = src.includes('youtube.com') || src.includes('youtu.be');
+  const finalSrc = isYoutubePlayer ? src : `/api/stream?f=${typeof window !== 'undefined' ? btoa(src) : ''}`;
 
   return (
     <div 
@@ -76,38 +77,40 @@ export default function CustomVideoPlayer({ src, autoPlay = true }: { src: strin
       onMouseLeave={() => setShowControls(false)}
     >
       {/* ReactPlayer is at the absolute bottom layer */}
-      <div className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none z-0">
+      <div className="absolute inset-0 w-full h-full object-contain z-0">
         <ReactPlayer
           ref={playerRef}
-          url={src}
+          url={finalSrc}
           playing={isPlaying}
           muted={isMuted}
           controls={false}
           width="100%"
           height="100%"
+          // @ts-ignore
           onProgress={handleProgress}
           onDuration={handleDuration}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
           onEnded={() => setIsPlaying(false)}
           playsinline
-          config={{
+          config={({
             youtube: {
               playerVars: { 
                 showinfo: 0, 
                 rel: 0, 
                 modestbranding: 1, 
                 iv_load_policy: 3,
-                disablekb: 1
+                disablekb: 1,
+                controls: 0
               }
             }
-          }}
+          }) as any}
         />
       </div>
       
-      {/* Heavy Invisible Click Shield covering the entire active video area */}
+      {/* Heavy Click Shield but pointer-events-none so interaction passes through to iframe or native video tag */}
       <div 
-        className="absolute inset-0 z-10 cursor-pointer flex items-center justify-center"
-        onClick={togglePlay}
-        onContextMenu={(e) => e.preventDefault()}
+        className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"
       >
         {!isPlaying && (
           <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-dublio-purple to-pink-500 text-white flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-transform hover:scale-110">
@@ -116,7 +119,7 @@ export default function CustomVideoPlayer({ src, autoPlay = true }: { src: strin
         )}
       </div>
 
-      {/* Controls Bar completely shielded with absolute top Z-Index */}
+      {/* Controls Bar */}
       <div 
         className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent transition-opacity duration-300 z-50 ${showControls || !isPlaying ? 'opacity-100' : 'opacity-0'}`}
         onContextMenu={(e) => e.preventDefault()}
