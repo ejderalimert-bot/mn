@@ -1,7 +1,7 @@
 "use client";
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
 
 const HeroSection = () => {
   const { scrollY } = useScroll();
@@ -9,8 +9,62 @@ const HeroSection = () => {
   const yText = useTransform(scrollY, [0, 800], [0, 400]);
   const opacityText = useTransform(scrollY, [0, 600], [1, 0]);
   const scaleText = useTransform(scrollY, [0, 600], [1, 0.8]);
+
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const spotlightX = useSpring(mouseX, { stiffness: 50, damping: 20 });
+  const spotlightY = useSpring(mouseY, { stiffness: 50, damping: 20 });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const { currentTarget, clientX, clientY } = e;
+    const { left, top } = currentTarget.getBoundingClientRect();
+    mouseX.set(clientX - left);
+    mouseY.set(clientY - top);
+  };
+
+  const [particles, setParticles] = useState<any[]>([]);
+  useEffect(() => {
+    setParticles(
+      Array.from({ length: 40 }).map((_, i) => ({
+        id: i,
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        duration: Math.random() * 15 + 10,
+        delay: Math.random() * 5,
+        size: Math.random() * 4 + 1
+      }))
+    );
+  }, []);
+
   return (
-    <div className="relative min-h-[90vh] w-full flex flex-col items-center justify-center overflow-hidden pt-10 px-8">
+    <div onMouseMove={handleMouseMove} className="relative min-h-[90vh] w-full flex flex-col items-center justify-center overflow-hidden pt-10 px-8">
+      {/* Interactive Spotlight Glow */}
+      <motion.div
+        className="absolute top-0 left-0 w-[600px] h-[600px] bg-dublio-cyan/10 blur-[120px] rounded-full pointer-events-none z-0 mix-blend-screen"
+        style={{ x: spotlightX, y: spotlightY, translateX: "-50%", translateY: "-50%" }}
+      />
+      
+      {/* Background Cinematic Particles */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        {particles.map((p) => (
+          <motion.div
+            key={p.id}
+            className="absolute rounded-full bg-white/40 shadow-[0_0_10px_white]"
+            style={{ width: p.size, height: p.size, left: `${p.x}%`, top: `${p.y}%` }}
+            animate={{
+              y: [0, -1000],
+              opacity: [0, 1, 0],
+              scale: [0, 1.5, 0],
+            }}
+            transition={{
+              duration: p.duration,
+              repeat: Infinity,
+              delay: p.delay,
+              ease: "linear",
+            }}
+          />
+        ))}
+      </div>
       {/* Background elements (Parallax UP) */}
       <motion.div style={{ y: yBg }} className="absolute inset-0 z-0 bg-transparent flex items-center justify-center -space-y-32">
         <motion.div 
@@ -47,9 +101,15 @@ const HeroSection = () => {
           <span className="text-[11px] font-bold text-dublio-text-dark tracking-[0.2em] uppercase">Star Dublaj Studios</span>
         </motion.div>
 
-        <motion.h1 variants={{ hidden: { opacity: 0, scale: 0.6, rotateX: 90 }, visible: { opacity: 1, scale: 1, rotateX: 0, transition: { type: "spring", stiffness: 100, damping: 10 } } }} className="text-5xl md:text-8xl font-black text-white leading-[1.1] mb-8 tracking-tighter uppercase italic drop-shadow-2xl">
+        <motion.h1 variants={{ hidden: { opacity: 0, scale: 0.6, rotateX: 90 }, visible: { opacity: 1, scale: 1, rotateX: 0, transition: { type: "spring", stiffness: 100, damping: 10 } } }} className="text-5xl md:text-8xl font-black text-white leading-[1.1] mb-8 tracking-tighter uppercase italic drop-shadow-2xl relative group">
           TÜRKİYENİN<br />
-          <span className="dublio-gradient-text drop-shadow-[0_0_30px_rgba(168,85,247,0.5)]">DUBLAJ&nbsp; MERKEZİ</span>
+          <motion.span 
+            animate={{ skewX: [0, -10, 5, 0], x: [0, 5, -5, 0], color: ['#fff', '#ec4899', '#6affeb', '#fff'] }}
+            transition={{ repeat: Infinity, duration: 4, ease: "linear", repeatDelay: 2 }}
+            className="inline-block dublio-gradient-text drop-shadow-[0_0_30px_rgba(168,85,247,0.5)]"
+          >
+            DUBLAJ&nbsp; MERKEZİ
+          </motion.span>
         </motion.h1>
 
         <motion.p variants={{ hidden: { opacity: 0, y: 30, rotateX: -45 }, visible: { opacity: 1, y: 0, rotateX: 0, transition: { type: "spring", stiffness: 120 } } }} className="text-xl md:text-2xl text-dublio-text-dark max-w-3xl mb-12 font-medium">
@@ -70,14 +130,20 @@ const HeroSection = () => {
 
       </motion.div>
 
-      {/* Marquee effect at bottom */}
-      <div className="w-full bg-[#1d1d1f] border-y border-white/5 py-8 mt-32 overflow-hidden whitespace-nowrap">
-        <div className="animate-float flex gap-20">
-          {[...Array(10)].map((_, i) => (
-            <span key={i} className="text-8xl font-black text-white/5 tracking-widest uppercase italic">
-              STAR DUBLAJ • MODS • DUBLAJ • SEO • AI • GEMINI • STAR DUBLAJ •
-            </span>
-          ))}
+      {/* Marquee effect at bottom (TILTED 3D) */}
+      <div className="w-full mt-32 relative flex justify-center [perspective:1000px] z-10 pointer-events-none">
+        <div className="w-[150vw] bg-[#1d1d1f] border-y-4 border-dublio-cyan py-8 overflow-hidden whitespace-nowrap shadow-[0_0_100px_rgba(106,255,235,0.2)]" style={{ transform: 'rotateX(50deg) rotateZ(-5deg)' }}>
+          <motion.div 
+            animate={{ x: ["0%", "-50%"] }} 
+            transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
+            className="flex gap-20"
+          >
+            {[...Array(20)].map((_, i) => (
+              <span key={i} className="text-8xl font-black text-white/5 tracking-widest uppercase italic">
+                STAR DUBLAJ • MODS • DUBLAJ • SEO • AI • GEMINI • STAR DUBLAJ •
+              </span>
+            ))}
+          </motion.div>
         </div>
       </div>
     </div>
