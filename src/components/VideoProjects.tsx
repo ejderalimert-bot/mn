@@ -33,7 +33,9 @@ const VideoCard = ({ project }: { project: any }) => {
 
   return (
     <motion.div
-      variants={{ hidden: { opacity: 0, y: 50 }, visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } } }}
+      variants={{ hidden: { opacity: 0, rotateX: 45, scale: 0.8, y: 80 }, visible: { opacity: 1, rotateX: 0, scale: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 10 } } }}
+      whileHover={{ y: -10, scale: 1.02 }}
+      className="[perspective:1000px]"
     >
       <Link
         href={`/project/${project.slug || project.id}`}

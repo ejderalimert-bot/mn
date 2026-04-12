@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/components/AuthProvider";
 import SiteProtection from "@/components/SiteProtection";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
+import CustomCursor from "@/components/CustomCursor";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,7 +25,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr" translate="no" className="notranslate">
-      <body className={`${inter.className} antialiased selection:!bg-transparent selection:!text-current`}>
+      <body className={`${inter.className} antialiased selection:!bg-transparent selection:!text-current cursor-none`}>
+        <CustomCursor />
         <AuthProvider>
           <AnalyticsProvider />
           <SiteProtection />

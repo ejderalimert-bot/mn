@@ -42,7 +42,9 @@ const ModCard = ({ id, slug, title, category, team, downloads, thumbnail, image,
 
   return (
     <motion.div
-      variants={{ hidden: { opacity: 0, y: 50 }, visible: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4, duration: 0.8 } } }}
+      variants={{ hidden: { opacity: 0, rotateY: 45, scale: 0.8, x: -80 }, visible: { opacity: 1, rotateY: 0, scale: 1, x: 0, transition: { type: "spring", stiffness: 90, damping: 10 } } }}
+      whileHover={{ y: -10, rotateX: 5, rotateY: -5, scale: 1.05 }}
+      className="[perspective:2000px]"
     >
       <Link 
         href={`/project/${slug || id}`} 
