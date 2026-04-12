@@ -865,19 +865,19 @@ export default function AdminDashboardPage() {
                   className={`flex items-center gap-4 p-4 rounded-xl border ${u.teamMember ? 'bg-dublio-purple/10 border-dublio-purple' : 'bg-[#1a1c23] border-white/5'} transition-all`}
                 >
                   <img src={u.image || '/globe.svg'} alt={u.name} className="w-12 h-12 rounded-full object-cover shrink-0 bg-black/50" />
-                  <div className="flex flex-col flex-1 min-w-0" onClick={() => handleToggleTeamMember(u.id, u.teamMember?.roleTitle, !!u.teamMember, u.teamMember?.id)}>
+                  <div className="flex flex-col flex-1 min-w-0 cursor-pointer" onClick={() => handleToggleTeamMember(u.id, u.teamMember?.roleTitle, !!u.teamMember, u.teamMember?.id)}>
                     <span className="font-bold text-white truncate">{u.name}</span>
                     <span className="text-xs text-white/50 truncate w-full">{u.email}</span>
+                    {u.teamMember && (
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {u.teamMember.roleTitle.split(',').map((role: string, idx: number) => (
+                          <span key={idx} className="text-[10px] font-black uppercase text-dublio-purple border border-dublio-purple/30 bg-dublio-purple/10 px-2 py-0.5 rounded">
+                            {role.trim()}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  {u.teamMember && (
-                    <div className="flex flex-wrap shrink-0 gap-1" onClick={() => handleToggleTeamMember(u.id, u.teamMember?.roleTitle, !!u.teamMember, u.teamMember?.id)}>
-                      {u.teamMember.roleTitle.split(',').map((role: string, idx: number) => (
-                        <span key={idx} className="text-[10px] font-black uppercase text-dublio-purple border border-dublio-purple/30 bg-dublio-purple/10 px-2 py-1 rounded">
-                          {role.trim()}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                   {u.teamMember && (
                     <a href={`/user/${u.id}`} target="_blank" rel="noopener noreferrer" className="ml-2 w-8 h-8 rounded-full bg-dublio-cyan/10 border border-dublio-cyan/30 flex items-center justify-center hover:bg-dublio-cyan hover:text-black text-dublio-cyan transition-colors" title="Profile Git">
                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
