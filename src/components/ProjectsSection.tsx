@@ -5,6 +5,7 @@ import Link from 'next/link';
 import React, { useState } from 'react';
 import CustomHoverPlayer from './CustomHoverPlayer';
 import { motion } from 'framer-motion';
+import { usePerformance } from "@/context/PerformanceContext";
 
 const getYoutubeEmbedUrl = (url: string, autoPlaySnippet: boolean = false) => {
   const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([^"&?\/\s]{11})/);
@@ -40,11 +41,13 @@ const ModCard = ({ id, slug, title, category, team, downloads, thumbnail, image,
      top3.push(snippets[i] || finalImage);
   }
 
+  const { performanceMode } = usePerformance();
+
   return (
     <motion.div
-      variants={{ hidden: { opacity: 0, rotateY: 60, scale: 0.9, x: -100, filter: "blur(15px)" }, visible: { opacity: 1, rotateY: 0, scale: 1, x: 0, filter: "blur(0px)", transition: { type: "spring", stiffness: 30, damping: 15, duration: 2.5 } } }}
-      whileHover={{ y: -15, rotateX: 5, rotateY: -10, scale: 1.05, boxShadow: "0px 30px 60px rgba(0,0,0,0.8)" }}
-      className="[perspective:2000px]"
+      variants={performanceMode === 'ultra' ? { hidden: { opacity: 0, rotateY: 60, scale: 0.9, x: -100, filter: "blur(15px)" }, visible: { opacity: 1, rotateY: 0, scale: 1, x: 0, filter: "blur(0px)", transition: { type: "spring", stiffness: 30, damping: 15, duration: 2.5 } } } : { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } } }}
+      whileHover={performanceMode === 'ultra' ? { y: -15, rotateX: 5, rotateY: -10, scale: 1.05, boxShadow: "0px 30px 60px rgba(0,0,0,0.8)" } : { y: -5, scale: 1.02, boxShadow: "0px 10px 30px rgba(0,0,0,0.5)" }}
+      className={performanceMode === 'ultra' ? "[perspective:2000px]" : ""}
     >
       <Link 
         href={`/project/${slug || id}`} 
@@ -58,7 +61,7 @@ const ModCard = ({ id, slug, title, category, team, downloads, thumbnail, image,
           alt={title} 
           suppressHydrationWarning
           className={`w-full h-full object-cover transition-all duration-[600ms] ease-out ${
-            isHovered ? 'scale-110 blur-sm opacity-60' : 'scale-100 blur-0 opacity-100'
+            isHovered && performanceMode === 'ultra' ? 'scale-110 blur-sm opacity-60' : isHovered ? 'scale-105 opacity-80' : 'scale-100 blur-0 opacity-100'
           }`}
         />
         {isHovered && trailer && (
@@ -112,6 +115,7 @@ const ModCard = ({ id, slug, title, category, team, downloads, thumbnail, image,
 };
 
 const ProjectsSection = ({ mods }: { mods: any[] }) => {
+  const { performanceMode } = usePerformance();
   return (
     <section className="py-32 px-8 container mx-auto">
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
@@ -120,7 +124,7 @@ const ProjectsSection = ({ mods }: { mods: any[] }) => {
             <div className="w-12 h-1 bg-dublio-purple rounded-full shrink-0"></div>
             <span className="text-[12px] font-black text-dublio-purple tracking-[0.4em] uppercase whitespace-nowrap">KEŞFET</span>
           </motion.div>
-          <motion.h2 initial={{ opacity: 0, y: 50, filter: "blur(10px)" }} whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ delay: 0.2, duration: 1.5, type: "spring", bounce: 0.5 }} className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter text-white leading-tight">
+          <motion.h2 initial={performanceMode === 'ultra' ? { opacity: 0, y: 50, filter: "blur(10px)" } : { opacity: 0, y: 20 }} whileInView={performanceMode === 'ultra' ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 1.5, type: "spring", bounce: 0.5 }} className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter text-white leading-tight">
             Geleceğin <br /> <span className="dublio-gradient-text inline-block hover:scale-105 transition-transform duration-500 cursor-default">Projelerini</span> Yakala
           </motion.h2>
         </motion.div>

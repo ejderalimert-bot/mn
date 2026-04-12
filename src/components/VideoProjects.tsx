@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import CustomHoverPlayer from './CustomHoverPlayer';
 import { motion } from 'framer-motion';
+import { usePerformance } from "@/context/PerformanceContext";
 
 const VideoCard = ({ project }: { project: any }) => {
   const displayImage = project.displayImage || project.image || project.thumbnail;
@@ -31,11 +32,13 @@ const VideoCard = ({ project }: { project: any }) => {
     top3.push(snippets[i] || finalImage);
   }
 
+  const { performanceMode } = usePerformance();
+
   return (
     <motion.div
-      variants={{ hidden: { opacity: 0, rotateX: 45, scale: 0.9, y: 150, filter: "blur(10px)" }, visible: { opacity: 1, rotateX: 0, scale: 1, y: 0, filter: "blur(0px)", transition: { type: "spring", stiffness: 40, damping: 15, duration: 2 } } }}
-      whileHover={{ y: -15, scale: 1.05, rotateX: 5, rotateY: -5, boxShadow: "0px 30px 60px rgba(0,0,0,0.8)" }}
-      className="[perspective:1500px]"
+      variants={performanceMode === 'ultra' ? { hidden: { opacity: 0, rotateX: 45, scale: 0.9, y: 150, filter: "blur(10px)" }, visible: { opacity: 1, rotateX: 0, scale: 1, y: 0, filter: "blur(0px)", transition: { type: "spring", stiffness: 40, damping: 15, duration: 2 } } } : { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } } }}
+      whileHover={performanceMode === 'ultra' ? { y: -15, scale: 1.05, rotateX: 5, rotateY: -5, boxShadow: "0px 30px 60px rgba(0,0,0,0.8)" } : { y: -5, scale: 1.02, boxShadow: "0px 10px 30px rgba(0,0,0,0.5)" }}
+      className={performanceMode === 'ultra' ? "[perspective:1500px]" : ""}
     >
       <Link
         href={`/project/${project.slug || project.id}`}
@@ -49,7 +52,7 @@ const VideoCard = ({ project }: { project: any }) => {
           alt={project.title} 
           suppressHydrationWarning
           className={`w-full h-full object-cover transition-all duration-[600ms] ease-out ${
-            isHovered ? 'scale-110 blur-sm opacity-60' : 'scale-100 blur-0 opacity-100'
+            isHovered && performanceMode === 'ultra' ? 'scale-110 blur-sm opacity-60' : isHovered ? 'scale-105 opacity-80' : 'scale-100 blur-0 opacity-100'
           }`} 
         />
         {isHovered && project.trailer && (
@@ -111,10 +114,13 @@ const VideoCard = ({ project }: { project: any }) => {
 };
 
 const VideoProjects = ({ projects }: { projects: any[] }) => {
+  const { performanceMode } = usePerformance();
   return (
     <section className="py-24 px-8 bg-dublio-dark/50 relative overflow-hidden">
       {/* Background glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[400px] bg-red-500/5 blur-[120px] rounded-full z-0"></div>
+      {performanceMode === 'ultra' && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[400px] bg-red-500/5 blur-[120px] rounded-full z-0"></div>
+      )}
 
       <div className="container mx-auto relative z-10">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
@@ -123,7 +129,7 @@ const VideoProjects = ({ projects }: { projects: any[] }) => {
               <div className="w-12 h-1 bg-pink-500 rounded-full shrink-0"></div>
               <span className="text-[12px] font-black text-pink-500 tracking-[0.4em] uppercase whitespace-nowrap">YENİ NESİL</span>
             </motion.div>
-            <motion.h2 initial={{ opacity: 0, y: 50, filter: "blur(10px)" }} whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }} transition={{ delay: 0.2, duration: 1.5, type: "spring", bounce: 0.5 }} className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter text-white leading-tight">
+            <motion.h2 initial={performanceMode === 'ultra' ? { opacity: 0, y: 50, filter: "blur(10px)" } : { opacity: 0, y: 20 }} whileInView={performanceMode === 'ultra' ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 1.5, type: "spring", bounce: 0.5 }} className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter text-white leading-tight">
               VİDEO <br /> <span className="bg-gradient-to-r from-pink-500 to-red-500 bg-clip-text text-transparent inline-block hover:scale-105 transition-transform duration-500 cursor-default">YAPIMLARINI</span> İZLE
             </motion.h2>
           </motion.div>
