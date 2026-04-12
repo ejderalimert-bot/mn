@@ -1,13 +1,18 @@
 "use client";
 import React from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 const HeroSection = () => {
+  const { scrollY } = useScroll();
+  const yBg = useTransform(scrollY, [0, 1000], [0, -300]);
+  const yText = useTransform(scrollY, [0, 800], [0, 400]);
+  const opacityText = useTransform(scrollY, [0, 600], [1, 0]);
+  const scaleText = useTransform(scrollY, [0, 600], [1, 0.8]);
   return (
     <div className="relative min-h-[90vh] w-full flex flex-col items-center justify-center overflow-hidden pt-10 px-8">
-      {/* Background elements */}
-      <div className="absolute inset-0 z-0 bg-transparent flex items-center justify-center -space-y-32">
+      {/* Background elements (Parallax UP) */}
+      <motion.div style={{ y: yBg }} className="absolute inset-0 z-0 bg-transparent flex items-center justify-center -space-y-32">
         <motion.div 
           animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }} 
           transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
@@ -27,14 +32,15 @@ const HeroSection = () => {
         <div className="absolute inset-0 opacity-[0.03] z-0 pointer-events-none"
           style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }}>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Main Content */}
+      {/* Main Content (Parallax DOWN and Fade out) */}
       <motion.div 
         initial="hidden"
         animate="visible"
+        style={{ y: yText, opacity: opacityText, scale: scaleText }}
         variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
-        className="container relative z-10 flex flex-col items-center text-center max-w-5xl [perspective:2000px]"
+        className="container relative z-10 flex flex-col items-center text-center max-w-5xl [perspective:2000px] mt-10"
       >
         <motion.div variants={{ hidden: { opacity: 0, y: 50, scale: 0.8 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", bounce: 0.6 } } }} className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full mb-8 backdrop-blur-sm">
           <span className="w-2 h-2 bg-dublio-cyan rounded-full shadow-[0_0_8px_#6affeb] animate-pulse"></span>
