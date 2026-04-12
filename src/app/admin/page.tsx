@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { Shield, Plus, Pencil, Trash2, LayoutGrid, Users, Newspaper, ListTree, Gamepad2, ArrowLeft, Search, Download, Activity, Eye, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePerformance } from "@/context/PerformanceContext";
 
 // Local data is fetched now
 
@@ -20,6 +21,7 @@ const tabs = [
 ];
 
 export default function AdminDashboardPage() {
+  const { performanceMode } = usePerformance();
   const { data: session, status } = useSession();
   
   const [activeTab, setActiveTab] = useState('Analizler');
@@ -441,7 +443,7 @@ export default function AdminDashboardPage() {
           <AnimatePresence mode="wait">
         
         {activeTab === 'Projeler' && view === 'list' && (
-          <motion.div key="proj-list" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ type: 'spring' }} className="bg-[#15171e] border border-dublio-purple rounded-xl overflow-hidden shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
+          <motion.div key="proj-list" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-[#15171e] border border-dublio-purple rounded-xl overflow-hidden shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
              
              {/* Header */}
              <div className="flex items-center justify-between p-6 border-b border-white/5">
@@ -504,7 +506,7 @@ export default function AdminDashboardPage() {
 
         {/* Form View (Add / Edit) */}
         {activeTab === 'Projeler' && view === 'form' && (
-           <motion.div key="proj-form" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: 'spring' }} className="bg-[#15171e] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
+           <motion.div key="proj-form" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-[#15171e] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
               <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/5">
                  <button onClick={() => setView('list')} className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors">
                    <ArrowLeft className="w-5 h-5" />
@@ -733,7 +735,7 @@ export default function AdminDashboardPage() {
 
         {/* Steam Integration Tab */}
         {activeTab === 'Oyun Ekle' && (
-          <motion.div key="oyun-ekle" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: 'spring' }} className="bg-[#15171e] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
+          <motion.div key="oyun-ekle" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-[#15171e] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
             <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/5">
               <Gamepad2 className="w-8 h-8 text-dublio-purple" />
               <h2 className="text-2xl font-black italic tracking-tight text-dublio-purple uppercase">
@@ -789,15 +791,15 @@ export default function AdminDashboardPage() {
 
         {/* Site Analytics Tab */}
         {activeTab === 'Analizler' && (
-          <motion.div key="analizler" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: 'spring' }} className="space-y-6">
+          <motion.div key="analizler" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="space-y-6">
              <motion.div initial="hidden" animate="visible" variants={{ visible: { transition: { staggerChildren: 0.1 } } }} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <motion.div variants={{ hidden: { opacity: 0, y: 30, scale: 0.9 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", bounce: 0.4 } } }} className="bg-[#15171e] p-6 rounded-2xl border border-white/5 shadow-lg relative overflow-hidden group hover:scale-[1.05] transition-transform cursor-default">
+                <motion.div variants={{ hidden: { opacity: 0, y: 30, scale: 0.9 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: performanceMode === 'ultra' ? 'spring' : 'tween', bounce: performanceMode === 'ultra' ? 0.4 : 0, duration: 0.3 } } }} className="bg-[#15171e] p-6 rounded-2xl border border-white/5 shadow-lg relative overflow-hidden group hover:scale-[1.05] transition-transform cursor-default">
                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#00ff00]/10 rounded-full blur-3xl group-hover:bg-[#00ff00]/30 transition-all duration-500"></div>
                    <h3 className="text-white/50 font-bold mb-4 flex items-center gap-2"><Eye className="w-5 h-5 text-[#00ff00]" /> Toplam Görüntülenme</h3>
                    <p className="text-4xl text-white font-black">{stats.totalViews}</p>
                    <p className="text-[#00ff00] text-sm font-bold mt-2">Sitenin Toplam Trafiği</p>
                 </motion.div>
-                <motion.div variants={{ hidden: { opacity: 0, y: 30, scale: 0.9 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", bounce: 0.4 } } }} className="bg-[#15171e] p-6 rounded-2xl border border-white/5 shadow-lg relative overflow-hidden group hover:scale-[1.05] transition-transform cursor-default">
+                <motion.div variants={{ hidden: { opacity: 0, y: 30, scale: 0.9 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: performanceMode === 'ultra' ? 'spring' : 'tween', bounce: performanceMode === 'ultra' ? 0.4 : 0, duration: 0.3 } } }} className="bg-[#15171e] p-6 rounded-2xl border border-white/5 shadow-lg relative overflow-hidden group hover:scale-[1.05] transition-transform cursor-default">
                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-dublio-purple/10 rounded-full blur-3xl group-hover:bg-dublio-purple/30 transition-all duration-500"></div>
                    <h3 className="text-white/50 font-bold mb-4 flex items-center gap-2"><Activity className="w-5 h-5 text-dublio-purple" /> Aktif Ziyaretçi</h3>
                    <p className="text-4xl text-white font-black flex items-center gap-3">
@@ -806,13 +808,13 @@ export default function AdminDashboardPage() {
                    </p>
                    <p className="text-white/30 text-sm font-bold mt-2">Şu an sitede gezenler</p>
                 </motion.div>
-                <motion.div variants={{ hidden: { opacity: 0, y: 30, scale: 0.9 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", bounce: 0.4 } } }} className="bg-[#15171e] p-6 rounded-2xl border border-white/5 shadow-lg relative overflow-hidden group hover:scale-[1.05] transition-transform cursor-default">
+                <motion.div variants={{ hidden: { opacity: 0, y: 30, scale: 0.9 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: performanceMode === 'ultra' ? 'spring' : 'tween', bounce: performanceMode === 'ultra' ? 0.4 : 0, duration: 0.3 } } }} className="bg-[#15171e] p-6 rounded-2xl border border-white/5 shadow-lg relative overflow-hidden group hover:scale-[1.05] transition-transform cursor-default">
                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-pink-500/10 rounded-full blur-3xl group-hover:bg-pink-500/30 transition-all duration-500"></div>
                    <h3 className="text-white/50 font-bold mb-4 flex items-center gap-2"><Users className="w-5 h-5 text-pink-500" /> Kayıtlı Hesap</h3>
                    <p className="text-4xl text-white font-black">{stats.totalAccounts}</p>
                    <p className="text-pink-500 text-sm font-bold mt-2">Gerçek kayıtlı üyeler</p>
                 </motion.div>
-                <motion.div variants={{ hidden: { opacity: 0, y: 30, scale: 0.9 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", bounce: 0.4 } } }} className="bg-[#15171e] p-6 rounded-2xl border border-white/5 shadow-lg relative overflow-hidden group hover:scale-[1.05] transition-transform cursor-default">
+                <motion.div variants={{ hidden: { opacity: 0, y: 30, scale: 0.9 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: performanceMode === 'ultra' ? 'spring' : 'tween', bounce: performanceMode === 'ultra' ? 0.4 : 0, duration: 0.3 } } }} className="bg-[#15171e] p-6 rounded-2xl border border-white/5 shadow-lg relative overflow-hidden group hover:scale-[1.05] transition-transform cursor-default">
                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#e2b714]/10 rounded-full blur-3xl group-hover:bg-[#e2b714]/30 transition-all duration-500"></div>
                    <h3 className="text-white/50 font-bold mb-4 flex items-center gap-2"><Download className="w-5 h-5 text-[#e2b714]" /> Toplam Mod/Yama Oynatma</h3>
                    <p className="text-4xl text-white font-black">{stats.totalDownloads}</p>
@@ -847,7 +849,7 @@ export default function AdminDashboardPage() {
 
         {/* Tab Placeholder */}
         {activeTab === 'Ekip' && (
-          <motion.div key="ekip" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: 'spring' }} className="bg-[#15171e] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
+          <motion.div key="ekip" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-[#15171e] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
             <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/5">
               <Users className="w-8 h-8 text-dublio-purple" />
               <div className="flex flex-col">
@@ -890,7 +892,7 @@ export default function AdminDashboardPage() {
         )}
 
         {activeTab === 'Haberler' && (
-          <motion.div key="haberler" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: 'spring' }} className="bg-[#15171e] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative flex flex-col md:flex-row gap-6">
+          <motion.div key="haberler" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-[#15171e] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative flex flex-col md:flex-row gap-6">
             
             {/* Ekleme Formu */}
             <div className="md:w-1/2 flex flex-col space-y-6">
@@ -946,7 +948,7 @@ export default function AdminDashboardPage() {
         )}
 
         {activeTab !== 'Projeler' && activeTab !== 'Oyun Ekle' && activeTab !== 'Analizler' && activeTab !== 'Ekip' && activeTab !== 'Haberler' && (
-          <motion.div key="yakinda" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: 'spring' }} className="bg-[#15171e] border border-white/5 rounded-2xl p-20 text-center shadow-xl flex flex-col items-center justify-center gap-4">
+          <motion.div key="yakinda" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-[#15171e] border border-white/5 rounded-2xl p-20 text-center shadow-xl flex flex-col items-center justify-center gap-4">
              <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center">
                <h3 className="text-white/20">Yakında</h3>
              </div>
