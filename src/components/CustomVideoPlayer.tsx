@@ -65,9 +65,18 @@ export default function CustomVideoPlayer({ src, autoPlay = true }: { src: strin
     }
   };
 
-  // Proxy local files internally to support byte-range streaming exactly like before.
-  const isYoutubePlayer = src?.includes('youtube.com') || src?.includes('youtu.be');
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const isYoutubePlayer = src && (src.includes('youtube.com') || src.includes('youtu.be'));
   const finalSrc = isYoutubePlayer ? src : `/api/stream?f=${typeof window !== 'undefined' ? btoa(src || '') : ''}`;
+
+  if (!mounted) {
+    return <div className="w-full h-full bg-black rounded-lg animate-pulse" />;
+  }
 
   return (
     <div 
@@ -77,8 +86,8 @@ export default function CustomVideoPlayer({ src, autoPlay = true }: { src: strin
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      {/* ReactPlayer is completely locked behind pointer-events-none. It will purely obey our virtual 'playing' commands. */}
-      <div className="absolute inset-x-0 inset-y-0 w-full h-full pointer-events-none select-none z-0 overflow-hidden" style={{ minHeight: '100%' }}>
+      {/* ReactPlayer wrapper */}
+      <div className="absolute inset-0 w-full h-full z-0">
         <ReactPlayer
           ref={playerRef}
           url={finalSrc}
@@ -86,29 +95,33 @@ export default function CustomVideoPlayer({ src, autoPlay = true }: { src: strin
           muted={isMuted}
           controls={false}
           width="100%"
-          height="120%" /* Render slightly larger to hide youtube title bars completely */
-          style={{ position: 'absolute', top: '-10%' }}
+          height="100%"
           // @ts-ignore
           onProgress={handleProgress}
           onDuration={handleDuration}
           onEnded={() => setIsPlaying(false)}
           playsinline
+          config={{
+            youtube: {
+              playerVars: { showinfo: 0, rel: 0, modestbranding: 1 }
+            }
+          } as any}
         />
       </div>
       
-      {/* The Virtual Interceptor Shield (This receives all clicks and commands the player) */}
+      {/* Heavy click shield MUST handle togglePlay to intercept YouTube's internal pausing mechanism */}
       <div 
-        className="absolute inset-0 z-10 cursor-pointer flex items-center justify-center"
+        className="absolute inset-0 z-10 flex items-center justify-center cursor-pointer"
         onClick={togglePlay}
       >
         {!isPlaying && (
-          <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-dublio-purple to-pink-500 text-white flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-transform hover:scale-110">
-             <Play className="w-8 h-8 ml-1 fill-current" />
+          <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-dublio-purple to-pink-500 text-white flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.8)] transition-transform hover:scale-110">
+             <Play className="w-10 h-10 ml-2 fill-current" />
           </div>
         )}
       </div>
 
-      {/* Custom Controls Bar */}
+      {/* Constraints for Custom Controls */}
       <div 
         className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent transition-opacity duration-300 z-50 ${showControls || !isPlaying ? 'opacity-100' : 'opacity-0'}`}
         onContextMenu={(e) => e.preventDefault()}
