@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { ArrowRight, Newspaper } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function HomeNews({ news }: { news: any[] }) {
   if (!news || news.length === 0) return null;
@@ -16,9 +17,21 @@ export default function HomeNews({ news }: { news: any[] }) {
         </h2>
         <div className="h-1 w-24 bg-pink-500 mx-auto mb-16 shadow-[0_0_15px_#ec4899]"></div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left">
+        <motion.div 
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={{ visible: { transition: { staggerChildren: 0.3 } } }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 text-left"
+        >
           {news.slice(0, 3).map((item) => (
-            <Link key={item.id} href={`/news/${item.id}`} className="group relative bg-[#1a1c23] rounded-3xl overflow-hidden border border-white/5 hover:border-pink-500/50 transition-colors shadow-xl h-96 flex flex-col cursor-pointer">
+            <motion.div
+              key={item.id}
+              variants={{ hidden: { opacity: 0, scale: 0.5, rotateY: -90, y: 150 }, visible: { opacity: 1, scale: 1, rotateY: 0, y: 0, transition: { type: "spring", stiffness: 40, damping: 20, duration: 2.5 } } }}
+              whileHover={{ y: -10, rotateX: 5, rotateY: 5, scale: 1.05 }}
+              className="[perspective:1500px]"
+            >
+            <Link href={`/news/${item.id}`} className="group relative bg-[#1a1c23] rounded-3xl overflow-hidden border border-white/5 hover:border-pink-500/50 transition-colors shadow-xl h-96 flex flex-col cursor-pointer">
               <div className="h-[55%] w-full bg-black relative overflow-hidden shrink-0">
                 {item.image ? (
                   <img src={item.image} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -38,8 +51,9 @@ export default function HomeNews({ news }: { news: any[] }) {
                 </div>
               </div>
             </Link>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
         
         {news.length > 3 && (
           <div className="mt-12 flex justify-center">

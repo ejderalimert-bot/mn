@@ -42,8 +42,8 @@ const ModCard = ({ id, slug, title, category, team, downloads, thumbnail, image,
 
   return (
     <motion.div
-      variants={{ hidden: { opacity: 0, rotateY: 45, scale: 0.8, x: -80 }, visible: { opacity: 1, rotateY: 0, scale: 1, x: 0, transition: { type: "spring", stiffness: 90, damping: 10 } } }}
-      whileHover={{ y: -10, rotateX: 5, rotateY: -5, scale: 1.05 }}
+      variants={{ hidden: { opacity: 0, rotateY: 60, scale: 0.9, x: -100, filter: "blur(15px)" }, visible: { opacity: 1, rotateY: 0, scale: 1, x: 0, filter: "blur(0px)", transition: { type: "spring", stiffness: 30, damping: 15, duration: 2.5 } } }}
+      whileHover={{ y: -15, rotateX: 5, rotateY: -10, scale: 1.05, boxShadow: "0px 30px 60px rgba(0,0,0,0.8)" }}
       className="[perspective:2000px]"
     >
       <Link 
@@ -140,9 +140,9 @@ const ProjectsSection = ({ mods }: { mods: any[] }) => {
       <motion.div 
         initial="hidden"
         whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        viewport={{ once: true, margin: "-50px" }}
+        variants={{ visible: { transition: { staggerChildren: 0.4 } } }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
       >
         {mods.map(mod => (
           <ModCard key={mod.id} {...mod} />

@@ -1,16 +1,16 @@
 "use client";
 
-import React from 'react';
-import { usePathname } from 'next/navigation';
+import { motion } from "framer-motion";
 
 export default function Template({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-
-  // The template component forces a remount on navigation because its key will change natively, 
-  // triggering the "animate-page-enter" CSS animation attached below.
   return (
-    <div key={pathname} className="animate-page-enter w-full h-full min-h-screen">
+    <motion.div
+      initial={{ opacity: 0, y: 60, filter: "blur(15px)", scale: 0.95, rotateX: 5 }}
+      animate={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1, rotateX: 0 }}
+      transition={{ duration: 1.5, ease: "easeOut", type: "spring", bounce: 0.4 }}
+      className="w-full min-h-screen [perspective:2000px]"
+    >
       {children}
-    </div>
+    </motion.div>
   );
 }

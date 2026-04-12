@@ -66,10 +66,12 @@ const Navbar = () => {
       <div className="container mx-auto h-full flex items-center justify-between px-6">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3 group">
-            <img 
+            <motion.img 
                src="/logo.png" 
                alt="Star Dublaj Logo" 
-               className="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(168,85,247,0.4)] group-hover:scale-110 transition-transform" 
+               whileHover={{ rotate: 360, scale: 1.2 }}
+               transition={{ type: "spring", stiffness: 100, damping: 10 }}
+               className="w-10 h-10 object-contain drop-shadow-[0_0_15px_rgba(168,85,247,0.4)]" 
                onError={(e) => {
                  (e.target as HTMLImageElement).style.display = 'none';
                  const fallback = (e.target as HTMLImageElement).nextElementSibling as HTMLDivElement;
@@ -77,10 +79,10 @@ const Navbar = () => {
                }}
             />
             {/* Fallback if logo.png is missing */}
-            <div className="hidden w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+            <motion.div whileHover={{ rotate: 180, scale: 1.2 }} className="hidden w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
               <span className="text-white font-black text-xl">S</span>
-            </div>
-            <span className="font-bold text-xl text-white tracking-tight">STAR DUBLAJ</span>
+            </motion.div>
+            <span className="font-bold text-xl text-white tracking-tight group-hover:text-dublio-cyan transition-colors">STAR DUBLAJ</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">

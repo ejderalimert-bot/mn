@@ -33,9 +33,9 @@ const VideoCard = ({ project }: { project: any }) => {
 
   return (
     <motion.div
-      variants={{ hidden: { opacity: 0, rotateX: 45, scale: 0.8, y: 80 }, visible: { opacity: 1, rotateX: 0, scale: 1, y: 0, transition: { type: "spring", stiffness: 100, damping: 10 } } }}
-      whileHover={{ y: -10, scale: 1.02 }}
-      className="[perspective:1000px]"
+      variants={{ hidden: { opacity: 0, rotateX: 45, scale: 0.9, y: 150, filter: "blur(10px)" }, visible: { opacity: 1, rotateX: 0, scale: 1, y: 0, filter: "blur(0px)", transition: { type: "spring", stiffness: 40, damping: 15, duration: 2 } } }}
+      whileHover={{ y: -15, scale: 1.05, rotateX: 5, rotateY: -5, boxShadow: "0px 30px 60px rgba(0,0,0,0.8)" }}
+      className="[perspective:1500px]"
     >
       <Link
         href={`/project/${project.slug || project.id}`}
@@ -135,9 +135,9 @@ const VideoProjects = ({ projects }: { projects: any[] }) => {
         <motion.div 
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={{ visible: { transition: { staggerChildren: 0.4 } } }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
         >
           {projects.map((project) => (
             <VideoCard key={project.id} project={project} />
