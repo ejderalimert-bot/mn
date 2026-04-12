@@ -339,7 +339,7 @@ export default function ProjectDetailPage() {
                       whileHover={{ scale: 1.1, rotateY: 15, rotateX: 10, y: -20 }}
                       className="w-48 h-72 md:w-64 md:h-96 rounded-[2rem] overflow-hidden shrink-0 shadow-[0_30px_60px_rgba(0,0,0,0.9)] border-[3px] border-white/5 relative bg-[#1a1c23] z-20 group"
                     >
-                      <img src={project.image || displayCover} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-125" />
+                      <img src={project.image || displayCover || "https://images.unsplash.com/photo-1550745165-9bc0b252726f"} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-125" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     </motion.div>
                     
