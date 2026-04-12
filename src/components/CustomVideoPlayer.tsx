@@ -8,7 +8,8 @@ export default function CustomVideoPlayer({ src, autoPlay = true }: { src: strin
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
   
-  const [isPlaying, setIsPlaying] = useState(autoPlay);
+  // Force start paused to satisfy modern browser interaction policies reliably
+  const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
@@ -65,8 +66,8 @@ export default function CustomVideoPlayer({ src, autoPlay = true }: { src: strin
   };
 
   // Proxy local files internally to support byte-range streaming exactly like before.
-  const isYoutubePlayer = src.includes('youtube.com') || src.includes('youtu.be');
-  const finalSrc = isYoutubePlayer ? src : `/api/stream?f=${typeof window !== 'undefined' ? btoa(src) : ''}`;
+  const isYoutubePlayer = src?.includes('youtube.com') || src?.includes('youtu.be');
+  const finalSrc = isYoutubePlayer ? src : `/api/stream?f=${typeof window !== 'undefined' ? btoa(src || '') : ''}`;
 
   return (
     <div 
@@ -76,8 +77,8 @@ export default function CustomVideoPlayer({ src, autoPlay = true }: { src: strin
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      {/* ReactPlayer is at the absolute bottom layer */}
-      <div className="absolute inset-0 w-full h-full object-contain z-0">
+      {/* ReactPlayer is completely locked behind pointer-events-none. It will purely obey our virtual 'playing' commands. */}
+      <div className="absolute inset-x-0 inset-y-0 w-full h-full pointer-events-none select-none z-0 overflow-hidden" style={{ minHeight: '100%' }}>
         <ReactPlayer
           ref={playerRef}
           url={finalSrc}
@@ -85,32 +86,20 @@ export default function CustomVideoPlayer({ src, autoPlay = true }: { src: strin
           muted={isMuted}
           controls={false}
           width="100%"
-          height="100%"
+          height="120%" /* Render slightly larger to hide youtube title bars completely */
+          style={{ position: 'absolute', top: '-10%' }}
           // @ts-ignore
           onProgress={handleProgress}
           onDuration={handleDuration}
-          onPlay={() => setIsPlaying(true)}
-          onPause={() => setIsPlaying(false)}
           onEnded={() => setIsPlaying(false)}
           playsinline
-          config={({
-            youtube: {
-              playerVars: { 
-                showinfo: 0, 
-                rel: 0, 
-                modestbranding: 1, 
-                iv_load_policy: 3,
-                disablekb: 1,
-                controls: 0
-              }
-            }
-          }) as any}
         />
       </div>
       
-      {/* Heavy Click Shield but pointer-events-none so interaction passes through to iframe or native video tag */}
+      {/* The Virtual Interceptor Shield (This receives all clicks and commands the player) */}
       <div 
-        className="absolute inset-0 z-10 flex items-center justify-center pointer-events-none"
+        className="absolute inset-0 z-10 cursor-pointer flex items-center justify-center"
+        onClick={togglePlay}
       >
         {!isPlaying && (
           <div className="w-16 h-16 rounded-full bg-gradient-to-tr from-dublio-purple to-pink-500 text-white flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.5)] transition-transform hover:scale-110">
@@ -119,7 +108,7 @@ export default function CustomVideoPlayer({ src, autoPlay = true }: { src: strin
         )}
       </div>
 
-      {/* Controls Bar */}
+      {/* Custom Controls Bar */}
       <div 
         className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/90 via-black/50 to-transparent transition-opacity duration-300 z-50 ${showControls || !isPlaying ? 'opacity-100' : 'opacity-0'}`}
         onContextMenu={(e) => e.preventDefault()}
