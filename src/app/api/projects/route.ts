@@ -102,6 +102,8 @@ export async function PUT(request: Request) {
     const id = body.id;
     const data = { ...body };
     delete data.id;
+    delete data.createdAt;
+    delete data.updatedAt;
     if (data.gallery && Array.isArray(data.gallery)) data.gallery = JSON.stringify(data.gallery);
     if (data.tags && Array.isArray(data.tags)) data.tags = JSON.stringify(data.tags);
     if (data.audioDemos && Array.isArray(data.audioDemos)) data.audioDemos = JSON.stringify(data.audioDemos);
