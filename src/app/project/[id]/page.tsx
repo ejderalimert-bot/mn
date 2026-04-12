@@ -257,343 +257,300 @@ export default function ProjectDetailPage() {
         ) : (
           <div className={`transition-opacity duration-[1500ms] ease-out ${fadeOverlay ? 'opacity-100' : 'opacity-0'}`}>
             <Navbar />
-            <div className="container mx-auto px-6 py-12 max-w-6xl">
-            {/* Header Section */}
-            <div className="flex flex-col md:flex-row gap-8 mb-16 items-center md:items-start">
-              <div className="w-80 h-[28rem] rounded-xl overflow-hidden shrink-0 shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-white/10 relative bg-[#1a1c23]">
-                {displayCover ? (
-                  <img src={displayCover} alt={project.title} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-4xl font-black text-white/10 uppercase italic">
-                    {project.category}
-                  </div>
+            <div className="w-full relative pb-12">
+              {/* Cinematic Header Section (Full Width Bleed) */}
+              <div className="relative w-full h-[55vh] min-h-[450px] shadow-[0_10px_50px_rgba(0,0,0,0.8)] overflow-hidden bg-[#0a0a0c]">
+                {displayCover && (
+                  <img src={displayCover} alt={project.title} className="absolute inset-0 w-full h-full object-cover opacity-20 select-none pointer-events-none scale-105" />
                 )}
-              </div>
-
-              <div className="flex flex-col justify-end h-full pt-10">
-                <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight mb-4">
-                  {project.title} <span className="text-white/20 text-xl font-medium tracking-normal align-top">RC-104710 ˅</span>
-              </h1>
-                <p className="text-white/70 max-w-2xl text-lg mb-8 leading-relaxed line-clamp-3">
-                  {project.description || 'Bu proje için henüz detaylı bir açıklama girilmemiş.'}
-                </p>
-
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={toggleLike}
-                    className={`flex items-center gap-2 px-6 h-11 border transition-all rounded-lg font-bold text-sm ${isLiked ? 'bg-[#3b82f6]/20 border-[#3b82f6]/50 text-[#3b82f6] shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'bg-[#2a2d36] border-white/10 text-white/70 hover:text-white hover:bg-[#343843]'}`}
-                  >
-                    <ThumbsUp className={`w-4 h-4 ${isLiked ? 'fill-current' : ''}`} /> Buna Bayıldım
-                  </button>
-                  <button
-                    onClick={toggleFavorite}
-                    className={`flex items-center gap-2 px-6 h-11 border transition-all rounded-lg font-bold text-sm ${isFavorite ? 'bg-[#ef4444]/20 border-[#ef4444]/50 text-[#ef4444] shadow-[0_0_15px_rgba(239,68,68,0.3)]' : 'bg-[#2a2d36] border-white/10 text-white/70 hover:text-white hover:bg-[#343843]'}`}
-                  >
-                    <Heart className={`w-4 h-4 ${isFavorite ? 'fill-current' : ''}`} /> Favorilere Ekle
-                  </button>
-                  <button className="w-11 h-11 flex items-center justify-center rounded-lg bg-[#2a2d36] border border-white/10 text-white hover:bg-[#343843] transition-colors">
-                    <MoreVertical className="w-5 h-5" />
-                  </button>
-
-
-                </div>
-              </div>
-            </div>
-
-            {/* Tabs */}
-            <div className="flex items-center gap-8 border-b border-white/10 mb-8 px-2">
-              <button
-                onClick={() => setActiveTab('genel')}
-                className={`pb-4 text-sm font-bold transition-all relative ${activeTab === 'genel' ? 'text-white' : 'text-white/40 hover:text-white/70'}`}
-              >
-                Genel Bakış
-                {activeTab === 'genel' && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-dublio-purple/80 shadow-[0_0_10px_purple]"></span>}
-              </button>
-              {!isVideo && (
-                <button
-                  onClick={() => setActiveTab('lokalizasyon')}
-                  className={`pb-4 text-sm font-bold transition-all relative ${activeTab === 'lokalizasyon' ? 'text-white' : 'text-white/40 hover:text-white/70'}`}
-                >
-                  Lokalizasyon
-                  {activeTab === 'lokalizasyon' && <span className="absolute bottom-0 left-0 w-full h-[2px] bg-dublio-purple/80 shadow-[0_0_10px_purple]"></span>}
-                </button>
-              )}
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              {/* Main Content Area (Left 2 columns) */}
-              <div className={`space-y-8 ${isVideo ? 'lg:col-span-3' : 'lg:col-span-2'}`}>
-                {/* Media Player Showcase */}
-                <div className="flex bg-[#1a1c23] rounded-xl overflow-hidden p-2 border border-white/5 shadow-lg h-[400px]">
-                  <div className="w-1/4 pr-2 space-y-2 overflow-y-auto custom-scrollbar">
-                    {/* Trailer Thumbnail */}
-                    {project.trailer && (
-                      <div
-                        onClick={() => setActiveMedia({ type: 'video', url: project.trailer })}
-                        className={`w-full h-20 bg-[#15151a] rounded-lg relative overflow-hidden group cursor-pointer border ${activeMedia?.url === project.trailer ? 'border-dublio-purple' : 'border-transparent hover:border-dublio-purple/50'} transition-all`}
-                      >
-                        <img
-                          src={project.image || project.thumbnail || "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=600&auto=format&fit=crop"}
-                          alt="Fragman Thumbnail"
-                          className="absolute inset-0 w-full h-full object-cover z-0 opacity-70 group-hover:opacity-100 transition-opacity"
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 z-10 transition-all group-hover:bg-black/20 backdrop-blur-[2px] group-hover:backdrop-blur-none">
-                          <Play className="w-8 h-8 text-white opacity-90 drop-shadow-md group-hover:scale-110 transition-transform" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#111115] via-[#111115]/50 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#111115] via-transparent to-transparent"></div>
+                
+                {/* Header Content constrained to container */}
+                <div className="absolute bottom-0 left-0 w-full">
+                  <div className="container mx-auto px-6 lg:px-12 max-w-7xl flex flex-col md:flex-row items-end gap-10 pb-12">
+                    <div className="w-48 h-72 md:w-64 md:h-96 rounded-[2rem] overflow-hidden shrink-0 shadow-[0_30px_60px_rgba(0,0,0,0.9)] border-[3px] border-white/5 relative bg-[#1a1c23] translate-y-16 hover:-translate-y-2 hover:scale-105 transition-transform duration-500 z-20 group">
+                      <img src={project.image || displayCover} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                    </div>
+                    
+                    <div className="flex-1 z-10 w-full pb-4">
+                        <div className="flex items-center gap-3 mb-5">
+                            <span className="px-4 py-1.5 bg-[#06b6d4]/10 text-[#06b6d4] border border-[#06b6d4]/20 rounded-full text-xs font-black uppercase tracking-widest shadow-[0_0_20px_rgba(6,182,212,0.2)]">{project.category}</span>
+                            <span className="text-white/30 text-xs font-bold tracking-widest bg-white/[0.03] px-3 py-1.5 rounded-lg border border-white/[0.05]">RC-104710 ˅</span>
                         </div>
-                      </div>
-                    )}
-                    {/* Gallery Thumbnails */}
-                    {project.gallery?.map((imgUrl: string, i: number) => (
-                      <div
-                        key={i}
-                        onClick={() => setActiveMedia({ type: 'image', url: imgUrl })}
-                        className={`w-full h-20 bg-black/40 rounded-lg relative overflow-hidden cursor-pointer border ${activeMedia?.url === imgUrl ? 'border-dublio-purple' : 'border-transparent hover:border-dublio-purple/50'} transition-all`}
-                      >
-                        <img src={imgUrl} className="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" />
-                      </div>
-                    ))}
-                    {/* If nothing exists, show mock */}
-                    {(!project.gallery?.length && !project.trailer) && [1, 2, 3].map((i) => (
-                      <div key={i} className="w-full h-20 bg-black/40 rounded-lg relative overflow-hidden border border-transparent">
-                      </div>
-                    ))}
-                  </div>
-                  <div className="w-3/4 bg-black rounded-lg relative overflow-hidden">
-                    {activeMedia?.type === 'video' ? (
-                      <CustomVideoPlayer src={activeMedia.url} autoPlay />
-                    ) : activeMedia?.type === 'image' ? (
-                      <img src={activeMedia.url} className="w-full h-full object-contain absolute inset-0" />
-                    ) : (
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <Play className="w-16 h-16 text-white opacity-20" />
-                      </div>
-                    )}
+                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-white/90 to-white/40 tracking-tight mb-8 drop-shadow-2xl">
+                          {project.title}
+                        </h1>
+                        
+                        <div className="flex flex-wrap items-center gap-4">
+                          <button
+                            onClick={toggleLike}
+                            className={`flex items-center justify-center gap-3 px-8 h-14 rounded-2xl font-black text-sm transition-all duration-300 ${isLiked ? 'bg-[#3b82f6] text-white shadow-[0_0_40px_rgba(59,130,246,0.6)] hover:bg-[#2563eb] scale-105' : 'bg-white/5 hover:bg-white/10 text-white backdrop-blur-xl border border-white/10 hover:border-white/20'}`}
+                          >
+                            <ThumbsUp className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} /> BUNA BAYILDIM
+                          </button>
+                          <button
+                            onClick={toggleFavorite}
+                            className={`flex items-center justify-center gap-3 px-8 h-14 rounded-2xl font-black text-sm transition-all duration-300 ${isFavorite ? 'bg-gradient-to-r from-dublio-purple to-pink-500 text-white shadow-[0_0_40px_rgba(236,72,153,0.5)] hover:opacity-90 scale-105' : 'bg-white/5 hover:bg-white/10 text-white backdrop-blur-xl border border-white/10 hover:border-white/20'}`}
+                          >
+                            <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} /> FAVORİLERE EKLE
+                          </button>
+                          <button className="w-14 h-14 flex items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 backdrop-blur-xl transition-all">
+                            <MoreVertical className="w-6 h-6" />
+                          </button>
+                        </div>
+                    </div>
                   </div>
                 </div>
+              </div>
 
-                {/* Description Content */}
-                <div>
-                  <h2 className="text-2xl font-bold text-white mb-4">Genel Bakış</h2>
-                  <div className="text-sm text-white/70 leading-relaxed space-y-4 prose prose-invert max-w-none">
-                    <ReactMarkdown
-                      remarkPlugins={[remarkGfm]}
-                      components={{
-                        h1: ({ node, ...props }) => <h1 className="text-2xl font-bold text-white mt-8 mb-4" {...props} />,
-                        h2: ({ node, ...props }) => <h2 className="text-xl font-bold text-white mt-6 mb-3" {...props} />,
-                        h3: ({ node, ...props }) => <h3 className="text-lg font-bold text-dublio-purple mt-5 mb-2" {...props} />,
-                        strong: ({ node, ...props }) => <strong className="font-extrabold text-[#3b82f6]" {...props} />,
-                        p: ({ node, ...props }) => <div className="mb-4 text-white/80 leading-relaxed" {...props} />,
-                        a: ({ node, href, ...props }) => {
-                          const isInternal = href?.startsWith('/');
-                          const target = isInternal ? undefined : "_blank";
-                          const rel = isInternal ? undefined : "noopener noreferrer";
-                          return (
-                            <Link href={href || '#'} target={target} rel={rel} className="text-dublio-purple hover:text-[#3b82f6] underline underline-offset-4 transition-colors font-semibold" {...props} />
-                          );
-                        },
-                        img: ({ node, src, alt, ...props }) => {
-                          if (typeof src === 'string' && src.match(/\.(mp4|webm|ogg|mkv|avi)(\?.*)?(#.*)?$/i)) {
-                            return (
-                              <MarkdownVideo src={src} />
-                            );
-                          }
-                          return (
-                            <img src={src} alt={alt} className="w-full h-auto max-h-[500px] object-cover rounded-xl my-6 shadow-2xl border border-white/10" {...props} />
-                          );
-                        },
-                      }}
-                    >
-                      {project.description || 'Bu proje için henüz detaylı bir açıklama girilmemiş.'}
-                    </ReactMarkdown>
-                  </div>
-                </div>
+              {/* Main App Container */}
+              <div className="container mx-auto px-6 lg:px-12 pt-24 pb-12 max-w-7xl relative z-10">
+                 
+                 {/* Quick Stats Banner */}
+                 <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-20 bg-gradient-to-r from-white/[0.03] to-transparent p-6 rounded-3xl border border-white/[0.05] shadow-2xl relative overflow-hidden">
+                    <div className="absolute -inset-x-20 -top-20 -bottom-20 bg-gradient-to-r from-dublio-purple/5 to-transparent blur-3xl pointer-events-none"></div>
+                    <div className="p-5 rounded-2xl bg-black/40 border border-white/[0.02] relative z-10 hover:bg-white/[0.02] transition-colors">
+                       <span className="block text-dublio-cyan/80 text-xs font-black tracking-[0.2em] uppercase mb-2">Geliştirici</span>
+                       <span className="text-white font-bold text-lg">{project.team || 'Star Dublaj'}</span>
+                    </div>
+                    <div className="p-5 rounded-2xl bg-black/40 border border-white/[0.02] relative z-10 hover:bg-white/[0.02] transition-colors">
+                       <span className="block text-dublio-purple/80 text-xs font-black tracking-[0.2em] uppercase mb-2">Yayımcı</span>
+                       <span className="text-white font-bold text-lg">{project.team || 'Star Dublaj'}</span>
+                    </div>
+                    <div className="p-5 rounded-2xl bg-black/40 border border-white/[0.02] relative z-10 hover:bg-white/[0.02] transition-colors">
+                       <span className="block text-pink-500/80 text-xs font-black tracking-[0.2em] uppercase mb-2">Çıkış Tarihi</span>
+                       <span className="text-white font-bold text-lg">18 Feb, 2026</span>
+                    </div>
+                    <div className="p-5 rounded-2xl bg-black/40 border border-white/[0.02] relative z-10 hover:bg-white/[0.02] transition-colors">
+                       <span className="block text-white/40 text-xs font-black tracking-[0.2em] uppercase mb-3">Etiketler</span>
+                       <div className="flex flex-wrap gap-2">
+                         {(project.tags && project.tags.length > 0 ? project.tags : ['Aksiyon', 'Türkçe Dublaj', 'Macera']).slice(0, 3).map((tag: string, index: number) => (
+                           <span key={index} className="px-2.5 py-1 bg-white/10 rounded-md text-[10px] font-bold text-white uppercase tracking-wider">{tag}</span>
+                         ))}
+                       </div>
+                    </div>
+                 </div>
 
-                {/* Media Tabs (Screenshots style) */}
-                <div className="bg-[#1a1c23] border border-white/5 rounded-xl p-8 shadow-sm">
-                  <div className="flex gap-6 border-b border-white/10 pb-4 mb-8">
-                    <button
-                      onClick={() => setActiveMediaTab('video')}
-                      className={`flex items-center gap-2 text-sm font-bold transition-all ${activeMediaTab === 'video' ? 'text-white' : 'text-white/40 hover:text-white/70'}`}
-                    >
-                      <VideoIcon className="w-4 h-4" /> Videolar ({project.videoDemos?.length || 0})
-                    </button>
-                    <button
-                      onClick={() => setActiveMediaTab('audio')}
-                      className={`flex items-center gap-2 text-sm font-bold transition-all ${activeMediaTab === 'audio' ? 'text-white' : 'text-white/40 hover:text-white/70'}`}
-                    >
-                      <Music className="w-4 h-4" /> Sesler ({project.audioDemos?.length || 0})
-                    </button>
-                    <button
-                      onClick={() => setActiveMediaTab('image')}
-                      className={`flex items-center gap-2 text-sm font-bold transition-all ${activeMediaTab === 'image' ? 'text-white' : 'text-white/40 hover:text-white/70'}`}
-                    >
-                      <ImageIcon className="w-4 h-4" /> Resimler ({project.gallery?.length || 0})
-                    </button>
-                  </div>
-
-                  {activeMediaTab === 'video' && (
-                    <div className="flex flex-col gap-6">
-                      {project.videoDemos?.length > 0 ? (
-                        project.videoDemos.map((url: string, i: number) => (
-                          <div key={i} className="mb-4 bg-black rounded-lg overflow-hidden border border-white/5 aspect-video relative">
-                            <CustomVideoPlayer src={url} autoPlay={false} />
+                 {/* Media Player Showcase - FULL HORIZONTAL REDESIGN */}
+                 <div className="w-full bg-[#0a0a0c] rounded-[2.5rem] overflow-hidden border border-white/5 shadow-[0_0_60px_rgba(0,0,0,0.5)] mb-20 relative group">
+                    {/* The Player Area */}
+                    <div className="w-full h-[350px] md:h-[550px] lg:h-[700px] relative bg-black">
+                      {activeMedia?.type === 'video' ? (
+                        <CustomVideoPlayer src={activeMedia.url} autoPlay />
+                      ) : activeMedia?.type === 'image' ? (
+                        <img src={activeMedia.url} className="w-full h-full object-contain absolute inset-0 bg-[#0a0a0c]" />
+                      ) : (
+                        <div className="absolute inset-0 flex flex-col gap-4 items-center justify-center bg-black/50">
+                          <Play className="w-24 h-24 text-white/5" />
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Horizontal Gallery Strip (Replaces Side Column) */}
+                    <div className="w-full p-6 bg-[#0E0E12] flex gap-4 overflow-x-auto custom-scrollbar items-center border-t border-white/5 relative z-10">
+                       {project.trailer && (
+                          <div 
+                            onClick={() => setActiveMedia({ type: 'video', url: project.trailer })} 
+                            className={`w-64 h-36 shrink-0 bg-black rounded-2xl relative overflow-hidden group/thumb cursor-pointer border-[3px] transition-all duration-300 ${activeMedia?.url === project.trailer ? 'border-dublio-purple shadow-[0_0_30px_rgba(168,85,247,0.4)]' : 'border-transparent hover:border-white/20 hover:-translate-y-1 shadow-lg'}`}
+                          >
+                             <img src={project.image || project.thumbnail || "https://images.unsplash.com/photo-1550745165-9bc0b252726f"} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover/thumb:opacity-90 transition-opacity" />
+                             <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/80 to-transparent group-hover/thumb:opacity-0 transition-opacity"></div>
+                             <div className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-dublio-purple/90 backdrop-blur-md flex items-center justify-center shadow-[0_0_15px_purple] group-hover/thumb:scale-110 transition-transform">
+                               <Play className="w-4 h-4 text-white ml-0.5 fill-current" />
+                             </div>
+                             <span className="absolute top-3 left-3 px-2 py-1 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold rounded uppercase tracking-wider">Fragman</span>
                           </div>
-                        ))
-                      ) : (
-                        <div className="flex flex-col items-center justify-center py-10 opacity-40">
-                          <VideoIcon className="w-10 h-10 mb-4" />
-                          <p className="text-sm font-bold">Henüz Hiç Video Demo Eklenmemiş</p>
+                       )}
+                       {project.gallery?.map((imgUrl: string, i: number) => (
+                          <div 
+                            key={i}
+                            onClick={() => setActiveMedia({ type: 'image', url: imgUrl })} 
+                            className={`w-64 h-36 shrink-0 bg-black rounded-2xl relative overflow-hidden cursor-pointer border-[3px] transition-all duration-300 ${activeMedia?.url === imgUrl ? 'border-dublio-cyan shadow-[0_0_30px_rgba(6,182,212,0.4)]' : 'border-transparent hover:border-white/20 hover:-translate-y-1 shadow-lg'}`}
+                          >
+                             <img src={imgUrl} className="w-full h-full object-cover opacity-50 hover:opacity-100 transition-opacity" />
+                             <span className="absolute bottom-3 left-3 px-2 py-1 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold rounded opacity-0 transition-opacity duration-300">Görüntüle</span>
+                          </div>
+                       ))}
+                       {(!project.gallery?.length && !project.trailer) && [1, 2, 3].map((i) => (
+                          <div key={i} className="w-64 h-36 shrink-0 bg-white/5 rounded-2xl relative overflow-hidden border border-white/5 border-dashed flex items-center justify-center">
+                             <ImageIcon className="w-8 h-8 text-white/10" />
+                          </div>
+                        ))}
+                    </div>
+                 </div>
+
+                 {/* Content & Layout Grid */}
+                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+                   {/* Left 2 Columns: Description & Media Tabs */}
+                   <div className="lg:col-span-2 space-y-16">
+                      
+                      <div className="bg-[#14151a] rounded-[2rem] p-8 md:p-12 border border-white/[0.05] shadow-2xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-dublio-purple/20 blur-[100px] pointer-events-none rounded-full"></div>
+                        
+                        {/* Tabs */}
+                        <div className="flex items-center gap-10 border-b border-white/10 pb-6 mb-10 relative z-10">
+                          <button onClick={() => setActiveTab('genel')} className={`text-sm md:text-base font-black transition-all uppercase tracking-[0.2em] relative ${activeTab === 'genel' ? 'text-white' : 'text-white/30 hover:text-white/60'}`}>
+                            Hikaye & Detaylar
+                            {activeTab === 'genel' && <span className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-gradient-to-r from-dublio-purple to-dublio-cyan shadow-[0_0_20px_rgba(168,85,247,0.8)]"></span>}
+                          </button>
+                          {!isVideo && (
+                            <button onClick={() => setActiveTab('lokalizasyon')} className={`text-sm md:text-base font-black transition-all uppercase tracking-[0.2em] relative ${activeTab === 'lokalizasyon' ? 'text-white' : 'text-white/30 hover:text-white/60'}`}>
+                              Lokalizasyon
+                              {activeTab === 'lokalizasyon' && <span className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-gradient-to-r from-dublio-purple to-dublio-cyan shadow-[0_0_20px_rgba(168,85,247,0.8)]"></span>}
+                            </button>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  )}
 
-                  {activeMediaTab === 'audio' && (
-                    <div className="flex flex-col gap-4">
-                      {project.audioDemos?.length > 0 ? (
-                        project.audioDemos.map((url: string, i: number) => (
-                          <CustomAudioPlayer key={i} src={url} />
-                        ))
-                      ) : (
-                        <div className="flex flex-col items-center justify-center py-10 opacity-40">
-                          <Music className="w-10 h-10 mb-4" />
-                          <p className="text-sm font-bold">Henüz Hiç Ses Kaydı Eklenmemiş</p>
+                        {/* Markdown Content */}
+                        <div className="prose prose-invert prose-lg max-w-none prose-headings:font-black prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-h3:text-dublio-purple prose-a:text-dublio-cyan hover:prose-a:text-pink-500 prose-img:rounded-3xl prose-img:shadow-2xl prose-img:border prose-img:border-white/10 prose-p:text-white/70 prose-p:leading-relaxed relative z-10">
+                           <ReactMarkdown
+                             remarkPlugins={[remarkGfm]}
+                             components={{
+                               a: ({ node, href, ...props }) => {
+                                 const isInternal = href?.startsWith('/');
+                                 return <Link href={href || '#'} target={isInternal ? undefined : "_blank"} rel={isInternal ? undefined : "noopener noreferrer"} className="font-bold underline underline-offset-4" {...props} />;
+                               },
+                               img: ({ node, src, alt, ...props }) => {
+                                 if (typeof src === 'string' && src.match(/\.(mp4|webm|ogg|mkv|avi)(\?.*)?(#.*)?$/i)) {
+                                   return <MarkdownVideo src={src} />;
+                                 }
+                                 return <img src={src} alt={alt} {...props} />;
+                               },
+                             }}
+                           >
+                             {project.description || 'Bu proje için henüz detaylı bir açıklama girilmemiş.'}
+                           </ReactMarkdown>
                         </div>
-                      )}
-                    </div>
-                  )}
+                      </div>
 
-                  {activeMediaTab === 'image' && (
-                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-                      {project.gallery?.length > 0 ? (
-                        project.gallery.map((url: string, i: number) => (
-                          <img key={i} src={url} className="w-full h-32 object-cover rounded-lg border border-white/5 hover:scale-105 transition-transform" />
-                        ))
-                      ) : (
-                        <div className="col-span-full flex flex-col items-center justify-center py-10 opacity-40">
-                          <ImageIcon className="w-10 h-10 mb-4" />
-                          <p className="text-sm font-bold">Henüz Hiç Resim Eklenmemiş</p>
+                      {/* Media Extra Demos */}
+                      <div className="bg-[#14151a] rounded-[2rem] p-8 md:p-12 border border-white/[0.05] shadow-2xl relative overflow-hidden">
+                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-500/10 blur-[100px] pointer-events-none rounded-full"></div>
+                        
+                        <div className="flex gap-8 border-b border-white/10 pb-6 mb-10 relative z-10">
+                          <button onClick={() => setActiveMediaTab('video')} className={`flex items-center gap-3 text-sm font-black uppercase tracking-widest transition-all ${activeMediaTab === 'video' ? 'text-white' : 'text-white/30 hover:text-white/70'}`}>
+                            <VideoIcon className="w-5 h-5" /> Videolar <span className="bg-white/10 px-2 py-0.5 rounded text-[10px]">{project.videoDemos?.length || 0}</span>
+                          </button>
+                          <button onClick={() => setActiveMediaTab('audio')} className={`flex items-center gap-3 text-sm font-black uppercase tracking-widest transition-all ${activeMediaTab === 'audio' ? 'text-white' : 'text-white/30 hover:text-white/70'}`}>
+                            <Music className="w-5 h-5" /> Sesler <span className="bg-white/10 px-2 py-0.5 rounded text-[10px]">{project.audioDemos?.length || 0}</span>
+                          </button>
                         </div>
-                      )}
-                    </div>
-                  )}
-                </div>
 
-                {/* Comments Section */}
-                <div className="bg-[#1a1c23] border border-white/5 rounded-xl p-8 shadow-sm">
-                  <h3 className="text-white font-bold mb-4">Yorumlar ({comments.length})</h3>
-                  <div className="flex items-start gap-4 mb-8">
-                    <input
-                      type="text"
-                      placeholder="Bir yorum yaz..."
-                      value={commentText}
-                      onChange={(e) => setCommentText(e.target.value)}
-                      onKeyDown={(e) => e.key === 'Enter' && handleCommentSubmit()}
-                      className="flex-1 bg-[#23262f] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple/50"
-                    />
-                    <button onClick={handleCommentSubmit} className="px-6 py-3 bg-[#2a2d36] hover:bg-[#343843] text-white font-bold text-sm rounded-lg transition-colors border border-white/10">Gönder</button>
-                  </div>
-
-                  {comments.length === 0 ? (
-                    <div className="text-center py-16 text-white/30 text-sm">
-                      Henüz hiç yorum yapılmamış. İlk yorumu sen yap!
-                    </div>
-                  ) : (
-                    <div className="space-y-6">
-                      {comments.map((c: any) => (
-                        <div key={c.id} className="flex gap-4">
-                          <Link href={`/profile/${c.userId}`} className="w-10 h-10 rounded-full bg-dublio-purple/20 overflow-hidden shrink-0 border border-white/10 hover:border-dublio-purple transition-all cursor-pointer">
-                            {c.userAvatar ? <img src={c.userAvatar} className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : <div className="w-full h-full flex items-center justify-center font-bold text-dublio-purple text-xs">{c.userName?.charAt(0) || '?'}</div>}
-                          </Link>
-                          <div className="flex-1">
-                            <div className="flex items-center gap-2 mb-1">
-                              <Link href={`/profile/${c.userId}`} className="text-white text-sm font-bold hover:text-dublio-cyan transition-colors">{c.userName || 'Anonim'}</Link>
-                              <span className="text-white/30 text-[10px]">{new Date(c.date).toLocaleDateString()}</span>
+                        <div className="relative z-10">
+                          {activeMediaTab === 'video' && (
+                            <div className="flex flex-col gap-8">
+                              {project.videoDemos?.length > 0 ? project.videoDemos.map((url: string, i: number) => (
+                                  <div key={i} className="bg-black rounded-3xl overflow-hidden border border-white/10 aspect-video relative shadow-2xl">
+                                    <CustomVideoPlayer src={url} autoPlay={false} />
+                                  </div>
+                                )) : (
+                                <div className="flex flex-col items-center justify-center py-20 opacity-30">
+                                  <VideoIcon className="w-16 h-16 mb-6 text-white/50" />
+                                  <p className="text-lg font-black tracking-widest uppercase">Video Demo Bulunamadı</p>
+                                </div>
+                              )}
                             </div>
-                            <p className="text-white/70 text-sm leading-relaxed whitespace-pre-wrap break-words">{c.text}</p>
+                          )}
+
+                          {activeMediaTab === 'audio' && (
+                            <div className="flex flex-col gap-6">
+                              {project.audioDemos?.length > 0 ? project.audioDemos.map((url: string, i: number) => (
+                                  <CustomAudioPlayer key={i} src={url} />
+                                )) : (
+                                <div className="flex flex-col items-center justify-center py-20 opacity-30">
+                                  <Music className="w-16 h-16 mb-6 text-white/50" />
+                                  <p className="text-lg font-black tracking-widest uppercase">Ses Kaydı Bulunamadı</p>
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                   </div>
+
+                   {/* Sidebar Info (Right Column) */}
+                   <div className="space-y-8">
+                      {/* Requirements Panel */}
+                      <div className="bg-[#14151a] border border-white/[0.05] rounded-[2rem] p-8 md:p-10 shadow-2xl relative overflow-hidden">
+                        <div className="flex items-center gap-4 mb-10">
+                           <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-dublio-cyan to-blue-600 flex items-center justify-center shadow-lg">
+                             <MoreVertical className="w-6 h-6 text-white" />
+                           </div>
+                           <h3 className="text-white font-black text-xl uppercase tracking-wider">Sistem Gereksinimleri</h3>
+                        </div>
+
+                        <div className="space-y-10">
+                          <div className="bg-white/[0.02] p-6 rounded-2xl border border-white/[0.02]">
+                            <strong className="text-dublio-cyan mb-4 block tracking-[0.2em] font-black uppercase text-xs">Minimum</strong>
+                            <ul className="space-y-3 text-sm text-white/70">
+                              <li className="flex flex-col"><span className="text-white/30 text-[10px] font-bold uppercase tracking-wider">İşletim Sistemi</span> <span>Windows 10/11</span></li>
+                              <li className="flex flex-col"><span className="text-white/30 text-[10px] font-bold uppercase tracking-wider">İşlemci</span> <span>Intel Core i3 / AMD Ryzen 5</span></li>
+                              <li className="flex flex-col"><span className="text-white/30 text-[10px] font-bold uppercase tracking-wider">Bellek</span> <span>8 GB RAM</span></li>
+                              <li className="flex flex-col"><span className="text-white/30 text-[10px] font-bold uppercase tracking-wider">Ekran Kartı</span> <span>Nvidia GTX 1650</span></li>
+                            </ul>
+                          </div>
+                          
+                          <div className="bg-white/[0.02] p-6 rounded-2xl border border-white/[0.02]">
+                            <strong className="text-dublio-purple mb-4 block tracking-[0.2em] font-black uppercase text-xs">Önerilen</strong>
+                            <ul className="space-y-3 text-sm text-white/70">
+                              <li className="flex flex-col"><span className="text-white/30 text-[10px] font-bold uppercase tracking-wider">İşletim Sistemi</span> <span>Windows 10/11</span></li>
+                              <li className="flex flex-col"><span className="text-white/30 text-[10px] font-bold uppercase tracking-wider">İşlemci</span> <span>Intel Core i9 / AMD Ryzen 9</span></li>
+                              <li className="flex flex-col"><span className="text-white/30 text-[10px] font-bold uppercase tracking-wider">Bellek</span> <span>16 GB RAM</span></li>
+                              <li className="flex flex-col"><span className="text-white/30 text-[10px] font-bold uppercase tracking-wider">Ekran Kartı</span> <span>Nvidia RTX 3060</span></li>
+                            </ul>
                           </div>
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                      </div>
+
+                      {/* Comments Section moved to Sidebar for better dynamic layout */}
+                      <div className="bg-[#14151a] border border-white/[0.05] rounded-[2rem] p-8 md:p-10 shadow-2xl flex flex-col h-[600px]">
+                        <h3 className="text-white font-black text-xl uppercase tracking-wider mb-8">Oyuncu Yorumları <span className="text-dublio-purple bg-dublio-purple/20 px-3 py-1 rounded-lg ml-2">{comments.length}</span></h3>
+                        
+                        <div className="flex-1 overflow-y-auto pr-4 space-y-6 custom-scrollbar mb-8">
+                          {comments.length === 0 ? (
+                            <div className="h-full flex flex-col items-center justify-center text-center opacity-30">
+                               <p className="text-sm font-bold uppercase tracking-widest">Hiç Yorum Yok</p>
+                               <span className="text-xs">İlk yorumu ateşle!</span>
+                            </div>
+                          ) : (
+                            comments.map((c: any) => (
+                              <div key={c.id} className="flex gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/[0.02] hover:bg-white/[0.04] transition-colors">
+                                <Link href={`/profile/${c.userId}`} className="w-10 h-10 rounded-xl bg-gradient-to-tr from-dublio-purple to-dublio-cyan overflow-hidden shrink-0 shadow-lg">
+                                  {c.userAvatar ? <img src={c.userAvatar} className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : <div className="w-full h-full flex items-center justify-center font-black text-white">{c.userName?.charAt(0) || '?'}</div>}
+                                </Link>
+                                <div className="flex-1">
+                                  <div className="flex items-center justify-between mb-2">
+                                    <Link href={`/profile/${c.userId}`} className="text-white text-sm font-black hover:text-dublio-cyan transition-colors">{c.userName || 'Anonim'}</Link>
+                                    <span className="text-white/30 text-[10px] font-bold">{new Date(c.date).toLocaleDateString()}</span>
+                                  </div>
+                                  <p className="text-white/60 text-sm leading-relaxed">{c.text}</p>
+                                </div>
+                              </div>
+                            ))
+                          )}
+                        </div>
+
+                        <div className="mt-auto relative">
+                          <input
+                            type="text"
+                            placeholder="Mekana bir yorum bırak..."
+                            value={commentText}
+                            onChange={(e) => setCommentText(e.target.value)}
+                            onKeyDown={(e) => e.key === 'Enter' && handleCommentSubmit()}
+                            className="w-full bg-[#0a0a0c] border border-white/10 rounded-2xl py-4 pl-5 pr-24 text-sm text-white font-medium focus:outline-none focus:border-dublio-cyan/50 shadow-inner"
+                          />
+                          <button onClick={handleCommentSubmit} className="absolute right-2 top-2 bottom-2 px-5 bg-gradient-to-r from-dublio-cyan to-blue-600 hover:from-blue-500 hover:to-dublio-cyan text-white font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-md">Fırlat</button>
+                        </div>
+                      </div>
+
+                   </div>
+                 </div>
+
               </div>
-
-              {/* Sidebar Info (Right Column) */}
-              {!isVideo && (
-                <div className="space-y-4">
-                  <div className="bg-[#1a1c23] border border-white/5 rounded-xl p-6 text-sm">
-                    <div className="space-y-4">
-                      <div>
-                        <span className="text-white/40 block text-xs tracking-wider mb-1">Geliştirici</span>
-                        <strong className="text-white">{project.team || 'Star Dublaj'}</strong>
-                      </div>
-                      <div>
-                        <span className="text-white/40 block text-xs tracking-wider mb-1">Yayımcı</span>
-                        <strong className="text-white">{project.team || 'Star Dublaj'}</strong>
-                      </div>
-                      <div>
-                        <span className="text-white/40 block text-xs tracking-wider mb-1">Çıkış Tarihi</span>
-                        <strong className="text-white">18 Feb, 2026</strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-[#1a1c23] border border-white/5 rounded-xl p-6">
-                    <h3 className="text-white font-bold mb-3 text-sm">Türler</h3>
-                    <div className="flex flex-wrap gap-2">
-                      <span className="px-3 py-1 bg-[#23262f] rounded border border-white/5 text-xs text-white/70">Aksiyon</span>
-                      <span className="px-3 py-1 bg-[#23262f] rounded border border-white/5 text-xs text-white/70">Macera</span>
-                      <span className="px-3 py-1 bg-[#23262f] rounded border border-white/5 text-xs text-white/70">Bağımsız Yapımcı</span>
-                    </div>
-                  </div>
-
-                  <div className="bg-[#1a1c23] border border-white/5 rounded-xl p-6">
-                    <h3 className="text-white font-bold mb-3 text-sm">Etiketler</h3>
-                    <div className="flex flex-wrap gap-2">
-                      {project.tags && project.tags.length > 0 ? (
-                        project.tags.map((tag: string, index: number) => (
-                          <span key={index} className="px-3 py-1 bg-[#23262f] rounded border border-white/5 text-xs text-white/70">
-                            {tag}
-                          </span>
-                        ))
-                      ) : (
-                        <>
-                          <span className="px-3 py-1 bg-[#23262f] rounded border border-white/5 text-xs text-white/70">Tek Oyunculu</span>
-                          <span className="px-3 py-1 bg-[#23262f] rounded border border-white/5 text-xs text-white/70">Aksiyon</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  <div className="bg-[#1a1c23] border border-white/5 rounded-xl p-6">
-                    <h3 className="text-white font-bold mb-6 text-sm">Sistem Gereksinimleri</h3>
-
-                    <div className="space-y-6 text-xs text-white/70">
-                      <div>
-                        <strong className="text-white mb-2 block tracking-wider uppercase">Minimum</strong>
-                        <ul className="space-y-1">
-                          <li><strong className="text-white/50">OS:</strong> Windows 10/11</li>
-                          <li><strong className="text-white/50">Processor:</strong> Intel Core i3 9100 / AMD Ryzen 5 3500</li>
-                          <li><strong className="text-white/50">Memory:</strong> 8 GB RAM</li>
-                          <li><strong className="text-white/50">Graphics:</strong> Nvidia GeForce GTX 1650</li>
-                        </ul>
-                      </div>
-                      <div>
-                        <strong className="text-white mb-2 block tracking-wider uppercase">Önerilen</strong>
-                        <ul className="space-y-1">
-                          <li><strong className="text-white/50">OS:</strong> Windows 10/11</li>
-                          <li><strong className="text-white/50">Processor:</strong> Intel Core i9-11900K / AMD Ryzen 9 5900X</li>
-                          <li><strong className="text-white/50">Memory:</strong> 16 GB RAM</li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              )}
-
             </div>
-          </div>
         </div>
         )
       )}
