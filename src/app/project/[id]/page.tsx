@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import { useSession } from 'next-auth/react';
 import { useParams } from 'next/navigation';
-import { Bookmark, Heart, ThumbsUp, MoreVertical, Play, Pause, Video as VideoIcon, Music, Image as ImageIcon } from 'lucide-react';
+import { Bookmark, Heart, ThumbsUp, MoreVertical, Play, Pause, Video as VideoIcon, Music, Image as ImageIcon, Download } from 'lucide-react';
 import CustomVideoPlayer from '@/components/CustomVideoPlayer';
 import CustomAudioPlayer from '@/components/CustomAudioPlayer';
 import Link from 'next/link';
@@ -396,32 +396,104 @@ export default function ProjectDetailPage() {
                             {activeTab === 'genel' && <span className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-gradient-to-r from-dublio-purple to-dublio-cyan shadow-[0_0_20px_rgba(168,85,247,0.8)]"></span>}
                           </button>
                           {!isVideo && (
-                            <button onClick={() => setActiveTab('lokalizasyon')} className={`text-sm md:text-base font-black transition-all uppercase tracking-[0.2em] relative ${activeTab === 'lokalizasyon' ? 'text-white' : 'text-white/30 hover:text-white/60'}`}>
-                              Lokalizasyon
-                              {activeTab === 'lokalizasyon' && <span className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-gradient-to-r from-dublio-purple to-dublio-cyan shadow-[0_0_20px_rgba(168,85,247,0.8)]"></span>}
+                            <button onClick={() => setActiveTab('mod')} className={`text-sm md:text-base font-black transition-all uppercase tracking-[0.2em] relative ${activeTab === 'mod' ? 'text-white' : 'text-white/30 hover:text-white/60'}`}>
+                              MOD / İNDİR
+                              {activeTab === 'mod' && <span className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-gradient-to-r from-dublio-purple to-dublio-cyan shadow-[0_0_20px_rgba(168,85,247,0.8)]"></span>}
                             </button>
                           )}
                         </div>
 
-                        {/* Markdown Content */}
-                        <div className="prose prose-invert prose-lg max-w-none prose-headings:font-black prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-h3:text-dublio-purple prose-a:text-dublio-cyan hover:prose-a:text-pink-500 prose-img:rounded-3xl prose-img:shadow-2xl prose-img:border prose-img:border-white/10 prose-p:text-white/70 prose-p:leading-relaxed relative z-10">
-                           <ReactMarkdown
-                             remarkPlugins={[remarkGfm]}
-                             components={{
-                               a: ({ node, href, ...props }) => {
-                                 const isInternal = href?.startsWith('/');
-                                 return <Link href={href || '#'} target={isInternal ? undefined : "_blank"} rel={isInternal ? undefined : "noopener noreferrer"} className="font-bold underline underline-offset-4" {...props} />;
-                               },
-                               img: ({ node, src, alt, ...props }) => {
-                                 if (typeof src === 'string' && src.match(/\.(mp4|webm|ogg|mkv|avi)(\?.*)?(#.*)?$/i)) {
-                                   return <MarkdownVideo src={src} />;
-                                 }
-                                 return <img src={src} alt={alt} {...props} />;
-                               },
-                             }}
-                           >
-                             {project.description || 'Bu proje için henüz detaylı bir açıklama girilmemiş.'}
-                           </ReactMarkdown>
+                        <div className="relative z-10">
+                          {/* Markdown Content (Genel) */}
+                          <div className={`prose prose-invert prose-lg max-w-none prose-headings:font-black prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-h3:text-dublio-purple prose-a:text-dublio-cyan hover:prose-a:text-pink-500 prose-img:rounded-3xl prose-img:shadow-2xl prose-img:border prose-img:border-white/10 prose-p:text-white/70 prose-p:leading-relaxed ${activeTab === 'genel' ? 'block' : 'hidden'}`}>
+                             <ReactMarkdown
+                               remarkPlugins={[remarkGfm]}
+                               components={{
+                                 a: ({ node, href, ...props }) => {
+                                   const isInternal = href?.startsWith('/');
+                                   return <Link href={href || '#'} target={isInternal ? undefined : "_blank"} rel={isInternal ? undefined : "noopener noreferrer"} className="font-bold underline underline-offset-4" {...props} />;
+                                 },
+                                 img: ({ node, src, alt, ...props }) => {
+                                   if (typeof src === 'string' && src.match(/\.(mp4|webm|ogg|mkv|avi)(\?.*)?(#.*)?$/i)) {
+                                     return <MarkdownVideo src={src} />;
+                                   }
+                                   return <img src={src} alt={alt} {...props} />;
+                                 },
+                               }}
+                             >
+                               {project.description || 'Bu proje için henüz detaylı bir açıklama girilmemiş.'}
+                             </ReactMarkdown>
+                          </div>
+
+                          {/* Mod & Progress Content */}
+                          {activeTab === 'mod' && (
+                             <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                                {/* Download Section */}
+                                <div className="bg-gradient-to-r from-dublio-purple/20 to-dublio-cyan/20 p-[1px] rounded-3xl">
+                                  <div className="bg-[#14151a] p-8 md:p-12 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-8 h-full relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-l from-dublio-cyan/10 to-transparent pointer-events-none"></div>
+                                    <div className="relative z-10 flex-1">
+                                      <h3 className="text-2xl md:text-3xl font-black text-white mb-2 uppercase tracking-wide">TÜRKÇE DUBLAJ MODU</h3>
+                                      <p className="text-white/60 font-medium">Büyük ustalıkla hazırlanan Türkçe Dublaj mod dosyasını şimdi indir ve oyununa entegre et.</p>
+                                    </div>
+                                    <button className="shrink-0 relative z-10 group overflow-hidden bg-white text-black font-black text-lg px-8 py-5 rounded-2xl transition-transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.2)]">
+                                      <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-dublio-cyan via-[#60a5fa] to-dublio-purple opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                      <span className="relative z-10 flex items-center justify-center gap-3 group-hover:text-white transition-colors">
+                                        <Download className="w-6 h-6" /> DOSYAYI İNDİR
+                                      </span>
+                                    </button>
+                                  </div>
+                                </div>
+
+                                {/* Progress Bars */}
+                                <div>
+                                  <h3 className="text-white font-black text-xl uppercase tracking-wider mb-8">Proje İlerlemesi</h3>
+                                  <div className="bg-[#0e0e12] border border-white/[0.05] p-8 rounded-[2rem] space-y-8 shadow-inner relative overflow-hidden">
+                                    <div className="absolute -inset-20 bg-gradient-to-br from-[#1d4ed8]/5 to-[#a855f7]/5 blur-3xl pointer-events-none"></div>
+                                    
+                                    {/* Bar 1 */}
+                                    <div className="space-y-3 relative z-10">
+                                      <div className="flex justify-between items-end">
+                                        <span className="text-white font-bold text-xs md:text-sm tracking-widest uppercase">Metin Yerelleştirme & Senaryo Çevirisi</span>
+                                        <span className="text-[#3b82f6] font-black text-lg">100%</span>
+                                      </div>
+                                      <div className="w-full h-4 bg-white/[0.02] rounded-full overflow-hidden border border-white/[0.05]">
+                                        <div className="h-full bg-gradient-to-r from-[#1d4ed8] to-[#3b82f6] shadow-[0_0_20px_rgba(59,130,246,0.6)] rounded-full relative" style={{ width: '100%' }}>
+                                            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwTDggOFoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+Cjwvc3ZnPg==')] opacity-50"></div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    {/* Bar 2 */}
+                                    <div className="space-y-3 relative z-10">
+                                      <div className="flex justify-between items-end">
+                                        <span className="text-white font-bold text-xs md:text-sm tracking-widest uppercase">Dublaj & Stüdyo Kayıtları</span>
+                                        <span className="text-[#10b981] font-black text-lg">95%</span>
+                                      </div>
+                                      <div className="w-full h-4 bg-white/[0.02] rounded-full overflow-hidden border border-white/[0.05]">
+                                        <div className="h-full bg-gradient-to-r from-[#047857] to-[#10b981] shadow-[0_0_20px_rgba(16,185,129,0.6)] rounded-full relative" style={{ width: '95%' }}>
+                                            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwTDggOFoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+Cjwvc3ZnPg==')] opacity-50"></div>
+                                        </div>
+                                      </div>
+                                    </div>
+
+                                    {/* Bar 3 */}
+                                    <div className="space-y-3 relative z-10">
+                                      <div className="flex justify-between items-end">
+                                        <span className="text-white font-bold text-xs md:text-sm tracking-widest uppercase">Post-Prodüksiyon & Miksaj</span>
+                                        <span className="text-dublio-purple font-black text-lg">95%</span>
+                                      </div>
+                                      <div className="w-full h-4 bg-white/[0.02] rounded-full overflow-hidden border border-white/[0.05]">
+                                        <div className="h-full bg-gradient-to-r from-[#7e22ce] to-[#a855f7] shadow-[0_0_20px_rgba(168,85,247,0.6)] rounded-full relative" style={{ width: '95%' }}>
+                                            <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4IiBoZWlnaHQ9IjgiPgo8cmVjdCB3aWR0aD0iOCIgaGVpZ2h0PSI4IiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9IjAuMSI+PC9yZWN0Pgo8cGF0aCBkPSJNMCAwTDggOFoiIHN0cm9rZT0iI2ZmZiIgc3Ryb2tlLW9wYWNpdHk9IjAuMiIgc3Ryb2tlLXdpZHRoPSIxIj48L3BhdGg+Cjwvc3ZnPg==')] opacity-50"></div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+
+                             </div>
+                          )}
                         </div>
                       </div>
 
