@@ -11,6 +11,7 @@ import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { motion, useScroll, useTransform, useMotionTemplate, useSpring, AnimatePresence, useMotionValue } from 'framer-motion';
+import { usePerformance } from "@/context/PerformanceContext";
 
 const getYoutubeEmbedUrl = (url: string) => {
   const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([^"&?\/\s]{11})/);
@@ -57,6 +58,7 @@ const MarkdownVideo = ({ src }: { src: string }) => {
 };
 
 export default function ProjectDetailPage() {
+  const { performanceMode } = usePerformance();
   const params = useParams();
   // Cinematic scroll values
   const { scrollY } = useScroll();
@@ -292,13 +294,16 @@ export default function ProjectDetailPage() {
             </div>
           </div>
         ) : (
-          <div onMouseMove={handleMouseMove} className={`group/spotlight transition-opacity duration-[1500ms] ease-out ${fadeOverlay ? 'opacity-100' : 'opacity-0'} relative`}>
+          <div onMouseMove={performanceMode === 'ultra' ? handleMouseMove : undefined} className={`group/spotlight transition-opacity duration-[1500ms] ease-out ${fadeOverlay ? 'opacity-100' : 'opacity-0'} relative`}>
             
             {/* DYNAMIC GLOBAL SPOTLIGHT EFFECT */}
-            <motion.div className="pointer-events-none absolute inset-0 z-0 opacity-0 group-hover/spotlight:opacity-100 transition duration-500 will-change-transform mix-blend-screen" style={{ background: spotlightStyle }} />
+            {performanceMode === 'ultra' && (
+              <motion.div className="pointer-events-none absolute inset-0 z-0 opacity-0 group-hover/spotlight:opacity-100 transition duration-500 will-change-transform mix-blend-screen" style={{ background: spotlightStyle }} />
+            )}
             
             {/* BACKGROUND CINEMATIC PARTICLES */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 fixed h-screen w-full">
+            {performanceMode === 'ultra' && (
+              <div className="absolute inset-0 overflow-hidden pointer-events-none z-0 fixed h-screen w-full">
                {particles.map((p, i) => (
                  <motion.div
                    key={i}
@@ -312,7 +317,8 @@ export default function ProjectDetailPage() {
                    transition={{ duration: p.duration, repeat: Infinity, ease: "linear", delay: i * 0.2 }}
                  />
                ))}
-            </div>
+              </div>
+            )}
 
             <Navbar />
             <div className="w-full relative pb-12 z-10">

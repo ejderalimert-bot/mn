@@ -2,8 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'framer-motion';
+import { usePerformance } from "@/context/PerformanceContext";
 
 const HeroSection = () => {
+  const { performanceMode } = usePerformance();
   const { scrollY } = useScroll();
   const yBg = useTransform(scrollY, [0, 1000], [0, -300]);
   const yText = useTransform(scrollY, [0, 800], [0, 400]);
@@ -37,14 +39,17 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <div onMouseMove={handleMouseMove} className="relative min-h-[90vh] w-full flex flex-col items-center justify-center overflow-hidden pt-10 px-8">
+    <div onMouseMove={performanceMode === 'ultra' ? handleMouseMove : undefined} className="relative min-h-[90vh] w-full flex flex-col items-center justify-center overflow-hidden pt-10 px-8">
       {/* Interactive Spotlight Glow */}
-      <motion.div
-        className="absolute top-0 left-0 w-[600px] h-[600px] bg-dublio-cyan/10 blur-[120px] rounded-full pointer-events-none z-0 mix-blend-screen"
-        style={{ x: spotlightX, y: spotlightY, translateX: "-50%", translateY: "-50%" }}
-      />
+      {performanceMode === 'ultra' && (
+        <motion.div
+          className="absolute top-0 left-0 w-[600px] h-[600px] bg-dublio-cyan/10 blur-[120px] rounded-full pointer-events-none z-0 mix-blend-screen"
+          style={{ x: spotlightX, y: spotlightY, translateX: "-50%", translateY: "-50%" }}
+        />
+      )}
 
       {/* Background Cinematic Particles */}
+      {performanceMode === 'ultra' && (
       <div className="absolute inset-0 z-0 pointer-events-none">
         {particles.map((p) => (
           <motion.div
@@ -65,8 +70,10 @@ const HeroSection = () => {
           />
         ))}
       </div>
+      )}
       {/* Background elements (Parallax UP) */}
-      <motion.div style={{ y: yBg }} className="absolute inset-0 z-0 bg-transparent flex items-center justify-center -space-y-32">
+      {performanceMode === 'ultra' && (
+        <motion.div style={{ y: yBg }} className="absolute inset-0 z-0 bg-transparent flex items-center justify-center -space-y-32">
         <motion.div
           animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
           transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
@@ -86,7 +93,8 @@ const HeroSection = () => {
         <div className="absolute inset-0 opacity-[0.03] z-0 pointer-events-none"
           style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)', backgroundSize: '60px 60px' }}>
         </div>
-      </motion.div>
+        </motion.div>
+      )}
 
       {/* Main Content (Parallax DOWN and Fade out) */}
       <motion.div
