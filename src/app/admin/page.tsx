@@ -198,68 +198,6 @@ export default function AdminDashboardPage() {
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    async function uploadSingleFile(f: File) {
-      const fd = new FormData();
-      fd.append('file', f);
-      const res = await fetch('/api/upload', { method: 'POST', body: fd });
-      const data = await res.json();
-      return data.urls[0];
-    }
-
-    const file = formData.get('image') as File;
-    let imageBase64 = editingProject?.image || '';
-    if (file && file.size > 0) imageBase64 = await uploadSingleFile(file);
-
-    const file2 = formData.get('image2') as File;
-    let image2Base64 = editingProject?.image2 || '';
-    if (file2 && file2.size > 0) image2Base64 = await uploadSingleFile(file2);
-
-    const coverFile = formData.get('coverImage') as File;
-    let coverImageBase64 = editingProject?.coverImage || '';
-    if (coverFile && coverFile.size > 0) coverImageBase64 = await uploadSingleFile(coverFile);
-
-    const coverFile2 = formData.get('coverImage2') as File;
-    let coverImage2Base64 = editingProject?.coverImage2 || '';
-    if (coverFile2 && coverFile2.size > 0) coverImage2Base64 = await uploadSingleFile(coverFile2);
-
-    let trailer = formData.get('trailer') as string;
-    const trailerFile = formData.get('trailerFile') as File;
-    if (trailerFile && trailerFile.size > 0) {
-       trailer = await uploadSingleFile(trailerFile);
-    }
-    
-    let galleryBase64: string[] = editingProject?.gallery || [];
-    const galleryFiles = formData.getAll('gallery') as File[];
-    const validGallery = galleryFiles.filter(f => f && f.size > 0);
-    if (validGallery.length > 0) {
-      const fd = new FormData();
-      validGallery.forEach(f => fd.append('file', f));
-      const res = await fetch('/api/upload', { method: 'POST', body: fd });
-      const data = await res.json();
-      galleryBase64 = [...galleryBase64, ...data.urls];
-    }
-
-    let audioDemosBase64: string[] = editingProject?.audioDemos || [];
-    const audioFiles = formData.getAll('audioDemos') as File[];
-    const validAudio = audioFiles.filter(f => f && f.size > 0);
-    if (validAudio.length > 0) {
-      const fd = new FormData();
-      validAudio.forEach(f => fd.append('file', f));
-      const res = await fetch('/api/upload', { method: 'POST', body: fd });
-      const data = await res.json();
-      audioDemosBase64 = [...audioDemosBase64, ...data.urls];
-    }
-
-    let videoDemosBase64: string[] = editingProject?.videoDemos || [];
-    const videoFiles = formData.getAll('videoDemos') as File[];
-    const validVideo = videoFiles.filter(f => f && f.size > 0);
-    if (validVideo.length > 0) {
-      const fd = new FormData();
-      validVideo.forEach(f => fd.append('file', f));
-      const res = await fetch('/api/upload', { method: 'POST', body: fd });
-      const data = await res.json();
-      videoDemosBase64 = [...videoDemosBase64, ...data.urls];
-    }
 
     const projData = {
       title: formData.get('title'),
@@ -267,15 +205,16 @@ export default function AdminDashboardPage() {
       status: formData.get('status'),
       description: formData.get('description'),
       retention: formData.get('retention') ? formData.get('retention') + '%' : '0%',
-      // defaults for now
       views: '0', swiped: '0%', stayed: '0%', downloads: '0', 
       team: 'Star Dublaj', 
-      image: imageBase64, image2: image2Base64, 
-      coverImage: coverImageBase64, coverImage2: coverImage2Base64,
-      trailer: trailer,
-      gallery: galleryBase64,
-      audioDemos: audioDemosBase64,
-      videoDemos: videoDemosBase64,
+      image: formData.get('image') || editingProject?.image || '',
+      image2: formData.get('image2') || editingProject?.image2 || '', 
+      coverImage: formData.get('coverImage') || editingProject?.coverImage || '',
+      coverImage2: formData.get('coverImage2') || editingProject?.coverImage2 || '',
+      trailer: formData.get('trailer') || editingProject?.trailer || '',
+      gallery: (formData.get('gallery') as string)?.split('\n').filter(l => l.trim().length > 0) || editingProject?.gallery || [],
+      audioDemos: (formData.get('audioDemos') as string)?.split('\n').filter(l => l.trim().length > 0) || editingProject?.audioDemos || [],
+      videoDemos: (formData.get('videoDemos') as string)?.split('\n').filter(l => l.trim().length > 0) || editingProject?.videoDemos || [],
       tags: formTags,
       focusKeyword: formFocusKeyword,
       seoTitle: formSeoTitle,
@@ -416,31 +355,14 @@ export default function AdminDashboardPage() {
     }
     setNewsAdding(true);
     try {
-      let imageBase64 = "";
-      if (newsImage) {
-        // assume it is a URL or handle upload
-      }
-      
       const formData = new FormData(e.target as HTMLFormElement);
-      const imgFile = formData.get('newsImageFile') as File;
-      if (imgFile && imgFile.size > 0) {
-        const fd = new FormData(); fd.append('file', imgFile);
-        const res = await fetch('/api/upload', { method: 'POST', body: fd });
-        imageBase64 = (await res.json()).urls[0];
-      }
-
-      let videoBase64 = "";
-      const vidFile = formData.get('newsVideoFile') as File;
-      if (vidFile && vidFile.size > 0) {
-        const fd = new FormData(); fd.append('file', vidFile);
-        const res = await fetch('/api/upload', { method: 'POST', body: fd });
-        videoBase64 = (await res.json()).urls[0];
-      }
+      const imgLink = formData.get('image') as string;
+      const vidLink = formData.get('video') as string;
 
       const res = await fetch('/api/news', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: newsTitle, content: newsContent, image: imageBase64, video: videoBase64 })
+        body: JSON.stringify({ title: newsTitle, content: newsContent, image: imgLink, video: vidLink })
       });
       const added = await res.json();
       if (!added.error) {
@@ -682,23 +604,23 @@ export default function AdminDashboardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Yatay Ana Sayfa Görseli 1 (%50 İhtimal)</label>
-                    <input type="file" name="image" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Yatay Ana Sayfa Görseli 1 (Steam Resim URL'si)</label>
+                    <input type="text" name="image" defaultValue={editingProject?.image} placeholder="https://..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Yatay Ana Sayfa Görseli 2 (%50 İhtimal)</label>
-                    <input type="file" name="image2" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Yatay Ana Sayfa Görseli 2 (Steam Resim URL'si)</label>
+                    <input type="text" name="image2" defaultValue={editingProject?.image2} placeholder="https://..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Dikey Sayfa İçi Görsel 1 (%50 İhtimal)</label>
-                    <input type="file" name="coverImage" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Dikey Kapak Görseli 1 (Resim URL)</label>
+                    <input type="text" name="coverImage" defaultValue={editingProject?.coverImage} placeholder="https://..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Dikey Sayfa İçi Görsel 2 (%50 İhtimal)</label>
-                    <input type="file" name="coverImage2" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Dikey Kapak Görseli 2 (Resim URL)</label>
+                    <input type="text" name="coverImage2" defaultValue={editingProject?.coverImage2} placeholder="https://..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
                   </div>
                 </div>
 
@@ -738,24 +660,23 @@ export default function AdminDashboardPage() {
                     <input type="text" value={formGeminiLink} onChange={(e) => setFormGeminiLink(e.target.value)} placeholder="YouTube linkini yapıştırın (Sadece YZ analizi için)" className="mb-2 w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Fragman / Video (MP4 Yükle)</label>
-                    <input type="file" name="trailerFile" accept="video/mp4,video/webm" className="mb-2 w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
-                    <input type="hidden" name="trailer" value={formTrailer} />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Ana Fragman (YouTube Linki)</label>
+                    <input type="text" name="trailer" defaultValue={editingProject?.trailer} placeholder="https://youtube.com/watch?v=..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">ModVideoları (Çoklu)</label>
-                    <input type="file" name="videoDemos" multiple accept="video/mp4,video/webm" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Oyun İçi Mod Videoları (YouTube Link - Alt alta)</label>
+                    <textarea name="videoDemos" defaultValue={editingProject?.videoDemos?.join('\n')} rows={3} placeholder="Her satıra bir YouTube linki" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Mod Ses Örnekleri</label>
-                    <input type="file" name="audioDemos" multiple accept="audio/mp3,audio/wav,audio/ogg" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Mod Ses Örnekleri (URL - Alt alta)</label>
+                    <textarea name="audioDemos" defaultValue={editingProject?.audioDemos?.join('\n')} rows={3} placeholder="Her satıra bir Ses URL linki" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Oyun İçi Görseller</label>
-                    <input type="file" name="gallery" multiple accept="image/*" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Oyun İçi Görseller (Resim URL - Alt alta)</label>
+                    <textarea name="gallery" defaultValue={editingProject?.gallery?.join('\n')} rows={3} placeholder="Her satıra bir Resim URL linki" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none" />
                   </div>
                 </div>
 

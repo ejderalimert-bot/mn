@@ -2,10 +2,12 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Volume2, VolumeX, Maximize, Minimize } from 'lucide-react';
+import ReactPlayer from 'react-player';
 
 export default function CustomVideoPlayer({ src, autoPlay = true }: { src: string, autoPlay?: boolean }) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
+  const playerRef = useRef<any>(null);
+  
   const [isPlaying, setIsPlaying] = useState(autoPlay);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
@@ -22,57 +24,35 @@ export default function CustomVideoPlayer({ src, autoPlay = true }: { src: strin
   };
 
   useEffect(() => {
-    if (autoPlay && videoRef.current) {
-        // Mute autoplay initially if it gets blocked to ensure it plays, or simply catch error.
-        videoRef.current.play().catch(() => {
-            console.log("Autoplay blocked, user interaction required");
-            setIsPlaying(false);
-        });
-    }
-
     const handleFullscreenChange = () => {
       setIsFullscreen(!!document.fullscreenElement);
     };
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
-  }, [src, autoPlay]);
+  }, []);
 
   const togglePlay = () => {
-    if (!videoRef.current) return;
-    if (videoRef.current.paused) {
-      videoRef.current.play().catch(e => console.log(e));
-      setIsPlaying(true);
-    } else {
-      videoRef.current.pause();
-      setIsPlaying(false);
-    }
+    setIsPlaying(!isPlaying);
   };
 
   const toggleMute = () => {
-    if (!videoRef.current) return;
-    videoRef.current.muted = !isMuted;
     setIsMuted(!isMuted);
   };
 
-  const handleTimeUpdate = () => {
-    if (!videoRef.current) return;
-    const current = videoRef.current.currentTime;
-    const dur = videoRef.current.duration || 0;
-    setCurrentTime(current);
-    if (dur > 0) {
-      setProgress((current / dur) * 100);
+  const handleProgress = (state: { playedSeconds: number, loadedSeconds: number }) => {
+    setCurrentTime(state.playedSeconds);
+    if (duration > 0) {
+      setProgress((state.playedSeconds / duration) * 100);
     }
   };
 
-  const handleLoadedMetadata = () => {
-    if (!videoRef.current) return;
-    setDuration(videoRef.current.duration);
+  const handleDuration = (dur: number) => {
+    setDuration(dur);
   };
 
   const handleSeek = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!videoRef.current) return;
     const seekTo = (Number(e.target.value) / 100) * duration;
-    videoRef.current.currentTime = seekTo;
+    playerRef.current?.seekTo(seekTo, 'seconds');
     setProgress(Number(e.target.value));
   };
   
@@ -84,7 +64,8 @@ export default function CustomVideoPlayer({ src, autoPlay = true }: { src: strin
     }
   };
 
-  const finalSrc = `/api/stream?f=${typeof window !== 'undefined' ? btoa(src) : ''}`;
+  // Convert raw URL to proper format if needed, though ReactPlayer handles most well.
+  const isYoutube = src.includes('youtube.com') || src.includes('youtu.be');
 
   return (
     <div 
@@ -94,18 +75,33 @@ export default function CustomVideoPlayer({ src, autoPlay = true }: { src: strin
       onMouseEnter={() => setShowControls(true)}
       onMouseLeave={() => setShowControls(false)}
     >
-      {/* Video is at the absolute bottom layer */}
-      <video
-        ref={videoRef}
-        src={finalSrc}
-        className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none z-0" 
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
-        onEnded={() => setIsPlaying(false)}
-        playsInline
-        controlsList="nodownload nofullscreen noremoteplayback"
-        disablePictureInPicture
-      />
+      {/* ReactPlayer is at the absolute bottom layer */}
+      <div className="absolute inset-0 w-full h-full object-contain pointer-events-none select-none z-0">
+        <ReactPlayer
+          ref={playerRef}
+          url={src}
+          playing={isPlaying}
+          muted={isMuted}
+          controls={false}
+          width="100%"
+          height="100%"
+          onProgress={handleProgress}
+          onDuration={handleDuration}
+          onEnded={() => setIsPlaying(false)}
+          playsinline
+          config={{
+            youtube: {
+              playerVars: { 
+                showinfo: 0, 
+                rel: 0, 
+                modestbranding: 1, 
+                iv_load_policy: 3,
+                disablekb: 1
+              }
+            }
+          }}
+        />
+      </div>
       
       {/* Heavy Invisible Click Shield covering the entire active video area */}
       <div 
