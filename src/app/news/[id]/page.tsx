@@ -4,9 +4,10 @@ import Navbar from "@/components/Navbar";
 import { ArrowLeft, Calendar, User } from "lucide-react";
 import Link from "next/link";
 
-export default async function NewsDetailPage({ params }: { params: { id: string } }) {
+export default async function NewsDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const news = await prisma.news.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: { author: true }
   });
 

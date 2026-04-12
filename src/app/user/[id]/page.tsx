@@ -4,9 +4,10 @@ import { notFound } from "next/navigation";
 import { ShieldCheck, Newspaper, Star, UserCheck } from "lucide-react";
 import Link from "next/link";
 
-export default async function PublicUserProfile({ params }: { params: { id: string } }) {
+export default async function PublicUserProfile({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const user = await prisma.user.findUnique({
-    where: { id: params.id },
+    where: { id: id },
     include: { teamMember: true, news: { orderBy: { createdAt: 'desc' } } }
   });
 
