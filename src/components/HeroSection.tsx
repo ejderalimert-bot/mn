@@ -97,30 +97,31 @@ const HeroSection = () => {
       )}
 
       {/* Main Content (Parallax DOWN and Fade out) */}
+      {/* Main Content (Parallax DOWN and Fade out) */}
       <motion.div
         initial="hidden"
         animate="visible"
-        style={{ y: yText, opacity: opacityText, scale: scaleText }}
-        variants={{ visible: { transition: { staggerChildren: 0.15 } } }}
-        className="container relative z-10 flex flex-col items-center text-center max-w-5xl [perspective:2000px] mt-10"
+        style={{ y: performanceMode === 'ultra' ? yText : 0, opacity: performanceMode === 'ultra' ? opacityText : 1, scale: performanceMode === 'ultra' ? scaleText : 1 }}
+        variants={{ visible: { transition: { staggerChildren: performanceMode === 'ultra' ? 0.15 : 0 } } }}
+        className={`container relative z-10 flex flex-col items-center text-center max-w-5xl mt-10 ${performanceMode === 'ultra' ? '[perspective:2000px]' : ''}`}
       >
         <motion.div variants={{ hidden: { opacity: 0, y: 50, scale: 0.8 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", bounce: 0.6 } } }} className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full mb-8 backdrop-blur-sm">
           <span className="w-2 h-2 bg-dublio-cyan rounded-full shadow-[0_0_8px_#6affeb] animate-pulse"></span>
           <span className="text-[11px] font-bold text-dublio-text-dark tracking-[0.2em] uppercase">Star Dublaj Studios</span>
         </motion.div>
 
-        <motion.h1 variants={{ hidden: { opacity: 0, scale: 0.6, rotateX: 90 }, visible: { opacity: 1, scale: 1, rotateX: 0, transition: { type: "spring", stiffness: 100, damping: 10 } } }} className="text-5xl md:text-8xl font-black text-white leading-[1.1] mb-8 tracking-tighter uppercase italic drop-shadow-2xl relative group">
+        <motion.h1 variants={{ hidden: { opacity: 0, scale: 0.6, rotateX: performanceMode === 'ultra' ? 90 : 0 }, visible: { opacity: 1, scale: 1, rotateX: 0, transition: { type: "spring", stiffness: 100, damping: 10 } } }} className="text-5xl md:text-8xl font-black text-white leading-[1.1] mb-8 tracking-tighter uppercase italic drop-shadow-2xl relative group">
           TÜRKİYENİN<br />
           <motion.span
-            animate={{ skewX: [0, -10, 5, 0], x: [0, 5, -5, 0], color: ['#fff', '#ec4899', '#6affeb', '#fff'] }}
+            animate={performanceMode === 'ultra' ? { skewX: [0, -10, 5, 0], x: [0, 5, -5, 0], color: ['#fff', '#ec4899', '#6affeb', '#fff'] } : {}}
             transition={{ repeat: Infinity, duration: 4, ease: "linear", repeatDelay: 2 }}
-            className="inline-block dublio-gradient-text drop-shadow-[0_0_30px_rgba(168,85,247,0.5)]"
+            className={`inline-block dublio-gradient-text ${performanceMode === 'ultra' ? 'drop-shadow-[0_0_30px_rgba(168,85,247,0.5)]' : ''}`}
           >
             DUBLAJ&nbsp; MERKEZİ
           </motion.span>
         </motion.h1>
 
-        <motion.p variants={{ hidden: { opacity: 0, y: 30, rotateX: -45 }, visible: { opacity: 1, y: 0, rotateX: 0, transition: { type: "spring", stiffness: 120 } } }} className="text-xl md:text-2xl text-dublio-text-dark max-w-3xl mb-12 font-medium">
+        <motion.p variants={{ hidden: { opacity: 0, y: 30, rotateX: performanceMode === 'ultra' ? -45 : 0 }, visible: { opacity: 1, y: 0, rotateX: 0, transition: { type: "spring", stiffness: 120 } } }} className="text-xl md:text-2xl text-dublio-text-dark max-w-3xl mb-12 font-medium">
           Video Dublajları tek çatı altında. <br />
           Oyun modlarını keşfetmeye hazırlan!!!
         </motion.p>
@@ -139,8 +140,8 @@ const HeroSection = () => {
       </motion.div>
 
       {/* Marquee effect at bottom (TILTED 3D) */}
-      <div className="w-full mt-32 relative flex justify-center [perspective:1000px] z-10 pointer-events-none">
-        <div className="w-[150vw] bg-[#1d1d1f] border-y-4 border-dublio-cyan py-8 overflow-hidden whitespace-nowrap shadow-[0_0_100px_rgba(106,255,235,0.2)]" style={{ transform: 'rotateX(50deg) rotateZ(-5deg)' }}>
+      <div className={`w-full mt-32 relative flex justify-center z-10 pointer-events-none ${performanceMode === 'ultra' ? '[perspective:1000px]' : 'overflow-hidden'}`}>
+        <div className={`w-[150vw] bg-[#1d1d1f] border-y-4 border-dublio-cyan py-8 overflow-hidden whitespace-nowrap ${performanceMode === 'ultra' ? 'shadow-[0_0_100px_rgba(106,255,235,0.2)]' : ''}`} style={{ transform: performanceMode === 'ultra' ? 'rotateX(50deg) rotateZ(-5deg)' : 'none' }}>
           <motion.div
             animate={{ x: ["0%", "-50%"] }}
             transition={{ repeat: Infinity, duration: 25, ease: "linear" }}

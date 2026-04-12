@@ -325,7 +325,7 @@ export default function ProjectDetailPage() {
               {/* Cinematic Header Section (Full Width Bleed) */}
               <motion.div style={{ perspective: 1000 }} className="relative w-full h-[55vh] min-h-[450px] shadow-[0_10px_50px_rgba(0,0,0,0.8)] overflow-hidden bg-[#0a0a0c]">
                 {displayCover && (
-                  <motion.img style={{ y: yCover, scale: scaleCover, filter: "brightness(0.5) blur(2px)" }} src={displayCover} alt={project.title} className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none" />
+                  <motion.img style={{ y: yCover, scale: scaleCover, filter: performanceMode === 'ultra' ? "brightness(0.5) blur(2px)" : "brightness(0.5)" }} src={displayCover} alt={project.title} className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none" />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#111115] via-[#111115]/50 to-transparent"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#111115] via-transparent to-transparent"></div>
@@ -480,11 +480,11 @@ export default function ProjectDetailPage() {
                    variants={{ visible: { transition: { staggerChildren: 0.3 } } }}
                    className="grid grid-cols-1 lg:grid-cols-3 gap-16"
                  >
-                   {/* Left 2 Columns: Description & Media Tabs */}
-                   <motion.div variants={{ hidden: { opacity: 0, x: -100, rotateY: 30 }, visible: { opacity: 1, x: 0, rotateY: 0, transition: { type: "spring", stiffness: 40, damping: 15, duration: 2 } } }} className="lg:col-span-2 space-y-16 [perspective:2000px]">
+                    {/* Left 2 Columns: Description & Media Tabs */}
+                   <motion.div variants={{ hidden: { opacity: 0, x: -100, rotateY: performanceMode === 'ultra' ? 30 : 0 }, visible: { opacity: 1, x: 0, rotateY: 0, transition: { type: "spring", stiffness: 40, damping: 15, duration: 2 } } }} className={`lg:col-span-2 space-y-16 ${performanceMode === 'ultra' ? '[perspective:2000px]' : ''}`}>
                       
                       <div className="bg-[#14151a] rounded-[2rem] p-8 md:p-12 border border-white/[0.05] shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-dublio-purple/20 blur-[100px] pointer-events-none rounded-full"></div>
+                        <div className={`absolute top-0 right-0 w-64 h-64 bg-dublio-purple/20 pointer-events-none rounded-full ${performanceMode === 'ultra' ? 'blur-[100px]' : ''}`}></div>
                         
                         {/* Tabs */}
                         <div className="flex items-center gap-10 border-b border-white/10 pb-6 mb-10 relative z-10">

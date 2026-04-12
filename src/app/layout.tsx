@@ -5,7 +5,8 @@ import { AuthProvider } from "@/components/AuthProvider";
 import SiteProtection from "@/components/SiteProtection";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import CustomCursor from "@/components/CustomCursor";
-import { PerformanceProvider } from "@/context/PerformanceContext";
+import { PerformanceProvider, PerformanceMode } from "@/context/PerformanceContext";
+import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,17 +20,21 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-dynamic';
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const rawMode = cookieStore.get('dublio_perf_mode')?.value;
+  const defaultMode = (rawMode === 'ultra' || rawMode === 'potato') ? rawMode as PerformanceMode : null;
+
   return (
     <html lang="tr" translate="no" className="notranslate">
       <body className={`${inter.className} antialiased selection:!bg-transparent selection:!text-current cursor-none`}>
         <CustomCursor />
         <AuthProvider>
-          <PerformanceProvider>
+          <PerformanceProvider defaultMode={defaultMode}>
             <AnalyticsProvider />
             <SiteProtection />
             {children}
