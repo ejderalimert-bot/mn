@@ -10,8 +10,9 @@ import CustomAudioPlayer from '@/components/CustomAudioPlayer';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { motion, useScroll, useTransform, useMotionTemplate, useSpring, AnimatePresence, useMotionValue } from 'framer-motion';
+import { motion, useScroll, useTransform, useMotionTemplate, AnimatePresence, useMotionValue, MotionConfig } from 'framer-motion';
 import { usePerformance } from "@/context/PerformanceContext";
+import { playClickSound } from '@/utils/sound';
 
 const getYoutubeEmbedUrl = (url: string) => {
   const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=|shorts\/))([^"&?\/\s]{11})/);
@@ -128,6 +129,18 @@ export default function ProjectDetailPage() {
       });
     }, 50);
     return () => clearInterval(interval);
+  }, []);
+
+  // UI Sounds Hook
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('button') || target.closest('a') || target.closest('.cursor-pointer')) {
+        playClickSound();
+      }
+    };
+    document.addEventListener('click', handleGlobalClick);
+    return () => document.removeEventListener('click', handleGlobalClick);
   }, []);
 
   useEffect(() => {
@@ -267,7 +280,8 @@ export default function ProjectDetailPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#111115] text-[#d1d5db] font-sans relative">
+    <MotionConfig reducedMotion={performanceMode === 'ultra' ? 'user' : 'always'}>
+      <main className="min-h-screen bg-[#111115] text-[#d1d5db] font-sans relative">
       {!removeOverlay && (
         <div className={`fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0d0d12] transition-opacity duration-[1000ms] pointer-events-none ${fadeOverlay ? 'opacity-0' : 'opacity-100'}`}>
           <div className="w-11/12 max-w-2xl">
@@ -489,8 +503,8 @@ export default function ProjectDetailPage() {
                    {/* Left 2 Columns: Description & Media Tabs */}
                    <motion.div variants={{ hidden: { opacity: 0, x: -100, rotateY: 30 }, visible: { opacity: 1, x: 0, rotateY: 0, transition: { type: "spring", stiffness: 40, damping: 15, duration: 2 } } }} className="lg:col-span-2 space-y-16 [perspective:2000px]">
                       
-                      <div className="bg-[#14151a] rounded-[2rem] p-8 md:p-12 border border-white/[0.05] shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-64 h-64 bg-dublio-purple/20 blur-[100px] pointer-events-none rounded-full"></div>
+                      <div className={`bg-[#14151a] rounded-[2rem] p-8 md:p-12 border border-white/[0.05] relative overflow-hidden ${performanceMode === 'ultra' ? 'shadow-2xl' : 'shadow-none'}`}>
+                        {performanceMode === 'ultra' && <div className="absolute top-0 right-0 w-64 h-64 bg-dublio-purple/20 blur-[100px] pointer-events-none rounded-full"></div>}
                         
                         {/* Tabs */}
                         <div className="flex items-center gap-10 border-b border-white/10 pb-6 mb-10 relative z-10">
@@ -627,8 +641,8 @@ export default function ProjectDetailPage() {
                       </div>
 
                       {/* Media Extra Demos */}
-                      <div className="bg-[#14151a] rounded-[2rem] p-8 md:p-12 border border-white/[0.05] shadow-2xl relative overflow-hidden">
-                        <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-500/10 blur-[100px] pointer-events-none rounded-full"></div>
+                      <div className={`bg-[#14151a] rounded-[2rem] p-8 md:p-12 border border-white/[0.05] relative overflow-hidden ${performanceMode === 'ultra' ? 'shadow-2xl' : 'shadow-none'}`}>
+                        {performanceMode === 'ultra' && <div className="absolute bottom-0 left-0 w-64 h-64 bg-pink-500/10 blur-[100px] pointer-events-none rounded-full"></div>}
                         
                         <div className="flex gap-8 border-b border-white/10 pb-6 mb-10 relative z-10">
                           <button onClick={() => setActiveMediaTab('video')} className={`flex items-center gap-3 text-sm font-black uppercase tracking-widest transition-all relative ${activeMediaTab === 'video' ? 'text-white' : 'text-white/30 hover:text-white/70'}`}>
@@ -717,8 +731,8 @@ export default function ProjectDetailPage() {
                       </motion.div>
 
                       {/* Comments Section moved to Sidebar for better dynamic layout */}
-                      <motion.div variants={{ hidden: { opacity: 0, x: 50, rotateY: -30 }, visible: { opacity: 1, x: 0, rotateY: 0, transition: { type: "spring", bounce: 0.5 } } }} className="bg-[#14151a] border border-white/[0.05] rounded-[2rem] p-8 md:p-10 shadow-2xl flex flex-col h-[600px] relative overflow-hidden group/comments">
-                        <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-dublio-purple/10 pointer-events-none group-hover/comments:scale-150 transition-transform duration-1000 blur-3xl rounded-full"></div>
+                      <motion.div variants={{ hidden: { opacity: 0, x: 50, rotateY: -30 }, visible: { opacity: 1, x: 0, rotateY: 0, transition: { type: "spring", bounce: 0.5 } } }} className={`bg-[#14151a] border border-white/[0.05] rounded-[2rem] p-8 md:p-10 flex flex-col h-[600px] relative overflow-hidden group/comments ${performanceMode === 'ultra' ? 'shadow-2xl' : 'shadow-none'}`}>
+                        {performanceMode === 'ultra' && <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-dublio-purple/10 pointer-events-none group-hover/comments:scale-150 transition-transform duration-1000 blur-3xl rounded-full"></div>}
                         <h3 className="text-white font-black text-xl uppercase tracking-wider mb-8 relative z-10">Oyuncu Yorumları <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="text-dublio-purple bg-dublio-purple/20 px-3 py-1 rounded-lg ml-2 inline-block">{comments.length}</motion.span></h3>
                         
                         <div className="flex-1 overflow-y-auto pr-4 space-y-6 custom-scrollbar mb-8 relative z-10">
@@ -772,6 +786,7 @@ export default function ProjectDetailPage() {
           </div>
         )
       )}
-    </main>
+      </main>
+    </MotionConfig>
   );
 }
