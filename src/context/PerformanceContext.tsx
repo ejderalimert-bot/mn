@@ -26,7 +26,7 @@ export function PerformanceProvider({ children, defaultMode }: { children: React
   const setPerformanceMode = (mode: PerformanceMode) => {
     setPerformanceModeState(mode);
     if (dontShowAgain && mode) {
-      document.cookie = `dublio_perf_mode=${mode}; path=/; max-age=31536000`; // 1 year cookie
+      document.cookie = `dublio_perf_v2=${mode}; path=/; max-age=31536000`; // 1 year cookie
     }
   };
 

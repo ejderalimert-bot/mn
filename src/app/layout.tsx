@@ -26,7 +26,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const rawMode = cookieStore.get('dublio_perf_mode')?.value;
+  const rawMode = cookieStore.get('dublio_perf_v2')?.value;
   const defaultMode = (rawMode === 'ultra' || rawMode === 'potato') ? rawMode as PerformanceMode : null;
 
   return (
