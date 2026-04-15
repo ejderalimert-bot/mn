@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar';
 import { Shield, Plus, Pencil, Trash2, LayoutGrid, Users, Newspaper, ListTree, Gamepad2, ArrowLeft, Search, Download, Activity, Eye, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePerformance } from "@/context/PerformanceContext";
+import CloudinaryUploader from '@/components/CloudinaryUploader';
 
 // Local data is fetched now
 
@@ -618,23 +619,27 @@ export default function AdminDashboardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Yatay Ana Sayfa Görseli 1 (Steam Resim URL'si)</label>
-                    <input type="text" name="image" defaultValue={editingProject?.image} placeholder="https://..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Yatay Ana Sayfa Görseli 1 (URL veya Yükle)</label>
+                    <input id="inp_img1" type="text" name="image" defaultValue={editingProject?.image} placeholder="https://..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple mb-2" />
+                    <CloudinaryUploader resourceType="image" label="1. Yatay Resim Yükle" onUploadSuccess={(url) => { (document.getElementById('inp_img1') as HTMLInputElement).value = url; }} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Yatay Ana Sayfa Görseli 2 (Steam Resim URL'si)</label>
-                    <input type="text" name="image2" defaultValue={editingProject?.image2} placeholder="https://..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Yatay Ana Sayfa Görseli 2 (URL veya Yükle)</label>
+                    <input id="inp_img2" type="text" name="image2" defaultValue={editingProject?.image2} placeholder="https://..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple mb-2" />
+                    <CloudinaryUploader resourceType="image" label="2. Yatay Resim Yükle" onUploadSuccess={(url) => { (document.getElementById('inp_img2') as HTMLInputElement).value = url; }} />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Dikey Kapak Görseli 1 (Resim URL)</label>
-                    <input type="text" name="coverImage" defaultValue={editingProject?.coverImage} placeholder="https://..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Dikey Kapak Görseli 1 (URL veya Yükle)</label>
+                    <input id="inp_cov1" type="text" name="coverImage" defaultValue={editingProject?.coverImage} placeholder="https://..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple mb-2" />
+                    <CloudinaryUploader resourceType="image" label="1. Dikey Kapak Yükle" onUploadSuccess={(url) => { (document.getElementById('inp_cov1') as HTMLInputElement).value = url; }} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Dikey Kapak Görseli 2 (Resim URL)</label>
-                    <input type="text" name="coverImage2" defaultValue={editingProject?.coverImage2} placeholder="https://..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Dikey Kapak Görseli 2 (URL veya Yükle)</label>
+                    <input id="inp_cov2" type="text" name="coverImage2" defaultValue={editingProject?.coverImage2} placeholder="https://..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple mb-2" />
+                    <CloudinaryUploader resourceType="image" label="2. Dikey Kapak Yükle" onUploadSuccess={(url) => { (document.getElementById('inp_cov2') as HTMLInputElement).value = url; }} />
                   </div>
                 </div>
 
@@ -674,23 +679,36 @@ export default function AdminDashboardPage() {
                     <input type="text" value={formGeminiLink} onChange={(e) => setFormGeminiLink(e.target.value)} placeholder="YouTube linkini yapıştırın (Sadece YZ analizi için)" className="mb-2 w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Ana Fragman (YouTube Linki)</label>
-                    <input type="text" name="trailer" defaultValue={editingProject?.trailer} placeholder="https://youtube.com/watch?v=..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Ana Fragman (YouTube Linki veya .MP4 Yükle)</label>
+                    <input id="inp_trailer" type="text" name="trailer" defaultValue={editingProject?.trailer} placeholder="https://youtube.com/watch?v=..." className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple mb-2" />
+                    <CloudinaryUploader resourceType="video" label="Fragman Videosu Yükle (.mp4)" onUploadSuccess={(url) => { (document.getElementById('inp_trailer') as HTMLInputElement).value = url; }} />
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Oyun İçi Mod Videoları (YouTube Link - Alt alta)</label>
-                    <textarea name="videoDemos" defaultValue={editingProject?.videoDemos?.join('\n')} rows={3} placeholder="Her satıra bir YouTube linki" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Ek Videolar (Alt alta URL'ler)</label>
+                    <textarea id="inp_vdemos" name="videoDemos" defaultValue={editingProject?.videoDemos?.join('\n')} rows={3} placeholder="Her satıra URL" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none mb-2" />
+                    <CloudinaryUploader resourceType="video" label="Ekstra Video Yükle" onUploadSuccess={(url) => { 
+                      const el = document.getElementById('inp_vdemos') as HTMLTextAreaElement;
+                      el.value = el.value ? el.value + '\n' + url : url;
+                    }} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Mod Ses Örnekleri (URL - Alt alta)</label>
-                    <textarea name="audioDemos" defaultValue={editingProject?.audioDemos?.join('\n')} rows={3} placeholder="Her satıra bir Ses URL linki" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Ses Örnekleri (Alt alta URL'ler)</label>
+                    <textarea id="inp_ademos" name="audioDemos" defaultValue={editingProject?.audioDemos?.join('\n')} rows={3} placeholder="Her satıra Ses URL" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none mb-2" />
+                    <CloudinaryUploader resourceType="video" label="Ses Dosyası Yükle (.mp3)" onUploadSuccess={(url) => { 
+                      const el = document.getElementById('inp_ademos') as HTMLTextAreaElement;
+                      el.value = el.value ? el.value + '\n' + url : url;
+                    }} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Oyun İçi Görseller (Resim URL - Alt alta)</label>
-                    <textarea name="gallery" defaultValue={editingProject?.gallery?.join('\n')} rows={3} placeholder="Her satıra bir Resim URL linki" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none" />
+                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Oyun İçi Görseller (Galeri)</label>
+                    <textarea id="inp_gal" name="gallery" defaultValue={editingProject?.gallery?.join('\n')} rows={3} placeholder="Her satıra Resim URL" className="w-full bg-[#1a1c23] border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none mb-2" />
+                    <CloudinaryUploader resourceType="image" label="Galeriye Resim Ekle" onUploadSuccess={(url) => { 
+                      const el = document.getElementById('inp_gal') as HTMLTextAreaElement;
+                      el.value = el.value ? el.value + '\n' + url : url;
+                    }} />
                   </div>
                 </div>
 
