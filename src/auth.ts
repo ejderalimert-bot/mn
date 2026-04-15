@@ -1,6 +1,7 @@
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import Discord from "next-auth/providers/discord"
+import Resend from "next-auth/providers/resend"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 
@@ -18,6 +19,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientId: process.env.DISCORD_CLIENT_ID || "",
       clientSecret: process.env.DISCORD_CLIENT_SECRET || "",
       allowDangerousEmailAccountLinking: true,
+    }),
+    Resend({
+      from: "destek@dublio.net", // Veya verified başka bir alan adınız
+      apiKey: process.env.RESEND_API_KEY || "", 
     })
   ],
   session: { strategy: "jwt" },

@@ -10,10 +10,16 @@ export default function LoginPage() {
     password: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Logic for login (supabase/firebase can be added here)
-    console.log("Logging in with:", formData);
+    setLoading(true);
+    // Magic Link Gönderme İşlemi
+    await signIn('resend', { email: formData.email, redirect: false });
+    setSuccess(true);
+    setLoading(false);
   };
 
   return (
@@ -45,41 +51,34 @@ export default function LoginPage() {
           <p className="text-dublio-text-dark font-medium">Kaldığın yerden devam et.</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="space-y-2">
-            <label className="text-[10px] font-black text-white/40 tracking-[0.2em] uppercase px-1">E-posta</label>
-            <input 
-              type="email" 
-              placeholder="ornek@mail.com" 
-              className="w-full bg-black/40 border border-white/5 rounded-2xl py-4 px-6 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-dublio-purple transition-all"
-              onChange={(e) => setFormData({...formData, email: e.target.value})}
-              required
-            />
-          </div>
+        {!success ? (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-white/40 tracking-[0.2em] uppercase px-1">E-posta</label>
+              <input 
+                type="email" 
+                placeholder="ornek@mail.com" 
+                className="w-full bg-black/40 border border-white/5 rounded-2xl py-4 px-6 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-dublio-purple transition-all"
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                required
+              />
+              <p className="text-xs text-white/30 px-2 mt-2">Şifre gerekmez, size sihirli bir bağlantı göndereceğiz.</p>
+            </div>
 
-          <div className="space-y-2">
-             <div className="flex justify-between items-center">
-                <label className="text-[10px] font-black text-white/40 tracking-[0.2em] uppercase px-1">Şifre</label>
-                <Link href="/forgot-password" title="sm" className="text-[10px] uppercase font-black tracking-widest text-white/40 hover:text-white transition-colors">
-                  Şifremi Unuttum
-                </Link>
-             </div>
-            <input 
-              type="password" 
-              placeholder="••••••••" 
-              className="w-full bg-black/40 border border-white/5 rounded-2xl py-4 px-6 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-dublio-purple transition-all"
-              onChange={(e) => setFormData({...formData, password: e.target.value})}
-              required
-            />
+            <button 
+              type="submit" 
+              disabled={loading}
+              className="w-full py-5 bg-white text-black font-black uppercase italic tracking-widest rounded-2xl hover:bg-gray-200 transition-all hover:scale-[1.02] shadow-[0_10px_30px_rgba(255,255,255,0.1)] mt-4 disabled:opacity-50 disabled:cursor-wait"
+            >
+              {loading ? "Bağlantı Gönderiliyor..." : "Giriş Linki Gönder"}
+            </button>
+          </form>
+        ) : (
+          <div className="bg-green-500/10 border border-green-500/20 p-6 rounded-2xl text-center">
+            <h3 className="text-green-400 font-black text-xl mb-2">Posta Kutunuzu Kontrol Edin!</h3>
+            <p className="text-white/60 text-sm">Giriş yapmanız için <b>{formData.email}</b> adresine sihirli bir bağlantı gönderdik.</p>
           </div>
-
-          <button 
-            type="submit" 
-            className="w-full py-5 bg-white text-black font-black uppercase italic tracking-widest rounded-2xl hover:bg-gray-200 transition-all hover:scale-[1.02] shadow-[0_10px_30px_rgba(255,255,255,0.1)] mt-4"
-          >
-            Giriş Yap
-          </button>
-        </form>
+        )}
 
         <div className="mt-8 flex flex-col gap-4">
            <div className="flex items-center gap-4 text-white/10">
