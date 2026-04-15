@@ -21,10 +21,13 @@ export const usePerformance = () => useContext(PerformanceContext);
 export function PerformanceProvider({ children, defaultMode }: { children: React.ReactNode, defaultMode?: PerformanceMode }) {
   const [performanceMode, setPerformanceModeState] = useState<PerformanceMode>(defaultMode || null);
   const [isReady, setIsReady] = useState(true); // SSR makes it instantly ready from server defaultMode
+  const [dontShowAgain, setDontShowAgain] = useState(false);
 
   const setPerformanceMode = (mode: PerformanceMode) => {
     setPerformanceModeState(mode);
-    document.cookie = `dublio_perf_mode=${mode || ''}; path=/; max-age=31536000`; // 1 year cookie
+    if (dontShowAgain && mode) {
+      document.cookie = `dublio_perf_mode=${mode}; path=/; max-age=31536000`; // 1 year cookie
+    }
   };
 
   return (
@@ -50,11 +53,20 @@ export function PerformanceProvider({ children, defaultMode }: { children: React
               <h1 className="text-3xl md:text-5xl font-black italic text-dublio-purple uppercase tracking-tighter mb-4">
                 Sistem Konfigürasyonu
               </h1>
-              <p className="text-white/60 mb-10 text-sm md:text-base leading-relaxed">
+              <p className="text-white/60 mb-8 text-sm md:text-base leading-relaxed">
                 Star Dublaj platformu ağır sinematik 3D görselleştirmeler barındırır.
                 Cihazınızın donanımına göre deneyimi nasıl yaşamak istediğinizi seçin.
                 (Bunu daha sonra değiştirebilirsiniz)
               </p>
+
+              <div className="flex items-center justify-center gap-3 mb-8 relative z-10" onClick={() => setDontShowAgain(!dontShowAgain)}>
+                <div className={`w-6 h-6 rounded border flex items-center justify-center transition-all ${dontShowAgain ? 'bg-dublio-purple border-dublio-purple' : 'bg-[#1a1c23] border-white/20'}`}>
+                  {dontShowAgain && <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>}
+                </div>
+                <label className="text-white/80 font-bold text-sm tracking-wide select-none">
+                  Bir daha gösterme ve seçimimi hatırla
+                </label>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
                 <button

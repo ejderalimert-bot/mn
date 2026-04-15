@@ -176,40 +176,44 @@ export default function ProjectDetailPage() {
   }, [id]);
 
   useEffect(() => {
+    // CUID kullanmalıyız, URL'den gelen slug API'de hata yaptırır.
+    if (!project?.id) return;
+    
     // Check if favorited and liked
     if (session?.user?.id) {
       fetch(`/api/favorites?userId=${session.user.id}`)
         .then(res => res.json())
         .then(favs => {
-          if (favs.includes(id)) setIsFavorite(true);
+          if (favs.includes(project.id)) setIsFavorite(true);
         }).catch(() => { });
 
       fetch(`/api/likes?userId=${session.user.id}`)
         .then(res => res.json())
         .then(likes => {
-          if (likes.includes(id)) setIsLiked(true);
+          if (likes.includes(project.id)) setIsLiked(true);
         }).catch(() => { });
     }
 
     // Fetch comments
-    fetch(`/api/comments?projectId=${id}`)
+    fetch(`/api/comments?projectId=${project.id}`)
       .then(res => res.json())
       .then(data => {
         if (Array.isArray(data)) setComments(data);
       });
-  }, [id, session?.user?.id]);
+  }, [project?.id, session?.user?.id]);
 
   const toggleFavorite = async () => {
     if (!session?.user?.id) {
       alert("Favorilere eklemek için giriş yapmalısınız.");
       return;
     }
+    if (!project?.id) return;
 
     const action = isFavorite ? 'remove' : 'add';
     const res = await fetch('/api/favorites', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: session.user.id, projectId: id, action })
+      body: JSON.stringify({ userId: session.user.id, projectId: project.id, action })
     });
 
     if (res.ok) {
@@ -222,12 +226,13 @@ export default function ProjectDetailPage() {
       alert("Buna bayılmak için giriş yapmalısınız.");
       return;
     }
+    if (!project?.id) return;
 
     const action = isLiked ? 'remove' : 'add';
     const res = await fetch('/api/likes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId: session.user.id, projectId: id, action })
+      body: JSON.stringify({ userId: session.user.id, projectId: project.id, action })
     });
 
     if (res.ok) {
@@ -326,13 +331,13 @@ export default function ProjectDetailPage() {
               {/* Cinematic Header Section (Full Width Bleed) */}
               <motion.div style={{ perspective: 1000 }} className="relative w-full h-[55vh] min-h-[450px] shadow-[0_10px_50px_rgba(0,0,0,0.8)] overflow-hidden bg-[#0a0a0c]">
                 {displayCover && (
-                  <motion.img style={{ y: yCover, scale: scaleCover, filter: "brightness(0.5) blur(2px)" }} src={displayCover} alt={project.title} className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none" />
+                  <motion.img style={performanceMode === 'ultra' ? { y: yCover, scale: scaleCover, filter: "brightness(0.5) blur(2px)" } : { filter: "brightness(0.5)" }} src={displayCover} alt={project.title} className="absolute inset-0 w-full h-full object-cover select-none pointer-events-none" />
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#111115] via-[#111115]/50 to-transparent"></div>
                 <div className="absolute inset-0 bg-gradient-to-r from-[#111115] via-transparent to-transparent"></div>
                 
                 {/* Header Content constrained to container */}
-                <motion.div style={{ y: yText, rotateX: rotateXText }} className="absolute bottom-0 left-0 w-full [transform-style:preserve-3d]">
+                <motion.div style={performanceMode === 'ultra' ? { y: yText, rotateX: rotateXText } : {}} className="absolute bottom-0 left-0 w-full [transform-style:preserve-3d]">
                   <div className="container mx-auto px-6 lg:px-12 max-w-7xl flex flex-col md:flex-row items-end gap-10 pb-12">
                     <motion.div 
                       variants={{ hidden: { y: 150, rotateY: 90, scale: 0.5, opacity: 0 }, visible: { y: 0, rotateY: 0, scale: 1, opacity: 1, transition: { duration: 2, ease: [0.22, 1, 0.36, 1] } } }}
@@ -350,10 +355,10 @@ export default function ProjectDetailPage() {
                       className="flex-1 z-10 w-full pb-4"
                     >
                         <div className="flex items-center gap-3 mb-5">
-                            <motion.span animate={{ boxShadow: ["0px 0px 0px rgba(6,182,212,0)", "0px 0px 30px rgba(6,182,212,0.8)", "0px 0px 0px rgba(6,182,212,0)"] }} transition={{ duration: 3, repeat: Infinity }} className="px-4 py-1.5 bg-[#06b6d4]/10 text-[#06b6d4] border border-[#06b6d4]/20 rounded-full text-xs font-black uppercase tracking-widest">{project.category}</motion.span>
+                            <motion.span animate={performanceMode === 'ultra' ? { boxShadow: ["0px 0px 0px rgba(6,182,212,0)", "0px 0px 30px rgba(6,182,212,0.8)", "0px 0px 0px rgba(6,182,212,0)"] } : {}} transition={{ duration: 3, repeat: Infinity }} className="px-4 py-1.5 bg-[#06b6d4]/10 text-[#06b6d4] border border-[#06b6d4]/20 rounded-full text-xs font-black uppercase tracking-widest">{project.category}</motion.span>
                             <span className="text-white/30 text-xs font-bold tracking-widest bg-white/[0.03] px-3 py-1.5 rounded-lg border border-white/[0.05]">RC-104710 ˅</span>
                         </div>
-                        <motion.h1 style={{ y: yTitle }} className="text-4xl md:text-6xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-white/90 to-white/40 tracking-tight mb-8 drop-shadow-[0_0_40px_rgba(255,255,255,0.4)] hover:skew-x-3 hover:drop-shadow-[0_0_80px_rgba(255,255,255,0.8)] transition-all duration-500">
+                        <motion.h1 style={performanceMode === 'ultra' ? { y: yTitle } : {}} className="text-4xl md:text-6xl lg:text-8xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white via-white/90 to-white/40 tracking-tight mb-8 drop-shadow-[0_0_40px_rgba(255,255,255,0.4)] hover:skew-x-3 hover:drop-shadow-[0_0_80px_rgba(255,255,255,0.8)] transition-all duration-500">
                           {project.title}
                         </motion.h1>
                         
