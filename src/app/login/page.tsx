@@ -95,7 +95,10 @@ export default function LoginPage() {
               >
                  GOOGLE
               </button>
-              <button className="flex items-center justify-center gap-2 py-3 bg-[#2f2f38]/50 border border-white/10 rounded-xl text-xs font-bold hover:bg-[#2f2f38] transition-all">
+              <button 
+                onClick={() => signIn('discord', { callbackUrl: '/' })}
+                className="flex items-center justify-center gap-2 py-3 bg-[#2f2f38]/50 border border-white/10 rounded-xl text-xs font-bold hover:bg-dublio-purple/80 hover:text-white transition-all"
+              >
                  DISCORD
               </button>
            </div>

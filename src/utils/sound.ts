@@ -13,50 +13,52 @@ const initAudio = () => {
   return audioCtx;
 };
 
-export const playHoverSound = () => {
+const playKeyboardClick = () => {
   const ctx = initAudio();
   if (!ctx) return;
-  
   if (ctx.state === 'suspended') ctx.resume();
 
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
-
   osc.connect(gain);
   gain.connect(ctx.destination);
 
-  osc.type = "sine";
-  osc.frequency.setValueAtTime(800, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.05);
+  // Tok ve doyurucu bir mekanik klavye sesi
+  osc.type = "sawtooth";
+  osc.frequency.setValueAtTime(400, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime + 0.05);
 
   gain.gain.setValueAtTime(0, ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(0.02, ctx.currentTime + 0.01);
+  gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.005);
   gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.05);
 
   osc.start(ctx.currentTime);
   osc.stop(ctx.currentTime + 0.05);
 };
 
-export const playClickSound = () => {
+const playMouseClick = () => {
   const ctx = initAudio();
   if (!ctx) return;
-  
   if (ctx.state === 'suspended') ctx.resume();
 
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
-
   osc.connect(gain);
   gain.connect(ctx.destination);
 
+  // İnce ve keskin bir mouse tık sesi
   osc.type = "square";
-  osc.frequency.setValueAtTime(300, ctx.currentTime);
-  osc.frequency.exponentialRampToValueAtTime(100, ctx.currentTime + 0.1);
+  osc.frequency.setValueAtTime(800, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.02);
 
   gain.gain.setValueAtTime(0, ctx.currentTime);
-  gain.gain.linearRampToValueAtTime(0.05, ctx.currentTime + 0.01);
-  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+  gain.gain.linearRampToValueAtTime(0.03, ctx.currentTime + 0.002);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.02);
 
   osc.start(ctx.currentTime);
-  osc.stop(ctx.currentTime + 0.1);
+  osc.stop(ctx.currentTime + 0.03);
+};
+
+export const playClickSound = () => {
+  Math.random() > 0.5 ? playKeyboardClick() : playMouseClick();
 };
