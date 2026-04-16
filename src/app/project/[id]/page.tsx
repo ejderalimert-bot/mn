@@ -751,12 +751,12 @@ export default function ProjectDetailPage() {
                                   transition={{ delay: index * 0.1, type: "spring" }}
                                   className="flex gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/[0.02] hover:bg-white/[0.05] hover:scale-105 transition-all shadow-md group/comment"
                                 >
-                                  <Link href={`/profile/${c.userId}`} className="w-10 h-10 rounded-xl bg-gradient-to-tr from-dublio-purple to-dublio-cyan overflow-hidden shrink-0 shadow-lg group-hover/comment:shadow-[0_0_20px_purple] transition-shadow">
+                                  <Link href={`/user/${c.userId}`} className="w-10 h-10 rounded-xl bg-gradient-to-tr from-dublio-purple to-dublio-cyan overflow-hidden shrink-0 shadow-lg group-hover/comment:shadow-[0_0_20px_purple] transition-shadow">
                                     {c.userAvatar ? <img src={c.userAvatar} className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : <div className="w-full h-full flex items-center justify-center font-black text-white">{c.userName?.charAt(0) || '?'}</div>}
                                   </Link>
                                   <div className="flex-1">
                                     <div className="flex items-center justify-between mb-2">
-                                      <Link href={`/profile/${c.userId}`} className="text-white text-sm font-black hover:text-dublio-cyan transition-colors group-hover/comment:text-pink-500">{c.userName || 'Anonim'}</Link>
+                                      <Link href={`/user/${c.userId}`} className="text-white text-sm font-black hover:text-dublio-cyan transition-colors group-hover/comment:text-pink-500">{c.userName || 'Anonim'}</Link>
                                       <span className="text-white/30 text-[10px] font-bold">{new Date(c.date).toLocaleDateString()}</span>
                                     </div>
                                     <p className="text-white/60 text-sm leading-relaxed">{c.text}</p>
