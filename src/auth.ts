@@ -1,7 +1,7 @@
 import NextAuth from "next-auth"
 import Google from "next-auth/providers/google"
 import Discord from "next-auth/providers/discord"
-import Resend from "next-auth/providers/resend"
+import Nodemailer from "next-auth/providers/nodemailer"
 import { PrismaAdapter } from "@auth/prisma-adapter"
 import { prisma } from "@/lib/prisma"
 
@@ -20,9 +20,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.DISCORD_CLIENT_SECRET || "",
       allowDangerousEmailAccountLinking: true,
     }),
-    Resend({
-      from: "destek@dublio.net", // Veya verified başka bir alan adınız
-      apiKey: process.env.RESEND_API_KEY || "", 
+    Nodemailer({
+      server: {
+        host: "smtp.gmail.com",
+        port: 465,
+        auth: {
+          user: process.env.EMAIL_SERVER_USER,
+          pass: process.env.EMAIL_SERVER_PASSWORD,
+        },
+      },
+      from: `Star Dublaj <${process.env.EMAIL_SERVER_USER}>`,
     })
   ],
   session: { strategy: "jwt" },
