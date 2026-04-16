@@ -51,9 +51,6 @@ export default function PartnersPage() {
                    src="/korsan-logo.png" 
                    alt="Korsan Kayıtlar Stüdyosu Logo" 
                    className="w-64 h-64 md:w-80 md:h-80 object-contain relative z-10 filter drop-shadow-[0_0_30px_rgba(6,182,212,0.8)]" 
-                   onError={(e) => {
-                     (e.target as HTMLImageElement).src = 'https://via.placeholder.com/400x400.png?text=L%C3%BCtfen+Logoyu+Ekleyin';
-                   }}
                 />
              </div>
           </div>
