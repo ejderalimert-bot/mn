@@ -17,7 +17,7 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading(true);
     // Magic Link Gönderme İşlemi
-    await signIn('nodemailer', { email: formData.email, redirect: false });
+    await signIn('nodemailer', { email: formData.email, redirect: false, callbackUrl: '/' });
     setSuccess(true);
     setLoading(false);
   };
