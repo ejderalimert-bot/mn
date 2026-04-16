@@ -85,6 +85,7 @@ model User {
   email         String?         @unique
   emailVerified DateTime?
   image         String?
+  publicFavorites Boolean       @default(true) // Added for privacy setting
   accounts      Account[]
   sessions      Session[]
   createdAt DateTime @default(now())

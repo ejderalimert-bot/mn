@@ -55,13 +55,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     signIn: '/login',
   },
   callbacks: {
-    session({ session, token, user }: any) {
-      if (session?.user) {
-        if (token?.sub) {
-          (session as any).user.id = token.sub;
-        } else if (user?.id) {
-          (session as any).user.id = user.id;
-        }
+    async jwt({ token, trigger, session, user }: any) {
+      if (user) {
+        token.id = user.id;
+        token.publicFavorites = user.publicFavorites ?? true;
+      }
+      if (trigger === "update" && session) {
+        if (session.name) token.name = session.name;
+        if (session.image) token.picture = session.image;
+        if (session.publicFavorites !== undefined) token.publicFavorites = session.publicFavorites;
+      }
+      return token;
+    },
+    session({ session, token }: any) {
+      if (session?.user && token) {
+        session.user.id = token.sub || token.id;
+        session.user.name = token.name;
+        session.user.image = token.picture as string;
+        session.user.publicFavorites = token.publicFavorites ?? true;
 
         // Check for specific admin email
         if (session.user.email === "ejderalimert@gmail.com") {

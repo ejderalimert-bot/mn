@@ -9,13 +9,14 @@ export async function PUT(req: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, image } = await req.json();
+    const { name, image, publicFavorites } = await req.json();
 
     const updatedUser = await prisma.user.update({
       where: { id: session.user.id },
       data: { 
-        name: name || undefined,
-        image: image || undefined
+        name: name !== undefined ? name : undefined,
+        image: image !== undefined ? image : undefined,
+        publicFavorites: publicFavorites !== undefined ? publicFavorites : undefined
       }
     });
 

@@ -242,12 +242,20 @@ const Navbar = () => {
                   </div>
                 )}
               </Link>
-              <button
-                onClick={() => signOut()}
-                className="text-[10px] font-black text-white/20 hover:text-red-500 uppercase tracking-widest transition-colors ml-2"
-              >
-                ÇIKIŞ
-              </button>
+              <div className="flex flex-col gap-1 ml-2">
+                <Link
+                  href="/profile?tab=settings"
+                  className="text-[10px] font-black text-white/40 hover:text-dublio-cyan uppercase tracking-widest transition-colors"
+                >
+                  AYARLAR
+                </Link>
+                <button
+                  onClick={() => signOut()}
+                  className="text-[10px] font-black text-white/20 hover:text-red-500 uppercase tracking-widest transition-colors text-left"
+                >
+                  ÇIKIŞ
+                </button>
+              </div>
             </div>
           ) : (
             <div className="flex items-center gap-4">
