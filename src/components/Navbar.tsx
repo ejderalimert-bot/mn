@@ -98,6 +98,10 @@ const Navbar = () => {
               Seslendirme
               {pathname?.startsWith('/dubbing') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-dublio-cyan shadow-[0_0_10px_rgba(106,255,235,0.7)]"></motion.span>}
             </Link>
+            <Link href="/partners" className={`relative text-sm font-medium transition-colors pb-1 ${pathname?.startsWith('/partners') ? 'text-white text-pink-500' : 'text-pink-400/80 hover:text-pink-400'}`}>
+              Ortak Ekibimiz
+              {pathname?.startsWith('/partners') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.7)]"></motion.span>}
+            </Link>
           </nav>
         </div>
 
