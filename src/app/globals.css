@@ -24,6 +24,18 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Simple Light Mode via Inversion */
+html.light {
+  filter: invert(1) hue-rotate(180deg);
+  background-color: inherit;
+}
+html.light img, 
+html.light video, 
+html.light iframe, 
+html.light .no-invert {
+  filter: invert(1) hue-rotate(180deg);
+}
+
 @layer utilities {
   .bg-dublio-dark { background-color: var(--dublio-dark); }
   .bg-dublio-gray { background-color: var(--dublio-gray); }

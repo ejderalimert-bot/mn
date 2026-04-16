@@ -31,6 +31,19 @@ export default async function RootLayout({
 
   return (
     <html lang="tr" translate="no" className="notranslate">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              try {
+                if (localStorage.getItem('theme') === 'light') {
+                  document.documentElement.classList.add('light');
+                }
+              } catch (e) {}
+            `,
+          }}
+        />
+      </head>
       <body className={`${inter.className} antialiased selection:!bg-transparent selection:!text-current cursor-none`}>
         <CustomCursor />
         <AuthProvider>

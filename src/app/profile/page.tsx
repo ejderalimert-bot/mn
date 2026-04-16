@@ -23,6 +23,7 @@ export default function ProfilePage() {
   const [editImage, setEditImage] = useState("");
   const [editPublicFavorites, setEditPublicFavorites] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [themeMode, setThemeMode] = useState<'dark' | 'light'>('dark');
 
   React.useEffect(() => {
     // Determine the tab from URL query params (e.g. ?tab=settings)
@@ -31,8 +32,23 @@ export default function ProfilePage() {
        if (urlParams.get('tab') === 'settings') {
           setActiveTab('ayarlar');
        }
+       if (localStorage.getItem('theme') === 'light') {
+          setThemeMode('light');
+       }
     }
   }, []);
+
+  const toggleTheme = () => {
+    const newTheme = themeMode === 'light' ? 'dark' : 'light';
+    setThemeMode(newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    if (newTheme === 'light') {
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+    }
+  };
 
   React.useEffect(() => {
     if (session?.user) {
@@ -303,6 +319,29 @@ export default function ProfilePage() {
                         >
                            <div className={`w-6 h-6 rounded-full bg-white absolute top-0.5 transition-all shadow-md ${editPublicFavorites ? 'left-6.5 translate-x-[22px]' : 'left-0.5'}`}></div>
                         </button>
+                     </div>
+
+                     {/* THEME SETTING */}
+                     <div className="bg-black/20 p-6 rounded-2xl border border-white/5 flex items-center justify-between gap-4">
+                        <div>
+                           <label className="text-xs font-black text-gray-400 tracking-[0.2em] uppercase mb-2 block flex items-center gap-2">Görünüm</label>
+                           <h4 className="text-white font-bold text-lg">Mod Seçimi</h4>
+                           <p className="text-xs text-white/40 mt-1 max-w-sm">Uygulamayı açık veya karanlık modda (önerilen) kullanın.</p>
+                        </div>
+                        <div className="bg-black border border-white/10 rounded-xl p-1 flex">
+                          <button 
+                            onClick={() => themeMode !== 'dark' && toggleTheme()}
+                            className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors ${themeMode === 'dark' ? 'bg-white/10 text-white' : 'text-white/40 hover:text-white'}`}
+                          >
+                            KARANLIK
+                          </button>
+                          <button 
+                            onClick={() => themeMode !== 'light' && toggleTheme()}
+                            className={`px-4 py-2 rounded-lg text-xs font-bold transition-colors ${themeMode === 'light' ? 'bg-white text-black' : 'text-white/40 hover:text-white'}`}
+                          >
+                            AÇIK
+                          </button>
+                        </div>
                      </div>
 
                      <div className="flex flex-col sm:flex-row items-center gap-4 pt-6 border-t border-white/10">
