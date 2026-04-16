@@ -16,13 +16,7 @@ export default function PartnersPage() {
       <section className="relative pt-32 pb-40 overflow-hidden flex flex-col items-center justify-center min-h-[90vh]">
         {/* Background Elements */}
         <div className="absolute inset-0 z-0 bg-[#0a0a0c]">
-          {/* Realistic Ocean Background */}
-          <div 
-             className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-60 mix-blend-screen"
-             style={{ backgroundImage: `url('/ocean_bg.png')`, filter: 'saturate(1.2)' }}
-          ></div>
-
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-dublio-cyan/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen animate-pulse z-10"></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-red-600/10 rounded-full blur-[120px] pointer-events-none mix-blend-screen animate-pulse"></div>
           
           {/* Subtle noise texture */}
           <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-10" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=%220 0 200 200%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noiseFilter%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.65%22 numOctaves=%223%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noiseFilter)%22/%3E%3C/svg%3E")' }}></div>
@@ -48,16 +42,27 @@ export default function PartnersPage() {
              <span className="w-2 h-2 rounded-full bg-dublio-cyan animate-pulse"></span>
           </div>
 
-          {/* Epic Logo Animation Wrapper */}
-          <div className="animate-wave-crash mx-auto mb-12 relative flex justify-center items-center">
-             <div className="animate-ship-rocking relative">
+          {/* Epic Logo & Wave Animation Wrapper */}
+          <div className="animate-wave-crash mx-auto mb-16 mt-8 relative flex justify-center items-center">
+             <div className="animate-ship-rocking relative flex flex-col items-center">
+                
                 {/* Neon Sea Glow behind logo! */}
-                <div className="absolute inset-0 bg-dublio-cyan opacity-40 blur-[80px] rounded-full scale-150"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-dublio-cyan opacity-40 blur-[80px] rounded-full w-full h-full scale-150 z-0"></div>
+                
+                {/* Korsan Logo (Behind the wave) */}
                 <img 
                    src="/korsan-logo.png" 
                    alt="Korsan Kayıtlar Stüdyosu Logo" 
                    className="w-64 h-64 md:w-80 md:h-80 object-contain relative z-10 filter drop-shadow-[0_0_30px_rgba(6,182,212,0.8)]" 
                 />
+
+                {/* Deniz (Wave) under the logo, overlapping it slightly */}
+                <img 
+                   src="/dalga.png" 
+                   alt="Deniz Dalgaları" 
+                   className="w-[120%] max-w-[450px] object-contain absolute -bottom-16 z-20 drop-shadow-2xl" 
+                />
+                
              </div>
           </div>
 
