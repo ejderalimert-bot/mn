@@ -8,6 +8,7 @@ import { Shield, Plus, Pencil, Trash2, LayoutGrid, Users, Newspaper, ListTree, G
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePerformance } from "@/context/PerformanceContext";
 import CloudinaryUploader from '@/components/CloudinaryUploader';
+import AdminNotes from '@/components/AdminNotes';
 
 // Local data is fetched now
 
@@ -162,8 +163,78 @@ export default function AdminDashboardPage() {
     );
   }
 
+  // Admin Keyboard Shortcuts
+  React.useEffect(() => {
+    const handleAdminShortcuts = (e: KeyboardEvent) => {
+      // Sadece admin panelindeyken çalışır
+      if (e.altKey && e.key.toLowerCase() === 'n') {
+        e.preventDefault();
+        setActiveTab('Projeler');
+        handleAddNew();
+      }
+      if (e.altKey && e.key.toLowerCase() === 's') {
+        e.preventDefault();
+        setActiveTab('Oyun Ekle');
+      }
+      // Ctrl+S form varsa submit trigger (Basit UX için simülasyon)
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+        if (view === 'form') {
+           e.preventDefault();
+           const form = document.querySelector('form');
+           if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        }
+      }
+    };
+    window.addEventListener('keydown', handleAdminShortcuts);
+    return () => window.removeEventListener('keydown', handleAdminShortcuts);
+  }, [view, activeTab]);
+
+  // Auto Save Draft Flow
+  React.useEffect(() => {
+    if (view === 'form' && !editingProject) {
+      const draft = {
+        title: formTitle,
+        description: formDescription,
+        category: formCategory,
+        tags: formTags,
+        focusKeyword: formFocusKeyword,
+        seoTitle: formSeoTitle,
+        seoDesc: formSeoDesc,
+        slug: formSlug,
+        trailer: formTrailer
+      };
+      // Sadece başlık veya açıklama doldurulmuşsa kaydet
+      if (formTitle || formDescription) {
+        localStorage.setItem('dublio_admin_draft', JSON.stringify(draft));
+      }
+    }
+  }, [formTitle, formDescription, formCategory, formTags, formFocusKeyword, formSeoTitle, formSeoDesc, formSlug, formTrailer, view, editingProject]);
+
   const handleAddNew = () => {
     setEditingProject(null);
+    const draftStr = localStorage.getItem('dublio_admin_draft');
+    
+    if (draftStr) {
+      if (window.confirm("Kaydedilmemiş bir proje taslağınız (Draft) var. Geri yüklemek ister misiniz?")) {
+        try {
+          const draft = JSON.parse(draftStr);
+          setFormTitle(draft.title || '');
+          setFormDescription(draft.description || '');
+          setFormCategory(draft.category || 'Oyunlar');
+          setFormTrailer(draft.trailer || '');
+          setFormTags(draft.tags || []);
+          setFormFocusKeyword(draft.focusKeyword || '');
+          setFormSeoTitle(draft.seoTitle || '');
+          setFormSeoDesc(draft.seoDesc || '');
+          setFormSlug(draft.slug || '');
+          setView('form');
+          return;
+        } catch(e) {}
+      } else {
+        localStorage.removeItem('dublio_admin_draft');
+      }
+    }
+
     setFormTitle('');
     setFormDescription('');
     setFormCategory('Oyunlar');
@@ -246,6 +317,7 @@ export default function AdminDashboardPage() {
       });
       const added = await res.json();
       setProjects([...projects, added]);
+      localStorage.removeItem('dublio_admin_draft'); // Clear draft on successful save
     }
 
     setView('list');
@@ -917,6 +989,8 @@ export default function AdminDashboardPage() {
                    <span>Oca</span><span>Şub</span><span>Mar</span><span>Nis</span><span>May</span><span>Haz</span><span>Tem</span><span>Ağu</span><span>Eyl</span><span>Eki</span><span>Kas</span><span>Ara</span>
                 </div>
              </div>
+
+             <AdminNotes />
           </motion.div>
         )}
 
