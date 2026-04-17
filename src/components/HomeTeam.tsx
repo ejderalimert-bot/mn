@@ -10,11 +10,13 @@ export default function HomeTeam({ teamMembers }: { teamMembers: any[] }) {
   return (
     <section className="py-24 px-8 relative overflow-hidden bg-[#161313] border-t border-white/5">
       <div className="container mx-auto relative z-10 max-w-6xl text-center">
-        <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4 text-white drop-shadow-md flex items-center justify-center gap-4">
-          <ShieldCheck className="w-12 h-12 md:w-16 md:h-16 text-dublio-cyan" />
-          Ekibimiz
-        </h2>
-        <div className="h-1 w-24 bg-dublio-cyan mx-auto mb-16 shadow-[0_0_15px_cyan]"></div>
+        <div className="flex flex-col items-center justify-center text-center mb-16 relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-dublio-cyan/20 blur-[100px] pointer-events-none rounded-full" />
+          <h2 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-dublio-cyan to-dublio-purple tracking-tighter mb-4 uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center justify-center gap-4">
+            <ShieldCheck className="w-12 h-12 md:w-16 md:h-16 text-dublio-cyan" />
+            EKİBİMİZ
+          </h2>
+        </div>
 
         <motion.div 
           initial="hidden"

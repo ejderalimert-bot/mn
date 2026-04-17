@@ -63,7 +63,7 @@ export default function FeaturedProject({ featuredProject }: { featuredProject: 
            {/* Content */}
            <div className="z-10 relative">
               <span className="text-dublio-cyan font-black tracking-widest text-sm uppercase mb-4 block animate-pulse">Yeni Çıktı</span>
-              <h3 className="text-4xl md:text-6xl font-black text-white italic uppercase tracking-tighter leading-none mb-6 drop-shadow-md">
+              <h3 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-dublio-cyan to-dublio-purple tracking-tighter mb-4 uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
                  {featuredProject.title}
               </h3>
               <p className="text-white/60 text-lg leading-relaxed mb-10 max-w-lg line-clamp-3">

@@ -124,8 +124,8 @@ const ProjectsSection = ({ mods }: { mods: any[] }) => {
             <div className="w-12 h-1 bg-dublio-purple rounded-full shrink-0"></div>
             <span className="text-[12px] font-black text-dublio-purple tracking-[0.4em] uppercase whitespace-nowrap">KEŞFET</span>
           </motion.div>
-          <motion.h2 initial={performanceMode === 'ultra' ? { opacity: 0, y: 50, filter: "blur(10px)" } : { opacity: 0, y: 20 }} whileInView={performanceMode === 'ultra' ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 1.5, type: "spring", bounce: 0.5 }} className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter text-white leading-tight">
-            Geleceğin <br /> <span className="dublio-gradient-text inline-block hover:scale-105 transition-transform duration-500 cursor-default">Projelerini</span> Yakala
+          <motion.h2 initial={performanceMode === 'ultra' ? { opacity: 0, y: 50, filter: "blur(10px)" } : { opacity: 0, y: 20 }} whileInView={performanceMode === 'ultra' ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 1.5, type: "spring", bounce: 0.5 }} className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-dublio-cyan to-dublio-purple tracking-tighter mb-4 uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+            GELECEĞİN <br /> PROJELERİNİ YAKALA
           </motion.h2>
         </motion.div>
 
