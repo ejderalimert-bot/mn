@@ -7,6 +7,7 @@ import AnalyticsProvider from "@/components/AnalyticsProvider";
 import CustomCursor from "@/components/CustomCursor";
 import SiteInnovations from "@/components/SiteInnovations";
 import CommandPalette from "@/components/CommandPalette";
+import SocialChatWidget from "@/components/SocialChatWidget";
 import { PerformanceProvider, PerformanceMode } from "@/context/PerformanceContext";
 import { cookies } from "next/headers";
 
@@ -50,6 +51,7 @@ export default async function RootLayout({
         <CustomCursor />
         <SiteInnovations />
         <CommandPalette />
+        <SocialChatWidget />
         <AuthProvider>
           <PerformanceProvider defaultMode={defaultMode}>
             <AnalyticsProvider />

@@ -28,10 +28,11 @@ export default function CommandPalette() {
   }, []);
 
   const actions = [
-    { id: 1, title: "Projeleri Keşfet", icon: <Gamepad2 className="w-5 h-5" />, path: "/#projects" },
-    { id: 2, title: "Haberlere Göz At", icon: <MonitorPlay className="w-5 h-5" />, path: "/#news" },
-    { id: 3, title: "Star Ekibiyle Tanış", icon: <Users className="w-5 h-5" />, path: "/team" },
-    { id: 4, title: "Yönetici Paneline Geç", icon: <AlertCircle className="w-5 h-5 text-red-500" />, path: "/admin" },
+    { id: 1, title: "Topluluk (Sosyal)", icon: <Users className="w-5 h-5 text-dublio-cyan" />, path: "/community" },
+    { id: 2, title: "Projeleri Keşfet", icon: <Gamepad2 className="w-5 h-5" />, path: "/#projects" },
+    { id: 3, title: "Haberlere Göz At", icon: <MonitorPlay className="w-5 h-5" />, path: "/#news" },
+    { id: 4, title: "Star Ekibiyle Tanış", icon: <Users className="w-5 h-5" />, path: "/team" },
+    { id: 5, title: "Yönetici Paneline Geç", icon: <AlertCircle className="w-5 h-5 text-red-500" />, path: "/admin" },
   ];
 
   const filteredActions = actions.filter(action => action.title.toLowerCase().includes(query.toLowerCase()));

@@ -93,6 +93,12 @@ model User {
   
   teamMember TeamMember?
   news       News[]
+
+  // Social Relations
+  sentMessages     Message[]    @relation("SentMessages")
+  receivedMessages Message[]    @relation("ReceivedMessages")
+  userFriends      Friendship[] @relation("UserFriends")
+  friendUsers      Friendship[] @relation("FriendUsers")
 }
  
 model Account {
@@ -167,4 +173,29 @@ model News {
   updatedAt   DateTime @updatedAt
   authorId    String
   author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+}
+
+// Social and Messaging Tables
+model Message {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  content    String
+  createdAt  DateTime @default(now())
+  
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User     @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
+}
+
+model Friendship {
+  id        String   @id @default(cuid())
+  userId    String
+  friendId  String
+  status    String   @default("PENDING") // PENDING, ACCEPTED
+  createdAt DateTime @default(now())
+
+  user      User     @relation("UserFriends", fields: [userId], references: [id], onDelete: Cascade)
+  friend    User     @relation("FriendUsers", fields: [friendId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, friendId])
 }
