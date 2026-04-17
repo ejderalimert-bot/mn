@@ -63,11 +63,16 @@ export default function HomeFooter() {
           <div>
             <h4 className="font-black text-white/90 uppercase tracking-[0.2em] mb-8 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-dublio-purple"></span> Keşfet</h4>
             <ul className="space-y-4">
-              {['Tüm Modlar', 'Tüm Videolar', 'Haberler', 'Projeler'].map((item, i) => (
+              {[
+                { name: 'Tüm Modlar', path: '/mods' },
+                { name: 'Tüm Videolar', path: '/projects' },
+                { name: 'Haberler', path: '/news' },
+                { name: 'Projeler', path: '/projects' }
+              ].map((item, i) => (
                 <li key={i}>
-                  <Link href="#" className="text-white/50 hover:text-white font-medium text-sm transition-colors flex items-center gap-2 group/link">
+                  <Link href={item.path} className="text-white/50 hover:text-white font-medium text-sm transition-colors flex items-center gap-2 group/link">
                     <ArrowUpRight className="w-3 h-3 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all text-dublio-purple" />
-                    {item}
+                    {item.name}
                   </Link>
                 </li>
               ))}
@@ -78,11 +83,16 @@ export default function HomeFooter() {
           <div>
             <h4 className="font-black text-white/90 uppercase tracking-[0.2em] mb-8 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-dublio-cyan"></span> Kurumsal</h4>
             <ul className="space-y-4">
-              {['Hakkımızda', 'Ekibimiz', 'Kariyer', 'İletişim'].map((item, i) => (
+              {[
+                { name: 'Hakkımızda', path: '/about' },
+                { name: 'Ekibimiz', path: '/team' },
+                { name: 'Kariyer', path: '/career' },
+                { name: 'İletişim', path: '/contact' }
+              ].map((item, i) => (
                 <li key={i}>
-                  <Link href="#" className="text-white/50 hover:text-white font-medium text-sm transition-colors flex items-center gap-2 group/link">
+                  <Link href={item.path} className="text-white/50 hover:text-white font-medium text-sm transition-colors flex items-center gap-2 group/link">
                     <ArrowUpRight className="w-3 h-3 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all text-dublio-cyan" />
-                    {item}
+                    {item.name}
                   </Link>
                 </li>
               ))}
