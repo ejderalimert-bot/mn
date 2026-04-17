@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X, Send, Minus, Users, ArrowLeft, Search, PlusCircle, Check } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -14,13 +14,13 @@ export default function SocialChatWidget() {
   const [targetUser, setTargetUser] = useState<any>(null);
   const [friendsData, setFriendsData] = useState<any[]>([]);
   
-  const [messages, setMessages] = useState([
-    { id: 1, sender: "Sistem", text: "Mesajlaşma servisi (Pusher) entegrasyonu tamamlanana kadar çevrimdışı moddasınız.", time: "Bugün", isMe: false }
-  ]);
+  const [messages, setMessages] = useState<any[]>([]);
   const [inputVal, setInputVal] = useState("");
   const [addUsername, setAddUsername] = useState("");
   const [addStatus, setAddStatus] = useState<'idle'|'loading'|'success'|'error'>('idle');
   const [addMsg, setAddMsg] = useState("");
+  
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const fetchFriends = async () => {
      if (!session) return;
@@ -31,9 +31,41 @@ export default function SocialChatWidget() {
      } catch (e) {}
   };
 
+  const fetchMessages = async () => {
+      if (!targetUser?.id) return;
+      try {
+          const res = await fetch(`/api/social/messages?targetUserId=${targetUser.id}`);
+          const data = await res.json();
+          if (data.messages) {
+              setMessages(data.messages);
+          }
+      } catch (err) {}
+  };
+
   useEffect(() => {
     if (isOpen) fetchFriends();
   }, [isOpen, session]);
+
+  // Real-time polling effect ONLY when looking at a specific chat
+  useEffect(() => {
+     let interval: any;
+     if (isOpen && !isMinimized && mode === 'chat' && targetUser?.id) {
+         fetchMessages(); // Initial fetch
+         interval = setInterval(() => {
+             fetchMessages();
+         }, 2000); // Poll every 2 seconds for new messages!
+     }
+     return () => {
+         if (interval) clearInterval(interval);
+     };
+  }, [isOpen, isMinimized, mode, targetUser]);
+
+  useEffect(() => {
+     // Scroll to bottom when messages load/update
+     if (messagesEndRef.current) {
+         messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+     }
+  }, [messages]);
 
   useEffect(() => {
     const handleOpenChat = (e: any) => {
@@ -41,26 +73,37 @@ export default function SocialChatWidget() {
        setMode('chat');
        setIsOpen(true);
        setIsMinimized(false);
-       setMessages([
-         { id: 1, sender: e.detail.username || "Oyuncu", text: "Selam! Naber?", time: "Az önce", isMe: false }
-       ]);
     };
     
     window.addEventListener('open-chat', handleOpenChat);
     return () => window.removeEventListener('open-chat', handleOpenChat);
   }, []);
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputVal.trim()) return;
-    setMessages([...messages, { 
-      id: Date.now(), 
-      sender: "Ben", 
-      text: inputVal, 
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), 
-      isMe: true 
-    }]);
+    if (!inputVal.trim() || !targetUser?.id) return;
+    
+    // Optimistic UI update
+    const optimisticMsg = {
+        id: Date.now().toString(),
+        text: inputVal,
+        isMe: true,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setMessages(prev => [...prev, optimisticMsg]);
+    const msgToSend = inputVal;
     setInputVal("");
+
+    try {
+        await fetch('/api/social/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ targetUserId: targetUser.id, text: msgToSend })
+        });
+        // Polling will catch any inconsistencies later
+    } catch(err) {
+        console.error("Message send failed");
+    }
   };
 
   const handleAddFriend = async (e: React.FormEvent) => {
@@ -93,9 +136,7 @@ export default function SocialChatWidget() {
   const openConversation = (friend: any) => {
       setTargetUser(friend.profile);
       setMode('chat');
-      setMessages([
-         { id: 1, sender: friend.profile.username, text: "Selam! Naber?", time: "Az önce", isMe: false }
-      ]);
+      setMessages([]);
   };
 
   const friends = friendsData.filter(f => f.status === 'ACCEPTED');
@@ -142,7 +183,7 @@ export default function SocialChatWidget() {
                     <span className="font-bold text-sm text-white tracking-widest uppercase">Ağ Bağlantısı</span>
                   </>
                 )}
-                <span className="text-[9px] bg-red-500/20 text-red-500 px-1.5 py-0.5 rounded ml-2 font-black uppercase hidden sm:block">PRE-ALPHA</span>
+                <span className="text-[9px] bg-red-500/20 text-red-500 px-1.5 py-0.5 rounded ml-2 font-black uppercase hidden sm:block">GERÇEK ZAMANLI</span>
               </div>
               <div className="flex items-center gap-1">
                 <button onClick={(e) => { e.stopPropagation(); setIsMinimized(!isMinimized); }} className="p-1 hover:bg-white/10 rounded text-white/50 hover:text-white transition-colors">
@@ -220,21 +261,22 @@ export default function SocialChatWidget() {
                 {mode === 'chat' && (
                    <div className="absolute inset-0 flex flex-col bg-gradient-to-b from-[#121318] to-black">
                      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                       {messages.length === 0 && (
+                          <div className="text-center pt-10 pb-4 text-xs text-white/30 italic">Burada henüz hiç konuşulmadı. İlk adımı at!</div>
+                       )}
                        {messages.map((msg) => (
                          <div key={msg.id} className={`flex flex-col ${msg.isMe ? 'items-end' : 'items-start'}`}>
                            <div className={`px-4 py-2 mt-1 max-w-[85%] text-sm rounded-2xl leading-relaxed ${
                              msg.isMe 
                                ? 'bg-dublio-purple text-white rounded-tr-sm' 
-                               : 'bg-white/10 text-white rounded-tl-sm'
+                               : 'bg-[#2a2a35] text-white rounded-tl-sm'
                            }`}>
                              {msg.text}
                            </div>
                            <span className="text-[9px] font-bold text-white/30 mt-1">{msg.time}</span>
                          </div>
                        ))}
-                       <div className="text-center pt-2">
-                         <span className="text-[10px] text-white/20 uppercase tracking-widest font-black">BUGÜN</span>
-                       </div>
+                       <div ref={messagesEndRef} />
                      </div>
 
                      <form onSubmit={handleSend} className="p-3 bg-[#1a1c23] border-t border-white/5 flex gap-2 shrink-0">
@@ -242,7 +284,7 @@ export default function SocialChatWidget() {
                          type="text" 
                          value={inputVal}
                          onChange={e => setInputVal(e.target.value)}
-                         placeholder="Mesaj gönder..." 
+                         placeholder={`${targetUser?.username} hesabına yaz...`} 
                          className="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-dublio-purple placeholder:text-white/30"
                        />
                        <button type="submit" disabled={!inputVal.trim()} className="bg-dublio-purple hover:bg-[#9333ea] disabled:opacity-50 disabled:hover:bg-dublio-purple text-white p-2 rounded-xl transition-colors">
