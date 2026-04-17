@@ -1,17 +1,31 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MessageSquare, X, Send, Minus } from "lucide-react";
 
 export default function SocialChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [targetUser, setTargetUser] = useState<any>(null);
   const [messages, setMessages] = useState([
-    { id: 1, sender: "Ali Mert", text: "Selam! Yeni modları denedin mi?", time: "18:24", isMe: false },
-    { id: 2, sender: "Ben", text: "Evet kanka, efsane olmuş.", time: "18:25", isMe: true }
+    { id: 1, sender: "Sistem", text: "Mesajlaşma servisi (Pusher) entegrasyonu tamamlanana kadar çevrimdışı moddasınız.", time: "Bugün", isMe: false }
   ]);
   const [inputVal, setInputVal] = useState("");
+
+  useEffect(() => {
+    const handleOpenChat = (e: any) => {
+       setTargetUser(e.detail);
+       setIsOpen(true);
+       setIsMinimized(false);
+       setMessages([
+         { id: 1, sender: e.detail.username || "Oyuncu", text: "Selam! Naber?", time: "Az önce", isMe: false }
+       ]);
+    };
+    
+    window.addEventListener('open-chat', handleOpenChat);
+    return () => window.removeEventListener('open-chat', handleOpenChat);
+  }, []);
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
@@ -52,10 +66,10 @@ export default function SocialChatWidget() {
             >
               <div className="flex items-center gap-2">
                 <div className="relative">
-                  <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=alimert" className="w-6 h-6 rounded-full bg-black shrink-0" />
+                  <img src={targetUser?.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${targetUser?.username || 'alimert'}`} className="w-6 h-6 rounded-full bg-black shrink-0" />
                   <div className="absolute bottom-0 right-0 w-2 h-2 bg-green-500 rounded-full border border-[#1a1c23]"></div>
                 </div>
-                <span className="font-bold text-sm text-white">Ali Mert</span>
+                <span className="font-bold text-sm text-white">{targetUser?.username || 'Topluluk Sohbeti'}</span>
                 <span className="text-[9px] bg-red-500/20 text-red-500 px-1.5 py-0.5 rounded ml-2 font-black uppercase">PRE-ALPHA</span>
               </div>
               <div className="flex items-center gap-1">

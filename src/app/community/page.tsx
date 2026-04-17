@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, Phone, Gamepad2, Search, Settings, Network, Copy, Check } from "lucide-react";
+import { Users, Phone, Gamepad2, Search, Settings, Network, Copy, Check, MessageSquare } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
 export default function CommunityPage({ searchParams }: any) {
@@ -246,9 +246,9 @@ export default function CommunityPage({ searchParams }: any) {
                          </div>
                       </div>
                       <div className="flex gap-2 w-full md:w-auto justify-end">
-                         <button className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors tooltip-trigger relative group">
+                         <button onClick={() => window.dispatchEvent(new CustomEvent('open-chat', { detail: f.profile }))} className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors tooltip-trigger relative group">
                             <span className="absolute -top-10 scale-0 group-hover:scale-100 transition-all bg-black border border-white/10 text-xs font-bold px-2 py-1 rounded">Mesaj</span>
-                            <Gamepad2 className="w-5 h-5 text-white/70 group-hover:text-white" />
+                            <MessageSquare className="w-5 h-5 text-white/70 group-hover:text-white" />
                          </button>
                          <button onClick={() => alert("Sesli arama özelliği WebRTC bağlantısı bekliyor (Pre-Alpha)")} className="w-10 h-10 rounded-full bg-dublio-cyan/10 hover:bg-dublio-cyan/20 flex items-center justify-center transition-colors tooltip-trigger relative group text-dublio-cyan shadow-[0_0_15px_rgba(6,182,212,0.1)]">
                             <span className="absolute -top-10 scale-0 group-hover:scale-100 transition-all bg-dublio-cyan text-black px-2 py-1 rounded text-xs font-bold whitespace-nowrap z-50">Sesli Ara</span>
