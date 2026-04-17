@@ -84,3 +84,52 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Bir hata oluştu" }, { status: 500 });
     }
   }
+
+export async function PUT(req: Request) {
+    try {
+        const session = await auth();
+        if (!session || !session.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+        const { messageId, newText } = await req.json();
+        const currentUser: any = await (prisma.user as any).findUnique({ where: { email: session.user.email as string } });
+
+        // @ts-ignore
+        const msg = await (prisma.message as any).findUnique({ where: { id: messageId } });
+        if (!msg || msg.senderId !== currentUser.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+        // @ts-ignore
+        await (prisma.message as any).update({
+            where: { id: messageId },
+            data: { content: newText }
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (e) {
+        return NextResponse.json({ error: "Hata" }, { status: 500 });
+    }
+}
+
+export async function DELETE(req: Request) {
+    try {
+        const session = await auth();
+        if (!session || !session.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+        const { searchParams } = new URL(req.url);
+        const messageId = searchParams.get('messageId');
+        
+        const currentUser: any = await (prisma.user as any).findUnique({ where: { email: session.user.email as string } });
+
+        // @ts-ignore
+        const msg = await (prisma.message as any).findUnique({ where: { id: messageId } });
+        if (!msg || msg.senderId !== currentUser.id) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+        // @ts-ignore
+        await (prisma.message as any).delete({
+            where: { id: messageId }
+        });
+
+        return NextResponse.json({ success: true });
+    } catch (e) {
+        return NextResponse.json({ error: "Hata" }, { status: 500 });
+    }
+}

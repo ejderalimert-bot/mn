@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, Phone, Gamepad2, Search, Settings, Network, Copy, Check, MessageSquare, Send, ArrowLeft, X, PlusCircle } from "lucide-react";
+import { Users, Phone, Gamepad2, Search, Settings, Network, Copy, Check, MessageSquare, Send, ArrowLeft, X, PlusCircle, Mic, Edit2, Trash2, StopCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
 export default function CommunityPage({ searchParams }: any) {
@@ -16,6 +16,13 @@ export default function CommunityPage({ searchParams }: any) {
   const [chatMessages, setChatMessages] = useState<any[]>([]);
   const [chatInput, setChatInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Voice Recording & Edit States
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [recordingTime, setRecordingTime] = useState(0);
+  const recordingTimerRef = useRef<any>(null);
+  const [editingMsg, setEditingMsg] = useState<any>(null);
 
   // Set Username Modal Stage
   const [usernameInput, setUsernameInput] = useState("");
@@ -136,29 +143,82 @@ export default function CommunityPage({ searchParams }: any) {
       setActiveTab('chat');
   };
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!chatInput.trim() || !chatUser?.id) return;
+  const handleSendMessage = async (e?: React.FormEvent, customText?: string) => {
+    if (e) e.preventDefault();
+    const textToSend = customText || chatInput;
+    if (!textToSend.trim() || !chatUser?.id) return;
+
+    if (editingMsg) {
+        // Edit flow
+        setChatMessages(prev => prev.map(m => m.id === editingMsg.id ? { ...m, text: textToSend } : m));
+        const editId = editingMsg.id;
+        setEditingMsg(null);
+        setChatInput("");
+        await fetch('/api/social/messages', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ messageId: editId, newText: textToSend })
+        });
+        return;
+    }
     
     const optimisticMsg = {
         id: Date.now().toString(),
-        text: chatInput,
+        text: textToSend,
         isMe: true,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
     };
     setChatMessages(prev => [...prev, optimisticMsg]);
-    const msgToSend = chatInput;
     setChatInput("");
 
     try {
         await fetch('/api/social/messages', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ targetUserId: chatUser.id, text: msgToSend })
+            body: JSON.stringify({ targetUserId: chatUser.id, text: textToSend })
         });
     } catch(err) {
         console.error("Message send failed", err);
     }
+  };
+
+  const handleDeleteMessage = async (msgId: string) => {
+      setChatMessages(prev => prev.filter(m => m.id !== msgId));
+      await fetch(`/api/social/messages?messageId=${msgId}`, { method: 'DELETE' });
+  };
+
+  const startRecording = async () => {
+      try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          const recorder = new MediaRecorder(stream);
+          const chunks: any[] = [];
+          recorder.ondataavailable = e => chunks.push(e.data);
+          recorder.onstop = () => {
+              const blob = new Blob(chunks, { type: 'audio/webm' });
+              const reader = new FileReader();
+              reader.readAsDataURL(blob);
+              reader.onloadend = () => {
+                  const base64data = reader.result;
+                  handleSendMessage(undefined, base64data as string);
+              };
+              stream.getTracks().forEach(t => t.stop());
+          };
+          recorder.start();
+          setMediaRecorder(recorder);
+          setIsRecording(true);
+          setRecordingTime(0);
+          recordingTimerRef.current = setInterval(() => setRecordingTime(prev => prev + 1), 1000);
+      } catch (e) {
+          alert("Mikrofon izni reddedildi veya hata oluştu.");
+      }
+  };
+
+  const stopRecording = () => {
+      if (mediaRecorder && isRecording) {
+          mediaRecorder.stop();
+          setIsRecording(false);
+          clearInterval(recordingTimerRef.current);
+      }
   };
 
   if (loading) return <div className="min-h-screen bg-[#0a0a0c] flex items-center justify-center p-8"><div className="animate-spin w-8 h-8 border-4 border-dublio-cyan border-t-transparent rounded-full"></div></div>;
@@ -396,15 +456,33 @@ export default function CommunityPage({ searchParams }: any) {
                      </div>
                   )}
                   {chatMessages.map(msg => (
-                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key={msg.id} className={`flex items-start gap-4 ${msg.isMe ? 'flex-row-reverse' : ''}`}>
+                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key={msg.id} className={`flex items-start gap-4 group ${msg.isMe ? 'flex-row-reverse' : ''}`}>
                         <img src={msg.isMe ? (profile?.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.username}`) : (chatUser.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${chatUser.username}`)} className="w-10 h-10 rounded-full shrink-0 border border-white/5" />
-                        <div className={`flex flex-col ${msg.isMe ? 'items-end' : 'items-start'}`}>
+                        <div className={`flex flex-col ${msg.isMe ? 'items-end' : 'items-start'} max-w-[85%]`}>
                            <div className="flex items-baseline gap-2 mb-1">
                               <span className="font-bold text-sm text-white/80">{msg.isMe ? profile?.username || 'Sen' : chatUser.username}</span>
                               <span className="text-[10px] text-white/30 font-bold">{msg.time}</span>
                            </div>
-                           <div className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed max-w-[85%] ${msg.isMe ? 'bg-dublio-cyan text-black rounded-tr-sm font-medium' : 'bg-white/10 text-white rounded-tl-sm'}`}>
-                               {msg.text}
+                           <div className="flex items-center gap-2 relative">
+                               {msg.isMe && (
+                                  <div className="hidden group-hover:flex items-center gap-1 absolute top-1/2 -translate-y-1/2 right-full mr-2">
+                                     {!msg.text.startsWith('data:audio') && (
+                                       <button onClick={() => { setEditingMsg(msg); setChatInput(msg.text); }} className="p-1.5 hover:bg-white/10 rounded-lg text-white/40 hover:text-white transition-colors">
+                                           <Edit2 className="w-3.5 h-3.5" />
+                                       </button>
+                                     )}
+                                     <button onClick={() => handleDeleteMessage(msg.id)} className="p-1.5 hover:bg-red-500/10 rounded-lg text-white/40 hover:text-red-500 transition-colors">
+                                         <Trash2 className="w-3.5 h-3.5" />
+                                     </button>
+                                  </div>
+                               )}
+                               <div className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed min-w-[3rem] ${msg.isMe ? 'bg-[#00c8ff] text-black font-bold rounded-tr-sm' : 'bg-[#2b2d35] text-white font-medium rounded-tl-sm'}`}>
+                                   {msg.text.startsWith('data:audio') ? (
+                                      <audio src={msg.text} controls className="h-8 w-[200px]" />
+                                   ) : (
+                                      msg.text
+                                   )}
+                               </div>
                            </div>
                         </div>
                      </motion.div>
@@ -413,22 +491,47 @@ export default function CommunityPage({ searchParams }: any) {
                </div>
 
                {/* Chat Input */}
-               <form onSubmit={handleSendMessage} className="p-4 bg-[#1a1c23] border-t border-white/5 shrink-0">
-                  <div className="flex items-center bg-[#121318] border border-white/10 rounded-xl focus-within:border-dublio-cyan/50 transition-colors p-1">
-                     <button type="button" className="w-10 h-10 flex items-center justify-center text-white/30 hover:text-white transition-colors shrink-0">
-                        <PlusCircle className="w-5 h-5" />
-                     </button>
-                     <input 
-                        type="text" 
-                        value={chatInput}
-                        onChange={e => setChatInput(e.target.value)}
-                        placeholder={`@${chatUser.username} kişisine mesaj gönder...`} 
-                        className="flex-1 bg-transparent px-2 py-3 text-sm text-white focus:outline-none placeholder:text-white/30"
-                     />
-                     <button type="submit" disabled={!chatInput.trim()} className="w-10 h-10 flex items-center justify-center bg-dublio-cyan text-black rounded-lg disabled:opacity-50 disabled:hover:bg-dublio-cyan hover:bg-cyan-400 transition-colors shrink-0">
-                        <Send className="w-4 h-4" />
-                     </button>
-                  </div>
+               <form onSubmit={handleSendMessage} className="p-4 bg-[#1a1c23] border-t border-white/5 shrink-0 flex flex-col gap-2">
+                  {editingMsg && (
+                      <div className="flex items-center justify-between text-xs text-dublio-cyan bg-dublio-cyan/10 px-4 py-2 rounded-xl mb-1">
+                          <span className="font-bold">Mesaj düzenleniyor...</span>
+                          <button type="button" onClick={() => { setEditingMsg(null); setChatInput(""); }} className="hover:text-white"><X className="w-4 h-4" /></button>
+                      </div>
+                  )}
+                  {isRecording ? (
+                      <div className="flex items-center justify-between bg-red-500/10 border border-red-500/30 rounded-xl p-1 px-4">
+                          <div className="flex items-center gap-3 text-red-500 font-bold text-sm">
+                              <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse"></div>
+                              Ses Kaydediliyor... 00:{recordingTime.toString().padStart(2, '0')}
+                          </div>
+                          <button type="button" onClick={stopRecording} className="w-10 h-10 flex items-center justify-center bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shrink-0">
+                              <StopCircle className="w-5 h-5" />
+                          </button>
+                      </div>
+                  ) : (
+                      <div className="flex items-center bg-[#121318] border border-white/10 rounded-xl focus-within:border-[#00c8ff]/50 transition-colors p-1">
+                         <button type="button" className="w-10 h-10 flex items-center justify-center text-white/30 hover:text-white transition-colors shrink-0">
+                            <PlusCircle className="w-5 h-5" />
+                         </button>
+                         <input 
+                            type="text" 
+                            value={chatInput}
+                            onChange={e => setChatInput(e.target.value)}
+                            placeholder={`@${chatUser.username} kişisine mesaj gönder...`} 
+                            className="flex-1 bg-transparent px-2 py-3 text-sm text-white focus:outline-none placeholder:text-white/30"
+                         />
+                         
+                         {chatInput.trim() || editingMsg ? (
+                             <button type="submit" className="w-10 h-10 flex items-center justify-center bg-[#00c8ff] text-black rounded-lg hover:bg-cyan-400 transition-colors shrink-0">
+                                <Send className="w-4 h-4" />
+                             </button>
+                         ) : (
+                             <button type="button" onClick={startRecording} className="w-10 h-10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 rounded-lg transition-colors shrink-0">
+                                <Mic className="w-5 h-5" />
+                             </button>
+                         )}
+                      </div>
+                  )}
                </form>
              </motion.div>
           )}
