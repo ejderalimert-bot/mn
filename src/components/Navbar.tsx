@@ -102,6 +102,10 @@ const Navbar = () => {
               Ortak Ekibimiz
               {pathname?.startsWith('/partners') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.7)]"></motion.span>}
             </Link>
+            <Link href="/community" className={`relative text-sm font-black transition-colors pb-1 ${pathname?.startsWith('/community') ? 'text-dublio-cyan' : 'text-dublio-cyan/60 hover:text-dublio-cyan'} `}>
+              Topluluk (Ağ) 
+              {pathname?.startsWith('/community') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-dublio-cyan shadow-[0_0_10px_rgba(6,182,212,0.7)]"></motion.span>}
+            </Link>
           </nav>
         </div>
 
