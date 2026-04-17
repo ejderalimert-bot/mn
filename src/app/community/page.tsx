@@ -1,15 +1,21 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, Phone, Gamepad2, Search, Settings, Network, Copy, Check, MessageSquare } from "lucide-react";
+import { Users, Phone, Gamepad2, Search, Settings, Network, Copy, Check, MessageSquare, Send, ArrowLeft, X, PlusCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
 export default function CommunityPage({ searchParams }: any) {
-  const [activeTab, setActiveTab] = useState("friends");
+  const [activeTab, setActiveTab] = useState("friends"); // 'friends', 'add', 'chat'
   const [profile, setProfile] = useState<any>(null);
   const [friendsData, setFriendsData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Chat States
+  const [chatUser, setChatUser] = useState<any>(null);
+  const [chatMessages, setChatMessages] = useState<any[]>([]);
+  const [chatInput, setChatInput] = useState("");
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // Set Username Modal Stage
   const [usernameInput, setUsernameInput] = useState("");
@@ -36,6 +42,36 @@ export default function CommunityPage({ searchParams }: any) {
   useEffect(() => {
     fetchData();
   }, []);
+
+  const fetchMessages = async () => {
+    if (!chatUser?.id) return;
+    try {
+        const res = await fetch(`/api/social/messages?targetUserId=${chatUser.id}`);
+        const data = await res.json();
+        if (data.messages) {
+            setChatMessages(data.messages);
+        }
+    } catch (err) {}
+  };
+
+  useEffect(() => {
+     let interval: any;
+     if (activeTab === 'chat' && chatUser?.id) {
+         fetchMessages();
+         interval = setInterval(() => {
+             fetchMessages();
+         }, 2000);
+     }
+     return () => {
+         if (interval) clearInterval(interval);
+     };
+  }, [activeTab, chatUser]);
+
+  useEffect(() => {
+     if (messagesEndRef.current) {
+         messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+     }
+  }, [chatMessages]);
 
   const handleSaveUsername = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,6 +128,37 @@ export default function CommunityPage({ searchParams }: any) {
       });
       if(res.ok) fetchData();
     } catch(e) {}
+  };
+
+  const openChatPanel = (userProfile: any) => {
+      setChatUser(userProfile);
+      setChatMessages([]);
+      setActiveTab('chat');
+  };
+
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!chatInput.trim() || !chatUser?.id) return;
+    
+    const optimisticMsg = {
+        id: Date.now().toString(),
+        text: chatInput,
+        isMe: true,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
+    setChatMessages(prev => [...prev, optimisticMsg]);
+    const msgToSend = chatInput;
+    setChatInput("");
+
+    try {
+        await fetch('/api/social/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ targetUserId: chatUser.id, text: msgToSend })
+        });
+    } catch(err) {
+        console.error("Message send failed", err);
+    }
   };
 
   if (loading) return <div className="min-h-screen bg-[#0a0a0c] flex items-center justify-center p-8"><div className="animate-spin w-8 h-8 border-4 border-dublio-cyan border-t-transparent rounded-full"></div></div>;
@@ -293,6 +360,77 @@ export default function CommunityPage({ searchParams }: any) {
                   </div>
                 </div>
              </div>
+          )}
+
+          {activeTab === 'chat' && chatUser && (
+             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col h-full bg-[#121318]">
+               {/* Chat Header */}
+               <div className="flex items-center px-6 py-4 border-b border-white/5 bg-[#1a1c23] shadow-sm shrink-0">
+                  <div className="flex items-center gap-4">
+                     <div className="relative">
+                       <img src={chatUser.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${chatUser.username}`} className="w-10 h-10 rounded-full bg-black shrink-0 border border-white/10" />
+                       <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full border-2 border-[#1a1c23]"></div>
+                     </div>
+                     <div>
+                       <h3 className="font-bold text-lg leading-tight">{chatUser.username}</h3>
+                       <p className="text-xs text-green-500 font-bold uppercase tracking-widest flex items-center gap-1">ÇEVRİMİÇİ <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse inline-block ml-1"></span></p>
+                     </div>
+                  </div>
+                  <div className="ml-auto flex items-center gap-3">
+                     <button onClick={() => alert("Sesli arama sistemi yakında!")} className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors text-white/70 hover:text-white">
+                        <Phone className="w-5 h-5" />
+                     </button>
+                     <button onClick={() => setActiveTab('friends')} className="w-10 h-10 rounded-xl bg-red-500/10 hover:bg-red-500/20 flex items-center justify-center transition-colors text-red-500">
+                        <X className="w-5 h-5" />
+                     </button>
+                  </div>
+               </div>
+
+               {/* Chat Body */}
+               <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
+                  {chatMessages.length === 0 && (
+                     <div className="h-full flex flex-col items-center justify-center text-center opacity-50 select-none">
+                        <MessageSquare className="w-16 h-16 mb-4 text-dublio-cyan" />
+                        <h3 className="text-2xl font-black">{chatUser.username} ile sohbet et!</h3>
+                        <p className="text-sm">Mesajlar uçtan uca şifrelenmez (çünkü yapmadık 😄)</p>
+                     </div>
+                  )}
+                  {chatMessages.map(msg => (
+                     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} key={msg.id} className={`flex items-start gap-4 ${msg.isMe ? 'flex-row-reverse' : ''}`}>
+                        <img src={msg.isMe ? (profile?.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.username}`) : (chatUser.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${chatUser.username}`)} className="w-10 h-10 rounded-full shrink-0 border border-white/5" />
+                        <div className={`flex flex-col ${msg.isMe ? 'items-end' : 'items-start'}`}>
+                           <div className="flex items-baseline gap-2 mb-1">
+                              <span className="font-bold text-sm text-white/80">{msg.isMe ? profile?.username || 'Sen' : chatUser.username}</span>
+                              <span className="text-[10px] text-white/30 font-bold">{msg.time}</span>
+                           </div>
+                           <div className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed max-w-[85%] ${msg.isMe ? 'bg-dublio-cyan text-black rounded-tr-sm font-medium' : 'bg-white/10 text-white rounded-tl-sm'}`}>
+                               {msg.text}
+                           </div>
+                        </div>
+                     </motion.div>
+                  ))}
+                  <div ref={messagesEndRef} />
+               </div>
+
+               {/* Chat Input */}
+               <form onSubmit={handleSendMessage} className="p-4 bg-[#1a1c23] border-t border-white/5 shrink-0">
+                  <div className="flex items-center bg-[#121318] border border-white/10 rounded-xl focus-within:border-dublio-cyan/50 transition-colors p-1">
+                     <button type="button" className="w-10 h-10 flex items-center justify-center text-white/30 hover:text-white transition-colors shrink-0">
+                        <PlusCircle className="w-5 h-5" />
+                     </button>
+                     <input 
+                        type="text" 
+                        value={chatInput}
+                        onChange={e => setChatInput(e.target.value)}
+                        placeholder={`@${chatUser.username} kişisine mesaj gönder...`} 
+                        className="flex-1 bg-transparent px-2 py-3 text-sm text-white focus:outline-none placeholder:text-white/30"
+                     />
+                     <button type="submit" disabled={!chatInput.trim()} className="w-10 h-10 flex items-center justify-center bg-dublio-cyan text-black rounded-lg disabled:opacity-50 disabled:hover:bg-dublio-cyan hover:bg-cyan-400 transition-colors shrink-0">
+                        <Send className="w-4 h-4" />
+                     </button>
+                  </div>
+               </form>
+             </motion.div>
           )}
         </div>
       </main>
