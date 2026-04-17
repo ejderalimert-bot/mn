@@ -1,38 +1,64 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { auth } from '@/auth';
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { auth } from "@/auth";
 
-export async function PUT(req: Request) {
+// GET profile
+export async function GET(req: Request) {
   try {
     const session = await auth();
-    if (!session || !session.user?.id) {
+    if (!session || !session.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { name, image, publicFavorites } = await req.json();
+    const email = session.user.email;
+    const dbUser = await prisma.user.findUnique({
+      where: { email: email as string },
+      select: { id: true, name: true, email: true, image: true, username: true }
+    });
 
-    const updatedUser = await prisma.user.update({
-      where: { id: session.user.id },
-      data: { 
-        name: name !== undefined ? name : undefined,
-        image: image !== undefined ? image : undefined,
-        publicFavorites: publicFavorites !== undefined ? publicFavorites : undefined
+    return NextResponse.json(dbUser);
+  } catch (error) {
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
+  }
+}
+
+// UPDATE profile (set username)
+export async function POST(req: Request) {
+  try {
+    const session = await auth();
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { username } = body;
+
+    if (!username || username.length < 3) {
+      return NextResponse.json({ error: "Kullanıcı adı en az 3 karakter olmalı" }, { status: 400 });
+    }
+
+    // Check if username already exists
+    const existing = await prisma.user.findFirst({
+      where: { 
+        username: { equals: username, mode: 'insensitive' },
+        NOT: { email: session.user.email as string }
       }
     });
 
-    if (name !== undefined || image !== undefined) {
-      await prisma.comment.updateMany({
-        where: { userId: session.user.id },
-        data: {
-          ...(name !== undefined ? { userName: name } : {}),
-          ...(image !== undefined ? { userAvatar: image } : {})
-        }
-      });
+    if (existing) {
+      return NextResponse.json({ error: "Aboo! Bu kullanıcı adı çoktan alınmış." }, { status: 400 });
     }
 
-    return NextResponse.json(updatedUser);
-  } catch (error: any) {
-    console.error("Profile update error:", error);
-    return NextResponse.json({ error: error.message || "Failed to update profile" }, { status: 500 });
+    const email = session.user.email;
+    
+    // Update user
+    const updated = await prisma.user.update({
+      where: { email: email as string },
+      data: { username }
+    });
+
+    return NextResponse.json({ success: true, username: updated.username });
+  } catch (error) {
+    return NextResponse.json({ error: "Kullanıcı kayıt edilemedi." }, { status: 500 });
   }
 }
