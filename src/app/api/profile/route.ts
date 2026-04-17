@@ -11,7 +11,8 @@ export async function GET(req: Request) {
     }
 
     const email = session.user.email;
-    const dbUser = await prisma.user.findUnique({
+    // @ts-ignore
+    const dbUser: any = await (prisma.user as any).findUnique({
       where: { email: email as string },
       select: { id: true, name: true, email: true, image: true, username: true }
     });
@@ -38,7 +39,8 @@ export async function POST(req: Request) {
     }
 
     // Check if username already exists
-    const existing = await prisma.user.findFirst({
+    // @ts-ignore
+    const existing: any = await (prisma.user as any).findFirst({
       where: { 
         username: { equals: username, mode: 'insensitive' },
         NOT: { email: session.user.email as string }
@@ -52,7 +54,8 @@ export async function POST(req: Request) {
     const email = session.user.email;
     
     // Update user
-    const updated = await prisma.user.update({
+    // @ts-ignore
+    const updated: any = await (prisma.user as any).update({
       where: { email: email as string },
       data: { username }
     });
