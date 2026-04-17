@@ -396,23 +396,41 @@ export default function AdminDashboardPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#0b0c10] text-white">
-      <Navbar />
+    <main className="min-h-screen bg-black text-white relative overflow-hidden">
+      {/* SİNEMATİK ARKA PLAN */}
+      <div className="absolute inset-0 pointer-events-none z-0 fixed">
+         <motion.div animate={{ rotate: 360, scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 15, ease: "linear" }} className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-dublio-cyan/20 blur-[200px] mix-blend-screen rounded-full" />
+         <motion.div animate={{ rotate: -360, scale: [1.2, 1, 1.2] }} transition={{ repeat: Infinity, duration: 12, ease: "linear" }} className="absolute bottom-[-10%] right-[-10%] w-[1000px] h-[1000px] bg-dublio-purple/20 blur-[250px] mix-blend-screen rounded-full" />
+         <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5 mix-blend-overlay"></div>
+      </div>
+
+      <div className="relative z-10 border-b border-white/5 bg-black/50 backdrop-blur-3xl">
+        <Navbar />
+      </div>
       
-      <div className="container mx-auto px-6 py-10 max-w-7xl">
+      <div className="container mx-auto px-6 py-12 max-w-7xl relative z-10">
         
         {/* Header Section */}
-        <div className="flex items-center gap-3 mb-8">
-          <Shield className="w-8 h-8 text-[#00ff00]" />
-          <h1 className="text-3xl font-black tracking-tight text-[#00ff00]">Admin Panel</h1>
+        <div className="flex items-center gap-6 mb-12">
+          <motion.div 
+            animate={{ rotate: 360 }} 
+            transition={{ repeat: Infinity, duration: 10, ease: "linear" }} 
+            className="p-4 bg-dublio-cyan/5 rounded-[2rem] border-2 border-dublio-cyan/50 shadow-[0_0_50px_rgba(106,255,235,0.4)] backdrop-blur-xl"
+          >
+             <Shield className="w-12 h-12 text-dublio-cyan" />
+          </motion.div>
+          <div>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-dublio-cyan to-dublio-purple uppercase drop-shadow-[0_0_30px_rgba(106,255,235,0.5)] leading-none mb-2">MERKEZİ YÖNETİM</h1>
+            <p className="text-dublio-cyan font-bold tracking-[0.3em] uppercase text-xs md:text-sm">Star Dublaj System Core v3.0</p>
+          </div>
         </div>
 
         {/* Tabs */}
-        <div className="relative flex flex-wrap items-center gap-2 mb-8 bg-[#15171e] p-2 rounded-xl border border-white/5 inline-flex w-full overflow-x-auto">
+        <div className="relative flex flex-wrap items-center gap-2 mb-10 bg-black/40 backdrop-blur-3xl p-3 rounded-2xl border border-dublio-cyan/30 shadow-[0_0_50px_rgba(106,255,235,0.1)] inline-flex w-full overflow-x-auto">
           
           {/* Sliding Indicator */}
           <div 
-             className="absolute bg-dublio-purple rounded-lg shadow-[0_0_15px_rgba(168,85,247,0.4)] pointer-events-none transition-all duration-300 ease-in-out"
+             className="absolute bg-gradient-to-r from-dublio-cyan to-[#00bfff] rounded-xl shadow-[0_0_20px_cyan] pointer-events-none transition-all duration-300 ease-in-out"
              style={{ 
                left: `${indicatorStyle.left}px`, 
                top: `${indicatorStyle.top}px`,
@@ -424,16 +442,16 @@ export default function AdminDashboardPage() {
 
           {tabs.map((tab, idx) => (
             <button
-              key={tab.id}
-              ref={(el) => { navRefs.current[idx] = el; }}
-              onClick={() => { setActiveTab(tab.id); setView('list'); }}
-              className={`relative z-10 flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold transition-colors duration-300 whitespace-nowrap ${
-                activeTab === tab.id 
-                  ? 'text-white' 
-                  : 'text-white/50 hover:text-white hover:bg-white/5'
-              }`}
+               key={tab.id}
+               ref={(el) => { navRefs.current[idx] = el; }}
+               onClick={() => { setActiveTab(tab.id); setView('list'); }}
+               className={`relative z-10 flex items-center gap-3 px-6 py-3 rounded-xl text-sm font-black uppercase tracking-wider transition-all duration-300 whitespace-nowrap ${
+                 activeTab === tab.id 
+                   ? 'text-black mix-blend-difference' 
+                   : 'text-white/50 hover:text-white hover:bg-white/5'
+               }`}
             >
-              <tab.icon className="w-4 h-4" />
+              <tab.icon className="w-5 h-5" />
               <span>{tab.label}</span>
             </button>
           ))}
