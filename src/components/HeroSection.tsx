@@ -8,8 +8,10 @@ import { Sparkles, Gamepad2, Mic2, PlayCircle } from 'lucide-react';
 const HeroSection = () => {
   const { performanceMode } = usePerformance();
   const { scrollY } = useScroll();
-  const yBg = useTransform(scrollY, [0, 1000], [0, -400]);
-  const yText = useTransform(scrollY, [0, 800], [0, 600]);
+  
+  // Parallax etkisini düşürdük ki tuşlar ekran dışına kaçmasın
+  const yBg = useTransform(scrollY, [0, 1000], [0, -200]);
+  const yText = useTransform(scrollY, [0, 800], [0, 150]);
 
   const mouseX = useMotionValue(0);
   const mouseY = useMotionValue(0);
@@ -24,6 +26,8 @@ const HeroSection = () => {
   };
 
   const [particles, setParticles] = useState<any[]>([]);
+  const [shootingStars, setShootingStars] = useState<any[]>([]);
+
   useEffect(() => {
     setParticles(
       Array.from({ length: 150 }).map((_, i) => ({
@@ -36,10 +40,21 @@ const HeroSection = () => {
         color: ['#ff00ff', '#00ffff', '#7000ff', '#ffffff'][Math.floor(Math.random() * 4)]
       }))
     );
+
+    // Kayan Yıldızlar (Shooting Stars)
+    setShootingStars(
+      Array.from({ length: 20 }).map((_, i) => ({
+        id: `star-${i}`,
+        startX: Math.random() * 200 - 50, // Screen percentage width
+        startY: Math.random() * -50,
+        duration: Math.random() * 2 + 1.5,
+        delay: Math.random() * 10,
+      }))
+    );
   }, []);
 
   return (
-    <div onMouseMove={handleMouseMove} className="relative min-h-[120vh] w-full flex flex-col items-center justify-center overflow-hidden bg-black [perspective:1000px]">
+    <div onMouseMove={handleMouseMove} className="relative min-h-[110vh] pb-32 pt-20 w-full flex flex-col items-center justify-center overflow-hidden bg-black [perspective:1000px]">
       
       {/* AGRESİF MOUSE SPOTLIGHT */}
       <motion.div
@@ -65,6 +80,29 @@ const HeroSection = () => {
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-pink-600/30 blur-[200px] mix-blend-screen rounded-full"
         />
       </motion.div>
+
+      {/* RENGARENK KAYAN YILDIZLAR */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        {shootingStars.map((star) => (
+          <motion.div
+            key={star.id}
+            className="absolute w-[150px] h-[3px] rounded-full"
+            style={{ 
+              left: `${star.startX}%`, 
+              top: `${star.startY}%`,
+            }}
+            animate={{
+              x: [0, 2000],
+              y: [0, 2000],
+              opacity: [0, 1, 0, 0],
+              backgroundColor: ['#fff', '#00ffff', '#ff00ff', '#fff']
+            }}
+            transition={{ duration: star.duration, repeat: Infinity, delay: star.delay, ease: "linear" }}
+          >
+            <div className="w-full h-full bg-gradient-to-r from-transparent via-white to-transparent blur-[2px]"></div>
+          </motion.div>
+        ))}
+      </div>
 
       {/* AŞIRI DÖNEN 3D KÜPLER VE OBJELER */}
       <motion.div style={{ y: yBg }} className="absolute inset-0 z-0 [transform-style:preserve-3d]">
@@ -101,18 +139,17 @@ const HeroSection = () => {
             animate={{
               z: [0, 1000],
               y: [0, -1500],
-              opacity: [0, 1, 0],
-              rotateX: [0, 360]
+              opacity: [0, 1, 0]
             }}
             transition={{ duration: p.duration, repeat: Infinity, delay: p.delay, ease: "linear" }}
           />
         ))}
       </div>
 
-      {/* MERKEZ METİNLER VE 3D TİLT */}
+      {/* MERKEZ METİNLER VE 3D TİLT (Margin top artırıldı butonlar sığsın diye min-h da büyütüldü) */}
       <motion.div
-        style={{ y: yText, rotateX: 15 }}
-        className="container relative z-20 flex flex-col items-center text-center [transform-style:preserve-3d]"
+        style={{ y: yText, rotateX: 10 }}
+        className="container relative z-20 flex flex-col items-center text-center [transform-style:preserve-3d] mt-10 mb-20"
       >
         <motion.div 
           animate={{ rotateY: 360 }}
@@ -126,40 +163,40 @@ const HeroSection = () => {
         <motion.h1 
           animate={{ scale: [1, 1.05, 1] }}
           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-          className="text-[6rem] md:text-[9rem] font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-dublio-cyan to-dublio-purple leading-[0.9] tracking-tighter mb-8 drop-shadow-[0_20px_100px_rgba(106,255,235,0.8)] [transform:translateZ(100px)]"
+          className="text-[5rem] sm:text-[6rem] md:text-[9rem] font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-dublio-cyan to-dublio-purple leading-[0.9] tracking-tighter mb-8 drop-shadow-[0_20px_100px_rgba(106,255,235,0.8)] [transform:translateZ(100px)] py-4"
         >
           MAKSİMUM
           <br />
           <span className="text-white drop-shadow-[0_0_50px_purple] italic">DENEYİM</span>
         </motion.h1>
 
-        <p className="text-2xl md:text-4xl text-white font-black max-w-4xl leading-relaxed mb-16 drop-shadow-[0_0_20px_rgba(255,255,255,0.8)] [transform:translateZ(50px)]">
+        <p className="text-xl sm:text-2xl md:text-3xl lg:text-4xl text-white font-black max-w-4xl leading-relaxed mb-16 drop-shadow-[0_0_20px_rgba(255,255,255,0.8)] [transform:translateZ(50px)] px-4">
           BEYNİNİZİ YAKACAK DUBLAJ MODLARI VE <span className="text-dublio-cyan animate-pulse">AĞIR NEON</span> PERFORMANSI BURADA.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center gap-8 [transform:translateZ(150px)]">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-8 [transform:translateZ(150px)] w-full px-6">
           <Link href="/mods">
             <motion.button 
-              whileHover={{ scale: 1.2, rotate: -5 }}
-              whileTap={{ scale: 0.8, rotate: 10 }}
-              animate={{ boxShadow: ["0px 0px 0px cyan", "0px 0px 100px cyan", "0px 0px 0px cyan"] }}
+              whileHover={{ scale: 1.1, rotate: -3 }}
+              whileTap={{ scale: 0.9 }}
+              animate={{ boxShadow: ["0px 0px 0px cyan", "0px 0px 60px cyan", "0px 0px 0px cyan"] }}
               transition={{ duration: 1.5, repeat: Infinity }}
-              className="px-12 py-6 bg-dublio-cyan text-black text-2xl font-black rounded-3xl uppercase tracking-widest flex items-center gap-4 relative overflow-hidden"
+              className="px-8 sm:px-12 py-5 sm:py-6 bg-dublio-cyan text-black text-xl sm:text-2xl font-black rounded-3xl uppercase tracking-widest flex items-center justify-center gap-4 relative overflow-hidden w-full sm:w-auto"
             >
-              <Mic2 className="w-8 h-8 animate-bounce" />
+              <Mic2 className="w-8 h-8 animate-bounce shrink-0" />
               SİSTEME GİRİŞ YAP
             </motion.button>
           </Link>
           
           <Link href="/news">
             <motion.button 
-              whileHover={{ scale: 1.2, rotate: 5 }}
-              whileTap={{ scale: 0.8, rotate: -10 }}
-              animate={{ boxShadow: ["0px 0px 0px purple", "0px 0px 100px purple", "0px 0px 0px purple"] }}
+              whileHover={{ scale: 1.1, rotate: 3 }}
+              whileTap={{ scale: 0.9 }}
+              animate={{ boxShadow: ["0px 0px 0px purple", "0px 0px 60px purple", "0px 0px 0px purple"] }}
               transition={{ duration: 1.5, repeat: Infinity, delay: 0.7 }}
-              className="px-12 py-6 bg-transparent border-4 border-dublio-purple text-dublio-purple text-2xl font-black rounded-3xl uppercase tracking-widest flex items-center gap-4 backdrop-blur-xl"
+              className="px-8 sm:px-12 py-5 sm:py-6 bg-black/50 border-4 border-dublio-purple text-dublio-purple text-xl sm:text-2xl font-black rounded-3xl uppercase tracking-widest flex items-center justify-center gap-4 backdrop-blur-xl w-full sm:w-auto"
             >
-              <PlayCircle className="w-8 h-8 animate-pulse" />
+              <PlayCircle className="w-8 h-8 animate-pulse shrink-0" />
               YIKICI HABERLER
             </motion.button>
           </Link>
