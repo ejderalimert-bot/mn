@@ -313,7 +313,7 @@ export default function CommunityPage({ searchParams }: any) {
                          </div>
                       </div>
                       <div className="flex gap-2 w-full md:w-auto justify-end">
-                         <button onClick={() => window.dispatchEvent(new CustomEvent('open-chat', { detail: f.profile }))} className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors tooltip-trigger relative group">
+                         <button onClick={() => openChatPanel(f.profile)} className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors tooltip-trigger relative group">
                             <span className="absolute -top-10 scale-0 group-hover:scale-100 transition-all bg-black border border-white/10 text-xs font-bold px-2 py-1 rounded">Mesaj</span>
                             <MessageSquare className="w-5 h-5 text-white/70 group-hover:text-white" />
                          </button>
