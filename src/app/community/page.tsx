@@ -2,8 +2,66 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, Phone, Gamepad2, Search, Settings, Network, Copy, Check, MessageSquare, Send, ArrowLeft, X, PlusCircle, Mic, Edit2, Trash2, StopCircle } from "lucide-react";
+import { Users, Phone, Gamepad2, Search, Settings, Network, Copy, Check, MessageSquare, Send, ArrowLeft, X, PlusCircle, Mic, Edit2, Trash2, StopCircle, Play, Pause, Image as ImageIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
+
+const CustomAudioPlayer = ({ src, isMe }: { src: string, isMe: boolean }) => {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+
+  useEffect(() => {
+     const audio = audioRef.current;
+     if (!audio) return;
+     const setAudioData = () => setDuration(audio.duration);
+     const setAudioTime = () => setCurrentTime(audio.currentTime);
+     const setAudioEnd = () => setIsPlaying(false);
+     
+     audio.addEventListener('loadedmetadata', setAudioData);
+     audio.addEventListener('timeupdate', setAudioTime);
+     audio.addEventListener('ended', setAudioEnd);
+     return () => {
+        audio.removeEventListener('loadedmetadata', setAudioData);
+        audio.removeEventListener('timeupdate', setAudioTime);
+        audio.removeEventListener('ended', setAudioEnd);
+     };
+  }, []);
+
+  const togglePlay = () => {
+     if (isPlaying) { audioRef.current?.pause(); setIsPlaying(false); }
+     else { audioRef.current?.play(); setIsPlaying(true); }
+  };
+
+  const formatTime = (time: number) => {
+     if (isNaN(time) || !isFinite(time)) return "0:00";
+     const min = Math.floor(time / 60);
+     const sec = Math.floor(time % 60);
+     return `${min}:${sec.toString().padStart(2, '0')}`;
+  };
+
+  const w = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  return (
+    <div className={`flex items-center gap-3 w-[220px] h-10 ${isMe ? 'text-black' : 'text-white'}`}>
+       <audio ref={audioRef} src={src} />
+       <button onClick={togglePlay} className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${isMe ? 'bg-black/20 hover:bg-black/30 text-black' : 'bg-white/20 hover:bg-white/30 text-white'} transition-colors`}>
+          {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
+       </button>
+       <div className="flex-1 flex flex-col justify-center h-full gap-1">
+          <div className="flex items-center justify-between text-[11px] font-bold opacity-80 mt-1">
+             <div className="relative w-full h-1.5 rounded-full overflow-hidden bg-black/20">
+                <div className={`absolute left-0 top-0 h-full ${isMe ? 'bg-black' : 'bg-white'}`} style={{ width: `${w}%` }}></div>
+             </div>
+          </div>
+          <div className="flex justify-between w-full text-[10px] font-bold opacity-60">
+             <span>{formatTime(currentTime)}</span>
+             <span>{formatTime(duration)}</span>
+          </div>
+       </div>
+    </div>
+  );
+};
 
 export default function CommunityPage({ searchParams }: any) {
   const [activeTab, setActiveTab] = useState("friends"); // 'friends', 'add', 'chat'
@@ -16,6 +74,7 @@ export default function CommunityPage({ searchParams }: any) {
   const [chatMessages, setChatMessages] = useState<any[]>([]);
   const [chatInput, setChatInput] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Voice Recording & Edit States
   const [isRecording, setIsRecording] = useState(false);
@@ -180,6 +239,30 @@ export default function CommunityPage({ searchParams }: any) {
     } catch(err) {
         console.error("Message send failed", err);
     }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+          const img = new Image();
+          img.onload = () => {
+              const canvas = document.createElement('canvas');
+              const MAX_WIDTH = 800;
+              const scaleSize = MAX_WIDTH / img.width;
+              canvas.width = MAX_WIDTH;
+              canvas.height = img.height * scaleSize;
+              const ctx = canvas.getContext('2d');
+              ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+              const compressedBase64 = canvas.toDataURL('image/webp', 0.6);
+              handleSendMessage(undefined, compressedBase64);
+          };
+          img.src = event.target?.result as string;
+      };
+      reader.readAsDataURL(file);
+      if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleDeleteMessage = async (msgId: string) => {
@@ -478,7 +561,9 @@ export default function CommunityPage({ searchParams }: any) {
                                )}
                                <div className={`px-4 py-2.5 rounded-2xl text-sm leading-relaxed min-w-[3rem] ${msg.isMe ? 'bg-[#00c8ff] text-black font-bold rounded-tr-sm' : 'bg-[#2b2d35] text-white font-medium rounded-tl-sm'}`}>
                                    {msg.text.startsWith('data:audio') ? (
-                                      <audio src={msg.text} controls className="h-8 w-[200px]" />
+                                      <CustomAudioPlayer src={msg.text} isMe={msg.isMe} />
+                                   ) : msg.text.startsWith('data:image') || msg.text.match(/^https?:\/\/.*?\.(png|jpg|jpeg|gif|webp)(\?.*)?$/i) || msg.text.includes('media.tenor.com') ? (
+                                      <img src={msg.text} alt="Görsel" className="max-w-[200px] max-h-[200px] rounded-lg mt-1 mb-1 object-contain" />
                                    ) : (
                                       msg.text
                                    )}
@@ -520,15 +605,20 @@ export default function CommunityPage({ searchParams }: any) {
                             placeholder={`@${chatUser.username} kişisine mesaj gönder...`} 
                             className="flex-1 bg-transparent px-2 py-3 text-sm text-white focus:outline-none placeholder:text-white/30"
                          />
-                         
                          {chatInput.trim() || editingMsg ? (
                              <button type="submit" className="w-10 h-10 flex items-center justify-center bg-[#00c8ff] text-black rounded-lg hover:bg-cyan-400 transition-colors shrink-0">
                                 <Send className="w-4 h-4" />
                              </button>
                          ) : (
-                             <button type="button" onClick={startRecording} className="w-10 h-10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 rounded-lg transition-colors shrink-0">
-                                <Mic className="w-5 h-5" />
-                             </button>
+                             <div className="flex items-center gap-1 shrink-0">
+                                <input type="file" accept="image/*" ref={fileInputRef} onChange={handleImageUpload} className="hidden" />
+                                <button type="button" onClick={() => fileInputRef.current?.click()} className="w-10 h-10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
+                                   <ImageIcon className="w-5 h-5" />
+                                </button>
+                                <button type="button" onClick={startRecording} className="w-10 h-10 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
+                                   <Mic className="w-5 h-5" />
+                                </button>
+                             </div>
                          )}
                       </div>
                   )}
