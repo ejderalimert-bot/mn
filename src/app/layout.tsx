@@ -51,8 +51,8 @@ export default async function RootLayout({
         <CustomCursor />
         <SiteInnovations />
         <CommandPalette />
-        <SocialChatWidget />
         <AuthProvider>
+          <SocialChatWidget />
           <PerformanceProvider defaultMode={defaultMode}>
             <AnalyticsProvider />
             <SiteProtection />
