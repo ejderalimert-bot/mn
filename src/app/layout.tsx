@@ -5,6 +5,8 @@ import { AuthProvider } from "@/components/AuthProvider";
 import SiteProtection from "@/components/SiteProtection";
 import AnalyticsProvider from "@/components/AnalyticsProvider";
 import CustomCursor from "@/components/CustomCursor";
+import SiteInnovations from "@/components/SiteInnovations";
+import CommandPalette from "@/components/CommandPalette";
 import { PerformanceProvider, PerformanceMode } from "@/context/PerformanceContext";
 import { cookies } from "next/headers";
 
@@ -46,6 +48,8 @@ export default async function RootLayout({
       </head>
       <body className={`${inter.className} antialiased selection:!bg-transparent selection:!text-current cursor-none`}>
         <CustomCursor />
+        <SiteInnovations />
+        <CommandPalette />
         <AuthProvider>
           <PerformanceProvider defaultMode={defaultMode}>
             <AnalyticsProvider />

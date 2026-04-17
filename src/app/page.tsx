@@ -7,6 +7,7 @@ import HomeNews from "@/components/HomeNews";
 import HomeFooter from "@/components/HomeFooter";
 import HomeStatsBar from "@/components/HomeStatsBar";
 import FeaturedProject from "@/components/FeaturedProject";
+import QuoteCarousel from "@/components/QuoteCarousel";
 import { getProjects } from "@/lib/data";
 import { prisma } from "@/lib/prisma";
 
@@ -31,6 +32,7 @@ export default async function Home() {
   return (
     <main className="flex flex-col min-h-screen bg-dublio-dark text-white selection:bg-dublio-purple/30">
       <Navbar />
+      <QuoteCarousel />
 
       <HeroSection />
       
