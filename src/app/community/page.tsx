@@ -100,12 +100,18 @@ export default function CommunityPage({ searchParams }: any) {
   const [isMuted, setIsMuted] = useState(false);
   const peerInstance = useRef<any>(null);
   const heartbeatTimer = useRef<any>(null);
+  const localStreamRef = useRef<MediaStream | null>(null);
+  const activeVoiceRoomRef = useRef<any>(null);
+  const voicePeersRef = useRef<{[key:string]: MediaStream}>({});
+  const [incomingCallInfo, setIncomingCallInfo] = useState<any>(null);
+  const profileRef = useRef<any>(null);
 
   const fetchData = async () => {
     try {
       const pRes = await fetch("/api/profile");
       const pData = await pRes.json();
       setProfile(pData);
+      profileRef.current = pData;
       
       const fRes = await fetch("/api/social/friends");
       const fData = await fRes.json();
@@ -118,7 +124,27 @@ export default function CommunityPage({ searchParams }: any) {
      try {
          const res = await fetch("/api/social/voice-rooms");
          const data = await res.json();
-         if(data.rooms) setVoiceRooms(data.rooms);
+         if(data.rooms) {
+             setVoiceRooms(data.rooms);
+             const p = profileRef.current;
+             if(p && p.username) {
+                 const incomingRoom = data.rooms.find((r:any) => 
+                     r.name.includes('Özel Odası') && 
+                     r.name.includes(p.username) && 
+                     r.members && r.members !== "[]" &&
+                     (!activeVoiceRoomRef.current || activeVoiceRoomRef.current.id !== r.id)
+                 );
+                 if(incomingRoom) {
+                     let members = [];
+                     try { members = typeof incomingRoom.members === 'string' ? JSON.parse(incomingRoom.members) : incomingRoom.members; } catch(e){}
+                     const caller = members.find((m:any) => m.username !== p.username);
+                     if(caller) setIncomingCallInfo({ caller, room: incomingRoom });
+                     else setIncomingCallInfo(null);
+                 } else {
+                     setIncomingCallInfo(null);
+                 }
+             }
+         }
      } catch(e) {}
   };
 
@@ -163,19 +189,35 @@ export default function CommunityPage({ searchParams }: any) {
          peer.on('open', (id) => {
              if(heartbeatTimer.current) clearInterval(heartbeatTimer.current);
              heartbeatTimer.current = setInterval(() => {
-                 if(activeVoiceRoom) {
+                 if(activeVoiceRoomRef.current) {
                      fetch('/api/social/voice-rooms/join', {
                          method: 'POST',
                          headers: {'Content-Type': 'application/json'},
-                         body: JSON.stringify({ roomId: activeVoiceRoom.id, peerId: id, profile })
+                         body: JSON.stringify({ roomId: activeVoiceRoomRef.current.id, peerId: id, profile })
+                     }).then(res => res.json()).then(data => {
+                         if(data.members) {
+                             setActiveVoiceRoom((prev: any) => ({ ...prev, members: data.members }));
+                             data.members.forEach((m: any) => {
+                                 if (m.peerId && m.peerId !== id && !voicePeersRef.current[m.peerId]) {
+                                     const call = peerInstance.current.call(m.peerId, localStreamRef.current!);
+                                     if(call) {
+                                         call.on('stream', (remoteStream: any) => {
+                                             voicePeersRef.current[m.peerId] = remoteStream;
+                                             setVoicePeers(prev => ({ ...prev, [m.peerId]: remoteStream }));
+                                         });
+                                     }
+                                 }
+                             });
+                         }
                      });
                  }
-             }, 5000);
+             }, 3000);
          });
 
          peer.on('call', (call) => {
-             call.answer(localStream!);
+             call.answer(localStreamRef.current!);
              call.on('stream', (remoteStream) => {
+                 voicePeersRef.current[call.peer] = remoteStream;
                  setVoicePeers(prev => ({ ...prev, [call.peer]: remoteStream }));
              });
          });
@@ -185,12 +227,16 @@ export default function CommunityPage({ searchParams }: any) {
   const joinVoiceRoom = async (room: any) => {
      try {
        setActiveVoiceRoom(room);
+       activeVoiceRoomRef.current = room;
        setActiveTab('voice');
        
-       let currentStream = localStream;
+       let currentStream = localStreamRef.current;
        if(!currentStream) {
-           currentStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+           currentStream = await navigator.mediaDevices.getUserMedia({ 
+               audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true } 
+           });
            setLocalStream(currentStream);
+           localStreamRef.current = currentStream;
        }
        
        if(!peerInstance.current) {
@@ -206,11 +252,13 @@ export default function CommunityPage({ searchParams }: any) {
            const data = await res.json();
            
            if(data.members) {
+               setActiveVoiceRoom((prev: any) => ({ ...prev, members: data.members }));
                data.members.forEach((m: any) => {
-                   if(m.peerId && m.peerId !== peerInstance.current.id) {
+                   if(m.peerId && m.peerId !== peerInstance.current.id && !voicePeersRef.current[m.peerId]) {
                        const call = peerInstance.current.call(m.peerId, currentStream!);
                        if(call) {
                            call.on('stream', (remoteStream: any) => {
+                               voicePeersRef.current[m.peerId] = remoteStream;
                                setVoicePeers(prev => ({ ...prev, [m.peerId]: remoteStream }));
                            });
                        }
@@ -238,10 +286,13 @@ export default function CommunityPage({ searchParams }: any) {
 
   const leaveVoiceRoom = () => {
       setActiveVoiceRoom(null);
+      activeVoiceRoomRef.current = null;
       setVoicePeers({});
-      if(localStream) {
-          localStream.getTracks().forEach((t:any) => t.stop());
+      voicePeersRef.current = {};
+      if(localStreamRef.current) {
+          localStreamRef.current.getTracks().forEach((t:any) => t.stop());
           setLocalStream(null);
+          localStreamRef.current = null;
       }
       if(heartbeatTimer.current) clearInterval(heartbeatTimer.current);
   };
@@ -632,6 +683,20 @@ export default function CommunityPage({ searchParams }: any) {
                 </div>
              </div>
           )}
+
+           {incomingCallInfo && (
+              <div className="absolute top-8 right-8 md:right-1/2 md:translate-x-1/2 z-[9999] bg-[#121318] border border-dublio-cyan/30 rounded-3xl p-6 shadow-[0_0_50px_rgba(6,182,212,0.3)] animate-pulse flex flex-col md:flex-row items-center gap-6">
+                 <img src={incomingCallInfo.caller.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${incomingCallInfo.caller.username}`} className="w-16 h-16 rounded-full bg-black border-2 border-dublio-cyan ring-4 ring-dublio-cyan/20" />
+                 <div className="text-center md:text-left">
+                    <h3 className="font-black text-2xl text-white">{incomingCallInfo.caller.username}</h3>
+                    <p className="text-dublio-cyan text-sm font-bold uppercase tracking-widest mb-3">Seni Özel Odaya Çağırıyor!</p>
+                    <div className="flex gap-3 justify-center md:justify-start">
+                       <button onClick={() => { joinVoiceRoom(incomingCallInfo.room); setIncomingCallInfo(null); }} className="px-6 py-2 bg-green-500 text-white font-bold uppercase tracking-wider rounded-lg hover:bg-green-600 shadow-[0_0_15px_rgba(34,197,94,0.4)] flex items-center gap-2"><Phone className="w-4 h-4" /> Aç</button>
+                       <button onClick={() => setIncomingCallInfo(null)} className="px-6 py-2 bg-red-500 text-white font-bold uppercase tracking-wider rounded-lg hover:bg-red-600 shadow-[0_0_15px_rgba(239,68,68,0.4)] flex items-center gap-2"><Phone className="w-4 h-4 rotate-[135deg]" /> Kapat</button>
+                    </div>
+                 </div>
+              </div>
+           )}
 
            {activeTab === 'voice' && (
               <div className="p-8 h-full flex flex-col">
