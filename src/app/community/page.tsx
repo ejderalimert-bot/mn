@@ -221,6 +221,21 @@ export default function CommunityPage({ searchParams }: any) {
      } catch(e) { alert("Mikrofon izni gerekli!"); }
   };
 
+  const startPrivateCall = async (friendProfile: any) => {
+      try {
+         const roomName = [profile?.username, friendProfile.username].sort().join('-') + ' Özel Odası';
+         const res = await fetch("/api/social/voice-rooms/create", {
+             method: "POST",
+             headers: { "Content-Type": "application/json" },
+             body: JSON.stringify({ roomName })
+         });
+         const data = await res.json();
+         if(data.room) {
+             joinVoiceRoom(data.room);
+         }
+      } catch(e) {}
+  };
+
   const leaveVoiceRoom = () => {
       setActiveVoiceRoom(null);
       setVoicePeers({});
@@ -573,7 +588,7 @@ export default function CommunityPage({ searchParams }: any) {
                             <span className="absolute -top-10 scale-0 group-hover:scale-100 transition-all bg-black border border-white/10 text-xs font-bold px-2 py-1 rounded">Mesaj</span>
                             <MessageSquare className="w-5 h-5 text-white/70 group-hover:text-white" />
                          </button>
-                         <button onClick={() => alert("Sesli arama özelliği WebRTC bağlantısı bekliyor (Pre-Alpha)")} className="w-10 h-10 rounded-full bg-dublio-cyan/10 hover:bg-dublio-cyan/20 flex items-center justify-center transition-colors tooltip-trigger relative group text-dublio-cyan shadow-[0_0_15px_rgba(6,182,212,0.1)]">
+                         <button onClick={() => startPrivateCall(f.profile)} className="w-10 h-10 rounded-full bg-dublio-cyan/10 hover:bg-dublio-cyan/20 flex items-center justify-center transition-colors tooltip-trigger relative group text-dublio-cyan shadow-[0_0_15px_rgba(6,182,212,0.1)]">
                             <span className="absolute -top-10 scale-0 group-hover:scale-100 transition-all bg-dublio-cyan text-black px-2 py-1 rounded text-xs font-bold whitespace-nowrap z-50">Sesli Ara</span>
                             <Phone className="w-5 h-5 relative z-10" />
                          </button>
@@ -701,7 +716,7 @@ export default function CommunityPage({ searchParams }: any) {
                      </div>
                   </div>
                   <div className="ml-auto flex items-center gap-3">
-                     <button onClick={() => alert("Sesli arama sistemi yakında!")} className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors text-white/70 hover:text-white">
+                     <button onClick={() => startPrivateCall(chatUser)} className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors text-white/70 hover:text-white">
                         <Phone className="w-5 h-5" />
                      </button>
                      <button onClick={() => setActiveTab('friends')} className="w-10 h-10 rounded-xl bg-red-500/10 hover:bg-red-500/20 flex items-center justify-center transition-colors text-red-500">
