@@ -721,7 +721,7 @@ export default function CommunityPage({ searchParams }: any) {
                           
                           {(!activeVoiceRoom.members ? [] : 
                             (typeof activeVoiceRoom.members === 'string' ? JSON.parse(activeVoiceRoom.members) : activeVoiceRoom.members)
-                          ).filter((m:any) => m.id !== profile?.id).map((member: any) => (
+                          ).filter((m:any) => m.userId !== profile?.id).map((member: any) => (
                              <div key={member.userId || Math.random()} className="flex flex-col items-center relative">
                                 <img src={member.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${member.username}`} className="w-20 h-20 rounded-full border-4 border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.5)] bg-black" />
                                 <p className="font-bold mt-3">{member.username}</p>
