@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Users, Phone, Gamepad2, Search, Settings, Network, Copy, Check, MessageSquare, Send, ArrowLeft, X, PlusCircle, Mic, Edit2, Trash2, StopCircle, Play, Pause, Image as ImageIcon } from "lucide-react";
+import { Users, Phone, Gamepad2, Search, Settings, Network, Copy, Check, MessageSquare, Send, ArrowLeft, X, PlusCircle, Mic, MicOff, Edit2, Trash2, StopCircle, Play, Pause, Image as ImageIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
 const CustomAudioPlayer = ({ src, isMe }: { src: string, isMe: boolean }) => {
@@ -92,6 +92,15 @@ export default function CommunityPage({ searchParams }: any) {
   const [friendReqInput, setFriendReqInput] = useState("");
   const [reqStatus, setReqStatus] = useState("");
 
+  // Voice Rooms State
+  const [voiceRooms, setVoiceRooms] = useState<any[]>([]);
+  const [activeVoiceRoom, setActiveVoiceRoom] = useState<any>(null);
+  const [voicePeers, setVoicePeers] = useState<{[key:string]: MediaStream}>({});
+  const [localStream, setLocalStream] = useState<MediaStream | null>(null);
+  const [isMuted, setIsMuted] = useState(false);
+  const peerInstance = useRef<any>(null);
+  const heartbeatTimer = useRef<any>(null);
+
   const fetchData = async () => {
     try {
       const pRes = await fetch("/api/profile");
@@ -105,8 +114,19 @@ export default function CommunityPage({ searchParams }: any) {
     setLoading(false);
   };
 
+  const fetchVoiceRooms = async () => {
+     try {
+         const res = await fetch("/api/social/voice-rooms");
+         const data = await res.json();
+         if(data.rooms) setVoiceRooms(data.rooms);
+     } catch(e) {}
+  };
+
   useEffect(() => {
     fetchData();
+    fetchVoiceRooms();
+    const interval = setInterval(fetchVoiceRooms, 5000);
+    return () => clearInterval(interval);
   }, []);
 
   const fetchMessages = async () => {
@@ -132,6 +152,91 @@ export default function CommunityPage({ searchParams }: any) {
          if (interval) clearInterval(interval);
      };
   }, [activeTab, chatUser]);
+
+  const initPeer = async () => {
+      if(peerInstance.current) return;
+      try {
+         const { Peer } = await import("peerjs");
+         const peer = new Peer();
+         peerInstance.current = peer;
+
+         peer.on('open', (id) => {
+             if(heartbeatTimer.current) clearInterval(heartbeatTimer.current);
+             heartbeatTimer.current = setInterval(() => {
+                 if(activeVoiceRoom) {
+                     fetch('/api/social/voice-rooms/join', {
+                         method: 'POST',
+                         headers: {'Content-Type': 'application/json'},
+                         body: JSON.stringify({ roomId: activeVoiceRoom.id, peerId: id, profile })
+                     });
+                 }
+             }, 5000);
+         });
+
+         peer.on('call', (call) => {
+             call.answer(localStream!);
+             call.on('stream', (remoteStream) => {
+                 setVoicePeers(prev => ({ ...prev, [call.peer]: remoteStream }));
+             });
+         });
+      } catch(e) {}
+  };
+
+  const joinVoiceRoom = async (room: any) => {
+     try {
+       setActiveVoiceRoom(room);
+       setActiveTab('voice');
+       
+       let currentStream = localStream;
+       if(!currentStream) {
+           currentStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+           setLocalStream(currentStream);
+       }
+       
+       if(!peerInstance.current) {
+           await initPeer();
+       }
+       
+       if(peerInstance.current?.id) {
+           const res = await fetch('/api/social/voice-rooms/join', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ roomId: room.id, peerId: peerInstance.current.id, profile })
+           });
+           const data = await res.json();
+           
+           if(data.members) {
+               data.members.forEach((m: any) => {
+                   if(m.peerId && m.peerId !== peerInstance.current.id) {
+                       const call = peerInstance.current.call(m.peerId, currentStream!);
+                       if(call) {
+                           call.on('stream', (remoteStream: any) => {
+                               setVoicePeers(prev => ({ ...prev, [m.peerId]: remoteStream }));
+                           });
+                       }
+                   }
+               });
+           }
+       }
+     } catch(e) { alert("Mikrofon izni gerekli!"); }
+  };
+
+  const leaveVoiceRoom = () => {
+      setActiveVoiceRoom(null);
+      setVoicePeers({});
+      if(localStream) {
+          localStream.getTracks().forEach((t:any) => t.stop());
+          setLocalStream(null);
+      }
+      if(heartbeatTimer.current) clearInterval(heartbeatTimer.current);
+  };
+  
+  const toggleMute = () => {
+     if(localStream) {
+         localStream.getAudioTracks().forEach((t:any) => { t.enabled = !t.enabled; });
+         setIsMuted(!isMuted);
+     }
+  };
 
   useEffect(() => {
      if (messagesEndRef.current) {
@@ -369,6 +474,14 @@ export default function CommunityPage({ searchParams }: any) {
                <span className="font-bold hidden md:block">Yeni Kişi Ekle</span>
              </button>
 
+             <button 
+                onClick={() => { setActiveTab('voice'); fetchVoiceRooms(); }}
+                className={`w-full flex items-center justify-center md:justify-start gap-4 px-4 py-3 mx-2 my-1 rounded-xl transition-all ${activeTab === 'voice' ? 'bg-green-500/20 text-green-500 shadow-inner' : 'text-green-500/50 hover:bg-green-500/10 hover:text-green-500'}`}
+             >
+               <Phone className="w-5 h-5 shrink-0" />
+               <span className="font-bold hidden md:block">Sesli Odalar</span>
+             </button>
+
              <div className="my-4 mx-4 h-[1px] bg-white/5"></div>
              <p className="px-4 text-[10px] font-black uppercase tracking-widest text-white/30 mb-2 hidden md:block">Gelen İstekler</p>
 
@@ -504,6 +617,74 @@ export default function CommunityPage({ searchParams }: any) {
                 </div>
              </div>
           )}
+
+           {activeTab === 'voice' && (
+              <div className="p-8 h-full flex flex-col">
+                 <h2 className="text-2xl font-black uppercase tracking-wider border-b border-white/5 pb-4 mb-6 text-green-500">
+                    Sesli Lobi
+                 </h2>
+                 {Object.entries(voicePeers).map(([streamId, stream]) => (
+                    <audio key={streamId} ref={el => { if(el) el.srcObject = stream as MediaStream; }} autoPlay />
+                 ))}
+
+                 {activeVoiceRoom ? (
+                    <div className="flex-1 flex flex-col items-center justify-center bg-[#121318] border border-green-500/30 rounded-3xl p-8 relative overflow-hidden shadow-[0_0_50px_rgba(34,197,94,0.1)]">
+                       <div className="absolute inset-0 bg-green-500/5 animate-pulse"></div>
+                       <h3 className="text-3xl font-black text-white z-10 mb-2">{activeVoiceRoom.name}</h3>
+                       <p className="text-white/50 mb-8 z-10">Bağlantı Kuruldu - Gecikme: 0ms</p>
+                       
+                       <div className="flex flex-wrap items-center justify-center gap-6 z-10 mb-12">
+                          <div className="flex flex-col items-center relative">
+                             <img src={profile?.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profile?.username}`} className={`w-20 h-20 rounded-full border-4 ${isMuted ? 'border-red-500' : 'border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.5)]'} bg-black`} />
+                             <p className="font-bold mt-3">{profile?.username}</p>
+                          </div>
+                          
+                          {(!activeVoiceRoom.members ? [] : 
+                            (typeof activeVoiceRoom.members === 'string' ? JSON.parse(activeVoiceRoom.members) : activeVoiceRoom.members)
+                          ).filter((m:any) => m.id !== profile?.id).map((member: any) => (
+                             <div key={member.userId || Math.random()} className="flex flex-col items-center relative">
+                                <img src={member.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${member.username}`} className="w-20 h-20 rounded-full border-4 border-green-500 shadow-[0_0_20px_rgba(34,197,94,0.5)] bg-black" />
+                                <p className="font-bold mt-3">{member.username}</p>
+                             </div>
+                          ))}
+                       </div>
+
+                       <div className="flex gap-4 z-10">
+                          <button onClick={toggleMute} className={`w-16 h-16 rounded-full flex items-center justify-center transition-all ${isMuted ? 'bg-red-500/20 text-red-500 hover:bg-red-500/40' : 'bg-white/10 hover:bg-white/20 text-white'}`}>
+                             {isMuted ? <MicOff className="w-8 h-8" /> : <Mic className="w-8 h-8" />}
+                          </button>
+                          <button onClick={leaveVoiceRoom} className="px-8 bg-red-500 text-white font-black uppercase rounded-full hover:bg-red-600 transition-colors shadow-[0_0_20px_rgba(239,68,68,0.4)]">
+                              Odadan Ayrıl
+                          </button>
+                       </div>
+                    </div>
+                 ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                       {voiceRooms.map(room => {
+                          let members = [];
+                          if (room.members) {
+                             if (typeof room.members === 'string') members = JSON.parse(room.members);
+                             else members = room.members;
+                          }
+                          return (
+                             <button key={room.id} onClick={() => joinVoiceRoom(room)} className="bg-[#121318] border border-white/5 hover:border-green-500/50 rounded-2xl p-6 text-left transition-all hover:bg-white/5 group relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl group-hover:bg-green-500/20 transition-all"></div>
+                                <h3 className="text-xl font-bold mb-2 flex items-center gap-2">
+                                  {room.name} <Phone className="w-4 h-4 text-green-500 opacity-0 group-hover:opacity-100 transition-all" />
+                                </h3>
+                                <p className="text-white/40 text-sm mb-4">{members.length} Kişi Seste</p>
+                                <div className="flex -space-x-2">
+                                   {members.slice(0,4).map((m:any) => (
+                                      <img key={m.userId || Math.random()} src={m.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${m.username}`} className="w-8 h-8 rounded-full border-2 border-[#121318] bg-black" />
+                                   ))}
+                                </div>
+                             </button>
+                          )
+                       })}
+                    </div>
+                 )}
+              </div>
+           )}
 
           {activeTab === 'chat' && chatUser && (
              <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex flex-col h-full bg-[#121318]">

@@ -200,3 +200,10 @@ model Friendship {
 
   @@unique([userId, friendId])
 }
+
+model VoiceRoom {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  members   String   @default("[]") // JSON stringified array of active peers
+  createdAt DateTime @default(now())
+}
