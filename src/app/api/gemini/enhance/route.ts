@@ -68,7 +68,6 @@ SEO METADATA KURALLARI:
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        tools: [{ googleSearch: {} }],
         generationConfig: { responseMimeType: "application/json" }
       })
     });
