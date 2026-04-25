@@ -8,6 +8,7 @@ import CustomCursor from "@/components/CustomCursor";
 import SiteInnovations from "@/components/SiteInnovations";
 import CommandPalette from "@/components/CommandPalette";
 import SocialChatWidget from "@/components/SocialChatWidget";
+import AdminShortcutsHUD from "@/components/AdminShortcutsHUD";
 import { PerformanceProvider, PerformanceMode } from "@/context/PerformanceContext";
 import { cookies } from "next/headers";
 
@@ -56,6 +57,7 @@ export default async function RootLayout({
           <PerformanceProvider defaultMode={defaultMode}>
             <AnalyticsProvider />
             <SiteProtection />
+            <AdminShortcutsHUD />
             {children}
           </PerformanceProvider>
         </AuthProvider>
