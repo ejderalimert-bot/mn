@@ -154,13 +154,6 @@ export default function AdminDashboardPage() {
     }
   };
 
-  if (status === "loading" || loading || !session) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-[#0d0f14]">
-        <div className="w-8 h-8 rounded-full border-4 border-t-white border-white/20 animate-spin"></div>
-      </div>
-    );
-  }
 
   // Admin Keyboard Shortcuts
   React.useEffect(() => {
@@ -208,6 +201,14 @@ export default function AdminDashboardPage() {
       }
     }
   }, [formTitle, formDescription, formCategory, formTags, formFocusKeyword, formSeoTitle, formSeoDesc, formSlug, formTrailer, view, editingProject]);
+
+  if (status === "loading" || loading || !session) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-[#0d0f14]">
+        <div className="w-8 h-8 rounded-full border-4 border-t-white border-white/20 animate-spin"></div>
+      </div>
+    );
+  }
 
   const handleAddNew = () => {
     setEditingProject(null);
