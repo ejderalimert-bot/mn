@@ -55,6 +55,7 @@ export default function AdminDashboardPage() {
   const [formCategory, setFormCategory] = useState<string>('Oyunlar');
   const [formTrailer, setFormTrailer] = useState<string>('');
   const [formGeminiLink, setFormGeminiLink] = useState<string>('');
+  const [formReferenceUrl, setFormReferenceUrl] = useState<string>('');
   const [formFocusKeyword, setFormFocusKeyword] = useState<string>('');
   const [formSeoTitle, setFormSeoTitle] = useState<string>('');
   const [formSeoDesc, setFormSeoDesc] = useState<string>('');
@@ -139,7 +140,14 @@ export default function AdminDashboardPage() {
       const res = await fetch('/api/gemini/enhance', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ title: formTitle, description: formDescription, category: formCategory, trailer: formGeminiLink, focusKeyword: formFocusKeyword })
+        body: JSON.stringify({ 
+          title: formTitle, 
+          description: formDescription, 
+          category: formCategory, 
+          trailer: formGeminiLink, 
+          referenceUrl: formReferenceUrl,
+          focusKeyword: formFocusKeyword 
+        })
       });
       const data = await res.json();
       if (data.description) setFormDescription(data.description);
@@ -240,6 +248,7 @@ export default function AdminDashboardPage() {
     setFormCategory('Oyunlar');
     setFormTrailer('');
     setFormGeminiLink('');
+    setFormReferenceUrl('');
     setFormTags([]);
     setFormFocusKeyword('');
     setFormSeoTitle('');
@@ -255,6 +264,7 @@ export default function AdminDashboardPage() {
     setFormCategory(project.category || 'Oyunlar');
     setFormTrailer(project.trailer || '');
     setFormGeminiLink('');
+    setFormReferenceUrl('');
     setFormTags(project.tags || []);
     setFormFocusKeyword(project.focusKeyword || '');
     setFormSeoTitle(project.seoTitle || '');
@@ -769,6 +779,10 @@ export default function AdminDashboardPage() {
                     <input type="text" value={formGeminiLink} onChange={(e) => setFormGeminiLink(e.target.value)} placeholder="YouTube linkini yapıştırın (Sadece YZ analizi için)" className="mb-2 w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple" />
                   </div>
                   <div className="space-y-2">
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Gemini Örnek Referans Sitesi (İncelemesi İçin)</label>
+                    <input type="text" value={formReferenceUrl} onChange={(e) => setFormReferenceUrl(e.target.value)} placeholder="Referans alınacak örnek URL yapıştırın" className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple mb-2" />
+                  </div>
+                  <div className="space-y-2 md:col-span-2">
                     <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Ana Fragman (YouTube Linki veya .MP4 Yükle)</label>
                     <input id="inp_trailer" type="text" name="trailer" defaultValue={editingProject?.trailer} placeholder="https://youtube.com/watch?v=..." className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple mb-2" />
                     <CloudinaryUploader resourceType="video" label="Fragman Videosu Yükle (.mp4)" onUploadSuccess={(url) => { (document.getElementById('inp_trailer') as HTMLInputElement).value = url; }} />

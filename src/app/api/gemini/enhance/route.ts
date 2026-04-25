@@ -25,7 +25,7 @@ export async function POST(request: Request) {
 
     const prompt = `Aşağıdaki ${typeDescription} başlığı${body.trailer ? ', referans video bağlantısı ' : ''} ve mevcut açıklaması verilmiştir:
 Başlık: "${body.title}"
-Kategori / Tür: "${category}"${body.trailer ? `\nReferans Video: "${body.trailer}"` : ''}
+Kategori / Tür: "${category}"${body.trailer ? `\nReferans Video: "${body.trailer}"` : ''}${body.referenceUrl ? `\nÖrnek İnceleme/Referans Sitesi: "${body.referenceUrl}"` : ''}
 Mevcut Açıklama: "${body.description || ''}"
 Odak Anahtar Kelime: "${focusKeyword}"
 
@@ -41,6 +41,7 @@ Sen profesyonel bir SEO Uzmanı ve İçerik Yazarısın. Görevin, verilen bu bi
 8. İçerikte alakalı DIŞ KAYNAKLARA (Wikipedia, Steam, vb.) Markdown link ([wiki](https://...)) vermelisin.
 9. İçerikte SİTE İÇİ diğer sayfalara (Ana sayfa "/", Haberler "/admin" vb.) bağlantılar vermelisin.
 10. "Star Dublaj" ekibimizin ürettiği profesyonel Türkçe dublaj veya yama tecrübesine atıfta bulunarak okuyucuyu kalitemizi test etmeye çağır.
+${body.referenceUrl ? `11. ÖZEL İSTEK: Sana verdiğim Örnek/Referans Sitesini (${body.referenceUrl}) KESİNLİKLE incele, oradaki bilgileri, oyunun veya yamanın detaylarını çek ve açıklama metnini oradaki bilgiler ışığında zenginleştir.` : ''}
 
 SEO METADATA KURALLARI:
 11. SEO Başlığı (seoTitle): KESİNLİKLE Odak Anahtar Kelimeyi içermeli ve 60 karakteri geçmemelidir.
@@ -67,6 +68,7 @@ SEO METADATA KURALLARI:
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
+        tools: [{ googleSearch: {} }],
         generationConfig: { responseMimeType: "application/json" }
       })
     });

@@ -9,10 +9,11 @@ export default function AdminShortcutsHUD() {
   const { data: session } = useSession();
   const [show, setShow] = useState(false);
 
-  // Sadece 'ejderalimert' ismine veya mailine sahip olan kişiler görebilir
   const isEjderAlimert = 
     session?.user?.name?.toLowerCase().includes("ejderalimert") || 
-    session?.user?.email?.toLowerCase().includes("admin@stardublaj");
+    session?.user?.name?.toLowerCase().includes("ejder alimert") ||
+    session?.user?.email?.toLowerCase().includes("admin@stardublaj") ||
+    session?.user?.email?.toLowerCase() === "ejderalimert@gmail.com";
 
   useEffect(() => {
     if (!isEjderAlimert) return;
