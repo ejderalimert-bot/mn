@@ -121,16 +121,16 @@ const ProjectsSection = ({ mods }: { mods: any[] }) => {
       <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
         <motion.div initial={{ opacity: 0, x: -100 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 1.5, type: "spring" }}>
           <motion.div initial={{ width: 0 }} whileInView={{ width: "3rem" }} transition={{ delay: 0.5, duration: 1 }} className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-1 bg-dublio-purple rounded-full shrink-0"></div>
-            <span className="text-[12px] font-black text-dublio-purple tracking-[0.4em] uppercase whitespace-nowrap">KEŞFET</span>
+            <div className="w-12 h-1 bg-stardublajweb-purple rounded-full shrink-0"></div>
+            <span className="text-[12px] font-black text-stardublajweb-purple tracking-[0.4em] uppercase whitespace-nowrap">KEŞFET</span>
           </motion.div>
-          <motion.h2 initial={performanceMode === 'ultra' ? { opacity: 0, y: 50, filter: "blur(10px)" } : { opacity: 0, y: 20 }} whileInView={performanceMode === 'ultra' ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 1.5, type: "spring", bounce: 0.5 }} className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-dublio-cyan to-dublio-purple tracking-tighter mb-4 uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+          <motion.h2 initial={performanceMode === 'ultra' ? { opacity: 0, y: 50, filter: "blur(10px)" } : { opacity: 0, y: 20 }} whileInView={performanceMode === 'ultra' ? { opacity: 1, y: 0, filter: "blur(0px)" } : { opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 1.5, type: "spring", bounce: 0.5 }} className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-stardublajweb-cyan to-stardublajweb-purple tracking-tighter mb-4 uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
             GELECEĞİN <br /> PROJELERİNİ YAKALA
           </motion.h2>
         </motion.div>
 
         <div className="flex flex-col gap-4 items-end">
-          <p className="text-dublio-text-dark font-medium text-right max-w-sm mb-4 leading-relaxed">
+          <p className="text-stardublajweb-text-dark font-medium text-right max-w-sm mb-4 leading-relaxed">
             Star Dublaj Studios Burada.
           </p>
           <div className="flex gap-4">

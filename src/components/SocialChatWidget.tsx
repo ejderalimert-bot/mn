@@ -145,7 +145,7 @@ export default function SocialChatWidget() {
     <>
       <button 
         onClick={() => { setIsOpen(!isOpen); setIsMinimized(false); }}
-        className={`fixed bottom-8 left-8 z-[9000] w-14 h-14 bg-dublio-purple hover:bg-[#9333ea] rounded-full shadow-[0_0_20px_rgba(168,85,247,0.5)] flex items-center justify-center text-white transition-transform hover:scale-110 active:scale-95 ${isOpen && !isMinimized ? 'scale-0' : 'scale-100'}`}
+        className={`fixed bottom-8 left-8 z-[9000] w-14 h-14 bg-stardublajweb-purple hover:bg-[#9333ea] rounded-full shadow-[0_0_20px_rgba(168,85,247,0.5)] flex items-center justify-center text-white transition-transform hover:scale-110 active:scale-95 ${isOpen && !isMinimized ? 'scale-0' : 'scale-100'}`}
       >
         <MessageSquare className="w-6 h-6" />
         <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full border-2 border-[#0a0a0c] scale-100 animate-pulse"></span>
@@ -179,7 +179,7 @@ export default function SocialChatWidget() {
                   </>
                 ) : (
                   <>
-                    <Users className="w-5 h-5 text-dublio-cyan" />
+                    <Users className="w-5 h-5 text-stardublajweb-cyan" />
                     <span className="font-bold text-sm text-white tracking-widest uppercase">Ağ Bağlantısı</span>
                   </>
                 )}
@@ -204,7 +204,7 @@ export default function SocialChatWidget() {
                      {/* Add Friend Banner */}
                      {session ? (
                        <form onSubmit={handleAddFriend} className="p-3 border-b border-white/5 bg-[#1a1c23]/50">
-                         <div className="flex bg-black/50 border border-white/10 rounded-xl overflow-hidden focus-within:border-dublio-cyan">
+                         <div className="flex bg-black/50 border border-white/10 rounded-xl overflow-hidden focus-within:border-stardublajweb-cyan">
                            <input 
                              type="text" 
                              value={addUsername}
@@ -212,7 +212,7 @@ export default function SocialChatWidget() {
                              placeholder="Kullanıcı Adı ile Ekle..."
                              className="flex-1 bg-transparent px-3 py-2 text-xs text-white focus:outline-none placeholder:text-white/30"
                            />
-                           <button disabled={addStatus === 'loading'} type="submit" className="px-3 text-white/50 hover:text-dublio-cyan transition-colors bg-white/5">
+                           <button disabled={addStatus === 'loading'} type="submit" className="px-3 text-white/50 hover:text-stardublajweb-cyan transition-colors bg-white/5">
                               {addStatus === 'loading' ? <span className="animate-spin text-xs">...</span> : <PlusCircle className="w-4 h-4" />}
                            </button>
                          </div>
@@ -245,11 +245,11 @@ export default function SocialChatWidget() {
                                       <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-[#121318]"></div>
                                    </div>
                                    <div className="flex flex-col items-start">
-                                      <span className="text-sm font-bold text-white group-hover:text-dublio-cyan transition-colors">{f.profile?.username}</span>
+                                      <span className="text-sm font-bold text-white group-hover:text-stardublajweb-cyan transition-colors">{f.profile?.username}</span>
                                       <span className="text-[10px] text-white/40">Sistemde</span>
                                    </div>
                                 </div>
-                                <MessageSquare className="w-4 h-4 text-white/20 group-hover:text-dublio-cyan" />
+                                <MessageSquare className="w-4 h-4 text-white/20 group-hover:text-stardublajweb-cyan" />
                              </button>
                           ))
                        )}
@@ -268,7 +268,7 @@ export default function SocialChatWidget() {
                          <div key={msg.id} className={`flex flex-col ${msg.isMe ? 'items-end' : 'items-start'}`}>
                            <div className={`px-4 py-2 mt-1 max-w-[85%] text-sm rounded-2xl leading-relaxed ${
                              msg.isMe 
-                               ? 'bg-dublio-purple text-white rounded-tr-sm' 
+                               ? 'bg-stardublajweb-purple text-white rounded-tr-sm' 
                                : 'bg-[#2a2a35] text-white rounded-tl-sm'
                            }`}>
                              {msg.text}
@@ -285,9 +285,9 @@ export default function SocialChatWidget() {
                          value={inputVal}
                          onChange={e => setInputVal(e.target.value)}
                          placeholder={`${targetUser?.username} hesabına yaz...`} 
-                         className="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-dublio-purple placeholder:text-white/30"
+                         className="flex-1 bg-black/50 border border-white/10 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-stardublajweb-purple placeholder:text-white/30"
                        />
-                       <button type="submit" disabled={!inputVal.trim()} className="bg-dublio-purple hover:bg-[#9333ea] disabled:opacity-50 disabled:hover:bg-dublio-purple text-white p-2 rounded-xl transition-colors">
+                       <button type="submit" disabled={!inputVal.trim()} className="bg-stardublajweb-purple hover:bg-[#9333ea] disabled:opacity-50 disabled:hover:bg-stardublajweb-purple text-white p-2 rounded-xl transition-colors">
                          <Send className="w-4 h-4" />
                        </button>
                      </form>

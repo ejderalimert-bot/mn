@@ -30,7 +30,7 @@ export default async function Home() {
   const team = await prisma.teamMember.findMany({ include: { user: true }, orderBy: { createdAt: 'asc' } });
 
   return (
-    <main className="flex flex-col min-h-screen bg-dublio-dark text-white selection:bg-dublio-purple/30">
+    <main className="flex flex-col min-h-screen bg-stardublajweb-dark text-white selection:bg-stardublajweb-purple/30">
       <Navbar />
       <QuoteCarousel />
 

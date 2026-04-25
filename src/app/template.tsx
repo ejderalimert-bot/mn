@@ -16,15 +16,15 @@ export default function Template({ children }: { children: React.ReactNode }) {
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-dublio-cyan via-pink-500 to-dublio-purple origin-left z-[99999] shadow-[0_0_20px_#ec4899] mix-blend-screen"
+        className="fixed top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-stardublajweb-cyan via-pink-500 to-stardublajweb-purple origin-left z-[99999] shadow-[0_0_20px_#ec4899] mix-blend-screen"
         style={{ scaleX }}
       />
       
       {performanceMode === 'ultra' && (
         <>
-          <motion.div initial={{ height: "100vh", bottom: 0 }} animate={{ height: 0, bottom: "100vh" }} transition={{ duration: 1.2, ease: [0.77, 0, 0.17, 1], delay: 0.0 }} className="fixed left-0 w-1/3 bg-dublio-purple z-[99998] shadow-2xl" />
+          <motion.div initial={{ height: "100vh", bottom: 0 }} animate={{ height: 0, bottom: "100vh" }} transition={{ duration: 1.2, ease: [0.77, 0, 0.17, 1], delay: 0.0 }} className="fixed left-0 w-1/3 bg-stardublajweb-purple z-[99998] shadow-2xl" />
           <motion.div initial={{ height: "100vh", bottom: 0 }} animate={{ height: 0, bottom: "100vh" }} transition={{ duration: 1.2, ease: [0.77, 0, 0.17, 1], delay: 0.1 }} className="fixed left-[33.33%] w-1/3 bg-pink-500 z-[99998] shadow-[0_0_50px_#ec4899]" />
-          <motion.div initial={{ height: "100vh", bottom: 0 }} animate={{ height: 0, bottom: "100vh" }} transition={{ duration: 1.2, ease: [0.77, 0, 0.17, 1], delay: 0.2 }} className="fixed right-0 w-1/3 bg-dublio-cyan z-[99998] shadow-[0_0_50px_#6affeb]" />
+          <motion.div initial={{ height: "100vh", bottom: 0 }} animate={{ height: 0, bottom: "100vh" }} transition={{ duration: 1.2, ease: [0.77, 0, 0.17, 1], delay: 0.2 }} className="fixed right-0 w-1/3 bg-stardublajweb-cyan z-[99998] shadow-[0_0_50px_#6affeb]" />
         </>
       )}
 

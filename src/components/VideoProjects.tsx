@@ -116,7 +116,7 @@ const VideoCard = ({ project }: { project: any }) => {
 const VideoProjects = ({ projects }: { projects: any[] }) => {
   const { performanceMode } = usePerformance();
   return (
-    <section className="py-24 px-8 bg-dublio-dark/50 relative overflow-hidden">
+    <section className="py-24 px-8 bg-stardublajweb-dark/50 relative overflow-hidden">
       {/* Background glow */}
       {performanceMode === 'ultra' && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[400px] bg-red-500/5 blur-[120px] rounded-full z-0"></div>

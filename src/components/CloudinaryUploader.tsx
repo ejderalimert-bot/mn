@@ -67,7 +67,7 @@ export default function CloudinaryUploader({ onUploadSuccess, resourceType = 'au
   };
 
   return (
-    <div className="relative group cursor-pointer border-2 border-dashed border-dublio-cyan/30 hover:border-dublio-cyan bg-[#1a1c23] hover:bg-[#1f222b] rounded-xl p-4 flex flex-col items-center justify-center transition-all h-full min-h-[100px]">
+    <div className="relative group cursor-pointer border-2 border-dashed border-stardublajweb-cyan/30 hover:border-stardublajweb-cyan bg-[#1a1c23] hover:bg-[#1f222b] rounded-xl p-4 flex flex-col items-center justify-center transition-all h-full min-h-[100px]">
       <input 
         type="file" 
         accept={resourceType === 'image' ? 'image/*' : resourceType === 'video' ? 'video/*' : 'image/*,video/*'} 
@@ -78,12 +78,12 @@ export default function CloudinaryUploader({ onUploadSuccess, resourceType = 'au
       
       {uploading ? (
         <div className="flex flex-col items-center justify-center gap-2">
-          <Loader2 className="w-8 h-8 text-dublio-cyan animate-spin" />
-          <span className="text-dublio-cyan font-black text-sm">{progress}%</span>
+          <Loader2 className="w-8 h-8 text-stardublajweb-cyan animate-spin" />
+          <span className="text-stardublajweb-cyan font-black text-sm">{progress}%</span>
         </div>
       ) : (
         <div className="flex flex-col items-center justify-center gap-2">
-          {resourceType === 'video' ? <Film className="w-8 h-8 text-white/30 group-hover:text-dublio-cyan transition-colors" /> : <ImageIcon className="w-8 h-8 text-white/30 group-hover:text-dublio-cyan transition-colors" />}
+          {resourceType === 'video' ? <Film className="w-8 h-8 text-white/30 group-hover:text-stardublajweb-cyan transition-colors" /> : <ImageIcon className="w-8 h-8 text-white/30 group-hover:text-stardublajweb-cyan transition-colors" />}
           <span className="text-white/50 text-xs font-bold uppercase tracking-widest text-center">{label}</span>
           <span className="text-white/20 text-[10px]">Tıkla veya Sürükle</span>
         </div>

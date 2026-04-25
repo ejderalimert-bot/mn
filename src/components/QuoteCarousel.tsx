@@ -13,7 +13,7 @@ const QUOTES = [
 
 export default function QuoteCarousel() {
   return (
-    <div className="w-full bg-dublio-purple/10 border-b border-dublio-purple/20 overflow-hidden relative z-40 h-10 flex items-center">
+    <div className="w-full bg-stardublajweb-purple/10 border-b border-stardublajweb-purple/20 overflow-hidden relative z-40 h-10 flex items-center">
       <motion.div
         animate={{ x: [0, -1000] }}
         transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
@@ -21,8 +21,8 @@ export default function QuoteCarousel() {
       >
         {/* Repeat the quotes a few times to create infinite loop effect */}
         {[...QUOTES, ...QUOTES, ...QUOTES].map((quote, i) => (
-          <div key={i} className="text-dublio-purple text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] flex items-center gap-4">
-            <span className="w-2 h-2 rounded-full bg-dublio-cyan animate-pulse"></span>
+          <div key={i} className="text-stardublajweb-purple text-[10px] sm:text-xs font-black uppercase tracking-[0.3em] flex items-center gap-4">
+            <span className="w-2 h-2 rounded-full bg-stardublajweb-cyan animate-pulse"></span>
             {quote}
           </div>
         ))}

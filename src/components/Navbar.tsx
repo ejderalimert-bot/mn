@@ -82,29 +82,29 @@ const Navbar = () => {
             <motion.div whileHover={{ rotate: 180, scale: 1.2 }} className="hidden w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
               <span className="text-white font-black text-xl">S</span>
             </motion.div>
-            <span className="font-bold text-xl text-white tracking-tight group-hover:text-dublio-cyan transition-colors">STAR DUBLAJ</span>
+            <span className="font-bold text-xl text-white tracking-tight group-hover:text-stardublajweb-cyan transition-colors">STAR DUBLAJ</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
             <Link href="/news" className={`relative text-sm font-medium transition-colors pb-1 ${pathname?.startsWith('/news') ? 'text-white' : 'text-white/70 hover:text-white'}`}>
               Haberler
-              {pathname?.startsWith('/news') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-dublio-cyan shadow-[0_0_10px_rgba(106,255,235,0.7)]"></motion.span>}
+              {pathname?.startsWith('/news') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-stardublajweb-cyan shadow-[0_0_10px_rgba(106,255,235,0.7)]"></motion.span>}
             </Link>
             <Link href="/mods" className={`relative text-sm font-medium transition-colors pb-1 ${pathname?.startsWith('/mods') ? 'text-white' : 'text-white/70 hover:text-white'}`}>
               Modlar
-              {pathname?.startsWith('/mods') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-dublio-cyan shadow-[0_0_10px_rgba(106,255,235,0.7)]"></motion.span>}
+              {pathname?.startsWith('/mods') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-stardublajweb-cyan shadow-[0_0_10px_rgba(106,255,235,0.7)]"></motion.span>}
             </Link>
             <Link href="/dubbing" className={`relative text-sm font-medium transition-colors pb-1 ${pathname?.startsWith('/dubbing') ? 'text-white' : 'text-white/70 hover:text-white'}`}>
               Seslendirme
-              {pathname?.startsWith('/dubbing') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-dublio-cyan shadow-[0_0_10px_rgba(106,255,235,0.7)]"></motion.span>}
+              {pathname?.startsWith('/dubbing') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-stardublajweb-cyan shadow-[0_0_10px_rgba(106,255,235,0.7)]"></motion.span>}
             </Link>
             <Link href="/partners" className={`relative text-sm font-medium transition-colors pb-1 ${pathname?.startsWith('/partners') ? 'text-white text-pink-500' : 'text-pink-400/80 hover:text-pink-400'}`}>
               Ortak Ekibimiz
               {pathname?.startsWith('/partners') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-pink-500 shadow-[0_0_10px_rgba(236,72,153,0.7)]"></motion.span>}
             </Link>
-            <Link href="/community" className={`relative text-sm font-black transition-colors pb-1 ${pathname?.startsWith('/community') ? 'text-dublio-cyan' : 'text-dublio-cyan/60 hover:text-dublio-cyan'} `}>
+            <Link href="/community" className={`relative text-sm font-black transition-colors pb-1 ${pathname?.startsWith('/community') ? 'text-stardublajweb-cyan' : 'text-stardublajweb-cyan/60 hover:text-stardublajweb-cyan'} `}>
               Topluluk (Ağ) 
-              {pathname?.startsWith('/community') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-dublio-cyan shadow-[0_0_10px_rgba(6,182,212,0.7)]"></motion.span>}
+              {pathname?.startsWith('/community') && <motion.span layoutId="nav-underline" className="absolute bottom-0 left-0 w-full h-[2px] rounded-full bg-stardublajweb-cyan shadow-[0_0_10px_rgba(6,182,212,0.7)]"></motion.span>}
             </Link>
           </nav>
         </div>
@@ -112,7 +112,7 @@ const Navbar = () => {
         <div className="flex items-center gap-4">
           {/* Search System */}
           <div className="relative hidden sm:block" ref={searchRef}>
-            <div className={`flex items-center gap-2 px-4 py-1.5 ${isSearchOpen ? 'bg-[#2f2f38] ring-1 ring-dublio-cyan text-white' : 'bg-[#2f2f38]/50 text-white/60 hover:bg-[#2f2f38] hover:text-white'} transition-all rounded-full border border-white/5`}>
+            <div className={`flex items-center gap-2 px-4 py-1.5 ${isSearchOpen ? 'bg-[#2f2f38] ring-1 ring-stardublajweb-cyan text-white' : 'bg-[#2f2f38]/50 text-white/60 hover:bg-[#2f2f38] hover:text-white'} transition-all rounded-full border border-white/5`}>
               <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
               <input 
                 type="text" 
@@ -147,7 +147,7 @@ const Navbar = () => {
                            )}
                         </div>
                         <div className="flex flex-col min-w-0">
-                          <span className="text-sm font-bold text-white truncate group-hover:text-dublio-cyan transition-colors">{p.title}</span>
+                          <span className="text-sm font-bold text-white truncate group-hover:text-stardublajweb-cyan transition-colors">{p.title}</span>
                           <span className="text-[10px] text-white/40 tracking-widest uppercase">{p.category}</span>
                         </div>
                       </Link>
@@ -169,7 +169,7 @@ const Navbar = () => {
               className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-white/5 transition-colors relative"
             >
               <Bell className="w-5 h-5 text-white/70" />
-              {notifications.length > 0 && <span className="absolute top-2 right-2 w-2 h-2 bg-dublio-purple rounded-full shadow-[0_0_10px_purple] animate-pulse"></span>}
+              {notifications.length > 0 && <span className="absolute top-2 right-2 w-2 h-2 bg-stardublajweb-purple rounded-full shadow-[0_0_10px_purple] animate-pulse"></span>}
             </button>
             
             {isNotifOpen && (
@@ -184,12 +184,12 @@ const Navbar = () => {
                         const p = item.data;
                         return (
                         <Link key={`p-${p.id}`} href={`/project/${p.slug || p.id}`} onClick={() => setIsNotifOpen(false)} className="flex items-center gap-4 p-4 hover:bg-white/5 border-b border-white/5 last:border-0 transition-colors group">
-                            <div className="w-14 h-14 rounded-xl bg-black overflow-hidden shrink-0 border border-white/10 group-hover:border-dublio-purple/50 shadow-inner transition-colors">
+                            <div className="w-14 h-14 rounded-xl bg-black overflow-hidden shrink-0 border border-white/10 group-hover:border-stardublajweb-purple/50 shadow-inner transition-colors">
                               {p.image ? <img src={p.image} className="w-full h-full object-cover" /> : <span className="flex items-center justify-center h-full text-xs font-bold text-white/20 uppercase">{p.category}</span>}
                             </div>
                             <div className="flex flex-col flex-1 min-w-0">
-                              <span className="text-sm font-bold text-white group-hover:text-dublio-cyan transition-colors truncate mb-1">{p.title}</span>
-                              <span className="text-[10px] text-dublio-cyan font-bold tracking-wide uppercase mb-0.5">YENİ PROJE YAYINLANDI</span>
+                              <span className="text-sm font-bold text-white group-hover:text-stardublajweb-cyan transition-colors truncate mb-1">{p.title}</span>
+                              <span className="text-[10px] text-stardublajweb-cyan font-bold tracking-wide uppercase mb-0.5">YENİ PROJE YAYINLANDI</span>
                               <span className="text-xs text-white/50 tracking-wide leading-snug truncate">Projeyi incelemeye başla.</span>
                             </div>
                           </Link>
@@ -228,7 +228,7 @@ const Navbar = () => {
               {(session.user as any)?.role === "admin" && (
                 <Link
                   href="/admin"
-                  className="hidden md:flex px-4 py-2 bg-dublio-purple/20 border border-dublio-purple/50 text-dublio-purple hover:bg-dublio-purple hover:text-white rounded-lg text-xs font-black italic tracking-widest transition-all shadow-[0_0_15px_rgba(168,85,247,0.2)]"
+                  className="hidden md:flex px-4 py-2 bg-stardublajweb-purple/20 border border-stardublajweb-purple/50 text-stardublajweb-purple hover:bg-stardublajweb-purple hover:text-white rounded-lg text-xs font-black italic tracking-widest transition-all shadow-[0_0_15px_rgba(168,85,247,0.2)]"
                 >
                   YÖNETİCİ PANELİ
                 </Link>
@@ -240,12 +240,12 @@ const Navbar = () => {
               </div>
               <Link
                 href="/profile"
-                className="w-10 h-10 rounded-full border border-white/10 overflow-hidden hover:border-dublio-purple transition-all ring-2 ring-transparent hover:ring-dublio-purple/30"
+                className="w-10 h-10 rounded-full border border-white/10 overflow-hidden hover:border-stardublajweb-purple transition-all ring-2 ring-transparent hover:ring-stardublajweb-purple/30"
               >
                 {session.user?.image ? (
                   <img src={session.user.image} alt="Avatar" className="w-full h-full object-cover" />
                 ) : (
-                  <div className="w-full h-full bg-dublio-light flex items-center justify-center text-xs font-bold">
+                  <div className="w-full h-full bg-stardublajweb-light flex items-center justify-center text-xs font-bold">
                     {session.user?.name?.charAt(0)}
                   </div>
                 )}
@@ -253,7 +253,7 @@ const Navbar = () => {
               <div className="flex flex-col gap-1 ml-2">
                 <Link
                   href="/profile?tab=settings"
-                  className="text-[10px] font-black text-white/40 hover:text-dublio-cyan uppercase tracking-widest transition-colors"
+                  className="text-[10px] font-black text-white/40 hover:text-stardublajweb-cyan uppercase tracking-widest transition-colors"
                 >
                   AYARLAR
                 </Link>

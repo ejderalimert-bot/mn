@@ -6,7 +6,7 @@ import HomeFooter from "@/components/HomeFooter";
 
 const CareerPage = () => {
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-dublio-cyan/30 flex flex-col">
+    <div className="min-h-screen bg-black text-white selection:bg-stardublajweb-cyan/30 flex flex-col">
       <Navbar />
       <main className="flex-1 pt-32 pb-20 px-6 sm:px-12 relative overflow-hidden flex flex-col items-center justify-center">
         {/* Arka plan efektleri */}

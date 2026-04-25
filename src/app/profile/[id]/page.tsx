@@ -71,7 +71,7 @@ export default function UserProfilePage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#111115] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-dublio-purple border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-12 h-12 border-4 border-stardublajweb-purple border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -84,14 +84,14 @@ export default function UserProfilePage() {
         <div className="max-w-4xl mx-auto">
           {/* Profile Header */}
           <div className="bg-[#1a1c23] p-10 rounded-[40px] border border-white/5 relative overflow-hidden mb-10 shadow-xl">
-            <div className="absolute top-0 right-0 w-64 h-64 bg-dublio-purple/10 blur-[100px] rounded-full -mr-20 -mt-20 pointer-events-none"></div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-stardublajweb-purple/10 blur-[100px] rounded-full -mr-20 -mt-20 pointer-events-none"></div>
             
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
               <div className="w-32 h-32 md:w-48 md:h-48 rounded-[40px] border-4 border-white/10 overflow-hidden shadow-2xl bg-black/40">
                  {userInfo?.image ? (
                    <img src={userInfo.image} alt="Profile" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                  ) : (
-                   <div className="w-full h-full flex items-center justify-center text-5xl font-black italic text-dublio-purple">
+                   <div className="w-full h-full flex items-center justify-center text-5xl font-black italic text-stardublajweb-purple">
                       {userInfo?.name?.charAt(0) || '?'}
                    </div>
                  )}
@@ -99,7 +99,7 @@ export default function UserProfilePage() {
               
               <div className="text-center md:text-left">
                 <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full mb-4">
-                  <span className="w-2 h-2 bg-dublio-cyan rounded-full"></span>
+                  <span className="w-2 h-2 bg-stardublajweb-cyan rounded-full"></span>
                   <span className="text-[10px] font-black tracking-widest uppercase">STAR DUBLAJ ÜYESİ</span>
                 </div>
                 <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-2">
@@ -169,11 +169,11 @@ export default function UserProfilePage() {
                    <div className="grid grid-cols-2 gap-4">
                       <div className="flex flex-col p-4 bg-white/5 rounded-2xl border border-white/5">
                          <span className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">YORUMLAR</span>
-                         <span className="text-3xl font-black italic text-dublio-purple">{userCommentsCount}</span>
+                         <span className="text-3xl font-black italic text-stardublajweb-purple">{userCommentsCount}</span>
                       </div>
                       <div className="flex flex-col p-4 bg-white/5 rounded-2xl border border-white/5">
                          <span className="text-[10px] font-black text-white/40 uppercase tracking-widest mb-1">FAVORİLER</span>
-                         <span className="text-3xl font-black italic text-dublio-cyan">{favorites.length}</span>
+                         <span className="text-3xl font-black italic text-stardublajweb-cyan">{favorites.length}</span>
                       </div>
                    </div>
                 </div>

@@ -28,7 +28,7 @@ export default function CommandPalette() {
   }, []);
 
   const actions = [
-    { id: 1, title: "Topluluk (Sosyal)", icon: <Users className="w-5 h-5 text-dublio-cyan" />, path: "/community" },
+    { id: 1, title: "Topluluk (Sosyal)", icon: <Users className="w-5 h-5 text-stardublajweb-cyan" />, path: "/community" },
     { id: 2, title: "Projeleri Keşfet", icon: <Gamepad2 className="w-5 h-5" />, path: "/#projects" },
     { id: 3, title: "Haberlere Göz At", icon: <MonitorPlay className="w-5 h-5" />, path: "/#news" },
     { id: 4, title: "Star Ekibiyle Tanış", icon: <Users className="w-5 h-5" />, path: "/team" },
@@ -81,17 +81,17 @@ export default function CommandPalette() {
              <div className="max-h-96 overflow-y-auto p-4">
                {filteredActions.length > 0 ? (
                  <div className="space-y-2">
-                   <p className="text-xs font-bold text-dublio-cyan uppercase tracking-widest px-2 mb-2">Hızlı İşlemler</p>
+                   <p className="text-xs font-bold text-stardublajweb-cyan uppercase tracking-widest px-2 mb-2">Hızlı İşlemler</p>
                    {filteredActions.map((action, i) => (
                      <button
                        key={action.id}
                        onClick={() => handleSelect(action.path)}
-                       className="w-full flex items-center gap-4 px-4 py-4 rounded-xl hover:bg-white/5 data-[active=true]:bg-dublio-purple/20 transition-all text-left group"
+                       className="w-full flex items-center gap-4 px-4 py-4 rounded-xl hover:bg-white/5 data-[active=true]:bg-stardublajweb-purple/20 transition-all text-left group"
                      >
-                       <div className="w-10 h-10 rounded-lg border border-white/10 bg-black/50 flex items-center justify-center group-hover:border-dublio-cyan group-hover:text-dublio-cyan transition-colors text-white/70">
+                       <div className="w-10 h-10 rounded-lg border border-white/10 bg-black/50 flex items-center justify-center group-hover:border-stardublajweb-cyan group-hover:text-stardublajweb-cyan transition-colors text-white/70">
                          {action.icon}
                        </div>
-                       <span className="text-white font-medium group-hover:text-dublio-cyan transition-colors">{action.title}</span>
+                       <span className="text-white font-medium group-hover:text-stardublajweb-cyan transition-colors">{action.title}</span>
                      </button>
                    ))}
                  </div>

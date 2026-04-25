@@ -13,7 +13,7 @@ export default function HomeNews({ news }: { news: any[] }) {
       <div className="container mx-auto relative z-10 max-w-6xl">
         <div className="flex flex-col items-center justify-center text-center mb-16 relative">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-pink-500/20 blur-[100px] pointer-events-none rounded-full" />
-          <h2 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-dublio-cyan to-dublio-purple tracking-tighter mb-4 uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center justify-center gap-4">
+          <h2 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-stardublajweb-cyan to-stardublajweb-purple tracking-tighter mb-4 uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] flex items-center justify-center gap-4">
             <Newspaper className="w-12 h-12 md:w-16 md:h-16 text-pink-500" />
             GÜNCEL HABERLER
           </h2>

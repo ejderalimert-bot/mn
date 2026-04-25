@@ -88,8 +88,8 @@ export default function ProfilePage() {
 
   if (status === "loading") {
     return (
-      <div className="min-h-screen bg-dublio-dark flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-dublio-cyan border-t-transparent rounded-full animate-spin"></div>
+      <div className="min-h-screen bg-stardublajweb-dark flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-stardublajweb-cyan border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
@@ -143,14 +143,14 @@ export default function ProfilePage() {
           <div className="md:col-span-1 space-y-4 relative z-10">
             <div className="bg-[#14151a] p-6 rounded-3xl border border-white/5 shadow-2xl relative overflow-hidden">
                {/* Decorative glow */}
-               <div className="absolute top-0 right-0 w-32 h-32 bg-dublio-cyan/10 blur-[50px] rounded-full pointer-events-none"></div>
+               <div className="absolute top-0 right-0 w-32 h-32 bg-stardublajweb-cyan/10 blur-[50px] rounded-full pointer-events-none"></div>
 
                <div className="flex flex-col items-center mb-8 relative z-10">
                  <div className="w-24 h-24 rounded-2xl overflow-hidden bg-black/50 border-2 border-white/10 mb-4 shadow-xl">
                    {session.user?.image ? (
                      <img src={session.user.image} className="w-full h-full object-cover" />
                    ) : (
-                     <div className="w-full h-full flex items-center justify-center font-black text-3xl text-dublio-cyan">
+                     <div className="w-full h-full flex items-center justify-center font-black text-3xl text-stardublajweb-cyan">
                        {displayName.charAt(0)}
                      </div>
                    )}
@@ -162,13 +162,13 @@ export default function ProfilePage() {
                <nav className="flex flex-col gap-2 relative z-10">
                  <button 
                    onClick={() => setActiveTab('genel')}
-                   className={`flex items-center gap-3 w-full p-4 rounded-2xl text-sm font-bold transition-all ${activeTab === 'genel' ? 'bg-dublio-cyan text-black shadow-[0_0_20px_rgba(6,182,212,0.3)]' : 'hover:bg-white/5 text-white/50 hover:text-white'}`}
+                   className={`flex items-center gap-3 w-full p-4 rounded-2xl text-sm font-bold transition-all ${activeTab === 'genel' ? 'bg-stardublajweb-cyan text-black shadow-[0_0_20px_rgba(6,182,212,0.3)]' : 'hover:bg-white/5 text-white/50 hover:text-white'}`}
                  >
                    <UserIcon className="w-5 h-5" /> Genel Bakış
                  </button>
                  <button 
                    onClick={() => setActiveTab('ayarlar')}
-                   className={`flex items-center gap-3 w-full p-4 rounded-2xl text-sm font-bold transition-all ${activeTab === 'ayarlar' ? 'bg-dublio-purple text-white shadow-[0_0_20px_rgba(168,85,247,0.3)]' : 'hover:bg-white/5 text-white/50 hover:text-white'}`}
+                   className={`flex items-center gap-3 w-full p-4 rounded-2xl text-sm font-bold transition-all ${activeTab === 'ayarlar' ? 'bg-stardublajweb-purple text-white shadow-[0_0_20px_rgba(168,85,247,0.3)]' : 'hover:bg-white/5 text-white/50 hover:text-white'}`}
                  >
                    <Settings className="w-5 h-5" /> Profil Ayarları
                  </button>
@@ -185,11 +185,11 @@ export default function ProfilePage() {
                  </div>
                  <div className="flex justify-between items-center text-white/70">
                    <span>Bayıldıkları</span>
-                   <span className="text-dublio-cyan">{likes.length}</span>
+                   <span className="text-stardublajweb-cyan">{likes.length}</span>
                  </div>
                  <div className="flex justify-between items-center text-white/70">
                    <span>Favorileri</span>
-                   <span className="text-dublio-purple">{favorites.length}</span>
+                   <span className="text-stardublajweb-purple">{favorites.length}</span>
                  </div>
               </div>
             </div>
@@ -200,7 +200,7 @@ export default function ProfilePage() {
             {activeTab === 'genel' && (
                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                   <div className="bg-[#14151a] p-8 rounded-3xl border border-white/5 shadow-2xl">
-                     <h2 className="text-2xl font-black italic uppercase tracking-widest text-dublio-cyan mb-8 flex items-center gap-3">
+                     <h2 className="text-2xl font-black italic uppercase tracking-widest text-stardublajweb-cyan mb-8 flex items-center gap-3">
                        <Heart className="w-6 h-6" /> BAYILDIKLARIM
                      </h2>
                      
@@ -209,13 +209,13 @@ export default function ProfilePage() {
                      ) : likes.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           {likes.map((like) => (
-                             <Link href={`/project/${like.slug || like.id}`} key={like.id} className="flex flex-col sm:flex-row items-center gap-4 bg-black/40 p-4 rounded-2xl hover:bg-dublio-cyan/10 transition-colors border border-white/5 hover:border-dublio-cyan/50 group">
+                             <Link href={`/project/${like.slug || like.id}`} key={like.id} className="flex flex-col sm:flex-row items-center gap-4 bg-black/40 p-4 rounded-2xl hover:bg-stardublajweb-cyan/10 transition-colors border border-white/5 hover:border-stardublajweb-cyan/50 group">
                                <div className="w-20 h-20 bg-[#1a1c23] rounded-xl flex items-center justify-center shrink-0 overflow-hidden shadow-inner w-full sm:w-20">
                                   {like.image ? <img src={like.image} className="w-full h-full object-cover rounded-xl group-hover:scale-110 transition-transform" /> : <span className="text-white/20 text-[10px] font-bold">{like.category}</span>}
                                </div>
                                <div className="flex flex-col overflow-hidden text-center sm:text-left w-full">
                                  <span className="text-white font-black uppercase tracking-wider truncate">{like.title}</span>
-                                 <span className="text-dublio-cyan text-xs font-bold uppercase">{like.category}</span>
+                                 <span className="text-stardublajweb-cyan text-xs font-bold uppercase">{like.category}</span>
                                </div>
                              </Link>
                           ))}
@@ -228,7 +228,7 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="bg-[#14151a] p-8 rounded-3xl border border-white/5 shadow-2xl">
-                     <h2 className="text-2xl font-black italic uppercase tracking-widest text-dublio-purple mb-8 flex items-center gap-3">
+                     <h2 className="text-2xl font-black italic uppercase tracking-widest text-stardublajweb-purple mb-8 flex items-center gap-3">
                        <Heart className="w-6 h-6" /> FAVORİ PROJELERİM
                      </h2>
                      
@@ -237,13 +237,13 @@ export default function ProfilePage() {
                      ) : favorites.length > 0 ? (
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           {favorites.map((fav) => (
-                             <Link href={`/project/${fav.slug || fav.id}`} key={fav.id} className="flex flex-col sm:flex-row items-center gap-4 bg-black/40 p-4 rounded-2xl hover:bg-dublio-purple/10 transition-colors border border-white/5 hover:border-dublio-purple/50 group">
+                             <Link href={`/project/${fav.slug || fav.id}`} key={fav.id} className="flex flex-col sm:flex-row items-center gap-4 bg-black/40 p-4 rounded-2xl hover:bg-stardublajweb-purple/10 transition-colors border border-white/5 hover:border-stardublajweb-purple/50 group">
                                <div className="w-20 h-20 bg-[#1a1c23] rounded-xl flex items-center justify-center shrink-0 overflow-hidden shadow-inner w-full sm:w-20">
                                   {fav.image ? <img src={fav.image} className="w-full h-full object-cover rounded-xl group-hover:scale-110 transition-transform" /> : <span className="text-white/20 text-[10px] font-bold">{fav.category}</span>}
                                </div>
                                <div className="flex flex-col overflow-hidden text-center sm:text-left w-full">
                                  <span className="text-white font-black uppercase tracking-wider truncate">{fav.title}</span>
-                                 <span className="text-dublio-purple text-xs font-bold uppercase">{fav.category}</span>
+                                 <span className="text-stardublajweb-purple text-xs font-bold uppercase">{fav.category}</span>
                                </div>
                              </Link>
                           ))}
@@ -259,7 +259,7 @@ export default function ProfilePage() {
 
             {activeTab === 'ayarlar' && (
                <div className="bg-[#14151a] p-8 md:p-12 rounded-3xl border border-white/5 shadow-2xl relative overflow-hidden animate-in fade-in slide-in-from-right-8 duration-500">
-                  <div className="absolute -top-20 -right-20 w-80 h-80 bg-dublio-purple/5 blur-[100px] rounded-full pointer-events-none"></div>
+                  <div className="absolute -top-20 -right-20 w-80 h-80 bg-stardublajweb-purple/5 blur-[100px] rounded-full pointer-events-none"></div>
                   
                   <div className="flex items-center gap-4 mb-10 relative z-10 border-b border-white/10 pb-6">
                     <button className="p-3 bg-white/5 rounded-xl border border-white/5 shadow-inner">
@@ -274,7 +274,7 @@ export default function ProfilePage() {
                   <div className="space-y-10 relative z-10">
                      {/* IMAGE EDIT */}
                      <div>
-                       <label className="text-xs font-black text-dublio-cyan tracking-[0.2em] uppercase mb-4 block">Avatarını Değiştir</label>
+                       <label className="text-xs font-black text-stardublajweb-cyan tracking-[0.2em] uppercase mb-4 block">Avatarını Değiştir</label>
                        <div className="flex flex-col sm:flex-row items-center gap-8 bg-black/20 p-6 rounded-2xl border border-white/5">
                           <div className="w-32 h-32 shrink-0 bg-black rounded-2xl border-2 border-white/10 overflow-hidden shadow-xl">
                              {editImage ? (
@@ -295,13 +295,13 @@ export default function ProfilePage() {
 
                      {/* NAME EDIT */}
                      <div className="bg-black/20 p-6 rounded-2xl border border-white/5">
-                        <label className="text-xs font-black text-dublio-cyan tracking-[0.2em] uppercase mb-4 block">Kullanıcı Adı</label>
+                        <label className="text-xs font-black text-stardublajweb-cyan tracking-[0.2em] uppercase mb-4 block">Kullanıcı Adı</label>
                         <input 
                            type="text" 
                            value={editName}
                            onChange={(e) => setEditName(e.target.value)}
                            placeholder="Kendine destansı bir isim koy..."
-                           className="w-full bg-black border border-white/10 rounded-xl py-4 px-5 text-xl font-bold text-white focus:outline-none focus:border-dublio-cyan focus:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all"
+                           className="w-full bg-black border border-white/10 rounded-xl py-4 px-5 text-xl font-bold text-white focus:outline-none focus:border-stardublajweb-cyan focus:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-all"
                         />
                         <p className="text-xs text-white/30 font-medium mt-3">Bu isim projelerdeki yorumlarında ve takım sayfanızda görünecektir.</p>
                      </div>
@@ -309,13 +309,13 @@ export default function ProfilePage() {
                      {/* PRIVACY SETTING */}
                      <div className="bg-black/20 p-6 rounded-2xl border border-white/5 flex items-center justify-between gap-4">
                         <div>
-                           <label className="text-xs font-black text-dublio-purple tracking-[0.2em] uppercase mb-2 block flex items-center gap-2"><Shield className="w-4 h-4"/> Gizlilik</label>
+                           <label className="text-xs font-black text-stardublajweb-purple tracking-[0.2em] uppercase mb-2 block flex items-center gap-2"><Shield className="w-4 h-4"/> Gizlilik</label>
                            <h4 className="text-white font-bold text-lg">Favorilerimi Herkese Açık Yap</h4>
                            <p className="text-xs text-white/40 mt-1 max-w-sm">Ekiplerden birisi profilinize baktığında favorilediğiniz ve bayıldığınız projeleri görebilsin.</p>
                         </div>
                         <button 
                            onClick={() => setEditPublicFavorites(!editPublicFavorites)}
-                           className={`w-14 h-8 rounded-full border-2 transition-colors relative shrink-0 ${editPublicFavorites ? 'bg-dublio-cyan border-dublio-cyan' : 'bg-black border-white/20'}`}
+                           className={`w-14 h-8 rounded-full border-2 transition-colors relative shrink-0 ${editPublicFavorites ? 'bg-stardublajweb-cyan border-stardublajweb-cyan' : 'bg-black border-white/20'}`}
                         >
                            <div className={`w-6 h-6 rounded-full bg-white absolute top-0.5 transition-all shadow-md ${editPublicFavorites ? 'left-6.5 translate-x-[22px]' : 'left-0.5'}`}></div>
                         </button>

@@ -475,7 +475,7 @@ export default function CommunityPage({ searchParams }: any) {
       }
   };
 
-  if (loading) return <div className="min-h-screen bg-[#0a0a0c] flex items-center justify-center p-8"><div className="animate-spin w-8 h-8 border-4 border-dublio-cyan border-t-transparent rounded-full"></div></div>;
+  if (loading) return <div className="min-h-screen bg-[#0a0a0c] flex items-center justify-center p-8"><div className="animate-spin w-8 h-8 border-4 border-stardublajweb-cyan border-t-transparent rounded-full"></div></div>;
 
   return (
     <div className="min-h-screen bg-[#0a0a0c] text-white flex flex-col font-sans overflow-hidden relative">
@@ -484,8 +484,8 @@ export default function CommunityPage({ searchParams }: any) {
       {/* MODAL: Kullanıcı adı yoksa zorunlu kurulum */}
       {!profile?.username && (
         <div className="absolute inset-0 z-[9999] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4">
-           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[#121318] border border-dublio-cyan/30 rounded-3xl p-8 max-w-md w-full shadow-[0_0_50px_rgba(6,182,212,0.2)] text-center">
-             <div className="w-16 h-16 bg-dublio-cyan/10 rounded-full flex items-center justify-center mx-auto mb-6 text-dublio-cyan">
+           <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-[#121318] border border-stardublajweb-cyan/30 rounded-3xl p-8 max-w-md w-full shadow-[0_0_50px_rgba(6,182,212,0.2)] text-center">
+             <div className="w-16 h-16 bg-stardublajweb-cyan/10 rounded-full flex items-center justify-center mx-auto mb-6 text-stardublajweb-cyan">
                <Settings className="w-8 h-8" />
              </div>
              <h2 className="text-2xl font-black uppercase mb-2">Kimlik Oluştur</h2>
@@ -497,13 +497,13 @@ export default function CommunityPage({ searchParams }: any) {
                  value={usernameInput}
                  onChange={e => setUsernameInput(e.target.value.replace(/[^a-zA-Z0-9_]/g, '').toLowerCase())}
                  placeholder="örn: joker_99" 
-                 className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-dublio-cyan mb-2"
+                 className="w-full bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-stardublajweb-cyan mb-2"
                />
                {usernameError && <p className="text-red-500 text-xs font-bold text-left mb-4">{usernameError}</p>}
                <button 
                  type="submit" 
                  disabled={settingUsername || usernameInput.length < 3}
-                 className="w-full mt-4 bg-dublio-cyan text-black font-black uppercase py-3 rounded-xl disabled:opacity-50 hover:bg-cyan-400 transition-colors"
+                 className="w-full mt-4 bg-stardublajweb-cyan text-black font-black uppercase py-3 rounded-xl disabled:opacity-50 hover:bg-cyan-400 transition-colors"
                >
                  {settingUsername ? 'KAYDEDİLİYOR...' : 'ONAYLA VE GİRİŞ YAP'}
                </button>
@@ -516,10 +516,10 @@ export default function CommunityPage({ searchParams }: any) {
         {/* Left Sidebar */}
         <div className="w-20 md:w-64 bg-[#121318] border-r border-white/5 flex flex-col">
           <div className="p-4 border-b border-white/5 flex items-center justify-center md:justify-start gap-3">
-             <div className="bg-dublio-purple/20 p-2 rounded-lg text-dublio-purple flex shrink-0">
+             <div className="bg-stardublajweb-purple/20 p-2 rounded-lg text-stardublajweb-purple flex shrink-0">
                <Network className="w-5 h-5 md:w-6 md:h-6" />
              </div>
-             <h1 className="font-black italic text-transparent bg-clip-text bg-gradient-to-r from-white to-dublio-purple uppercase tracking-widest hidden md:block">
+             <h1 className="font-black italic text-transparent bg-clip-text bg-gradient-to-r from-white to-stardublajweb-purple uppercase tracking-widest hidden md:block">
                AĞ
              </h1>
           </div>
@@ -534,7 +534,7 @@ export default function CommunityPage({ searchParams }: any) {
              </button>
              <button 
                 onClick={() => setActiveTab('add')}
-                className={`w-full flex items-center justify-center md:justify-start gap-4 px-4 py-3 mx-2 my-1 rounded-xl transition-all ${activeTab === 'add' ? 'bg-dublio-cyan/20 text-dublio-cyan shadow-inner' : 'text-dublio-cyan/50 hover:bg-dublio-cyan/10 hover:text-dublio-cyan'}`}
+                className={`w-full flex items-center justify-center md:justify-start gap-4 px-4 py-3 mx-2 my-1 rounded-xl transition-all ${activeTab === 'add' ? 'bg-stardublajweb-cyan/20 text-stardublajweb-cyan shadow-inner' : 'text-stardublajweb-cyan/50 hover:bg-stardublajweb-cyan/10 hover:text-stardublajweb-cyan'}`}
              >
                <Search className="w-5 h-5 shrink-0" />
                <span className="font-bold hidden md:block">Yeni Kişi Ekle</span>
@@ -590,7 +590,7 @@ export default function CommunityPage({ searchParams }: any) {
           {activeTab === 'friends' && (
              <div className="p-8">
                <div className="mb-10">
-                 <h2 className="text-2xl font-black uppercase tracking-wider border-b border-white/5 pb-4 mb-6 text-dublio-cyan">Gelen İstekler</h2>
+                 <h2 className="text-2xl font-black uppercase tracking-wider border-b border-white/5 pb-4 mb-6 text-stardublajweb-cyan">Gelen İstekler</h2>
                  {friendsData.filter(f => f.status === 'PENDING' && f.type === 'received').length === 0 ? (
                     <div className="text-white/30 text-sm italic bg-white/5 p-4 rounded-xl">Henüz gelen bir arkadaşlık isteği yok.</div>
                  ) : (
@@ -639,8 +639,8 @@ export default function CommunityPage({ searchParams }: any) {
                             <span className="absolute -top-10 scale-0 group-hover:scale-100 transition-all bg-black border border-white/10 text-xs font-bold px-2 py-1 rounded">Mesaj</span>
                             <MessageSquare className="w-5 h-5 text-white/70 group-hover:text-white" />
                          </button>
-                         <button onClick={() => startPrivateCall(f.profile)} className="w-10 h-10 rounded-full bg-dublio-cyan/10 hover:bg-dublio-cyan/20 flex items-center justify-center transition-colors tooltip-trigger relative group text-dublio-cyan shadow-[0_0_15px_rgba(6,182,212,0.1)]">
-                            <span className="absolute -top-10 scale-0 group-hover:scale-100 transition-all bg-dublio-cyan text-black px-2 py-1 rounded text-xs font-bold whitespace-nowrap z-50">Sesli Ara</span>
+                         <button onClick={() => startPrivateCall(f.profile)} className="w-10 h-10 rounded-full bg-stardublajweb-cyan/10 hover:bg-stardublajweb-cyan/20 flex items-center justify-center transition-colors tooltip-trigger relative group text-stardublajweb-cyan shadow-[0_0_15px_rgba(6,182,212,0.1)]">
+                            <span className="absolute -top-10 scale-0 group-hover:scale-100 transition-all bg-stardublajweb-cyan text-black px-2 py-1 rounded text-xs font-bold whitespace-nowrap z-50">Sesli Ara</span>
                             <Phone className="w-5 h-5 relative z-10" />
                          </button>
                       </div>
@@ -653,7 +653,7 @@ export default function CommunityPage({ searchParams }: any) {
           {activeTab === 'add' && (
              <div className="flex flex-col items-center justify-center h-full p-6 md:p-8">
                 <div className="w-full max-w-lg text-center bg-[#121318] border border-white/10 p-8 rounded-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)]">
-                  <Search className="w-16 h-16 text-dublio-cyan mx-auto mb-6 opacity-80 drop-shadow-[0_0_15px_cyan] rounded-full p-2 bg-dublio-cyan/10" />
+                  <Search className="w-16 h-16 text-stardublajweb-cyan mx-auto mb-6 opacity-80 drop-shadow-[0_0_15px_cyan] rounded-full p-2 bg-stardublajweb-cyan/10" />
                   <h2 className="text-3xl font-black uppercase tracking-tight mb-2">Arkadaş Ekle</h2>
                   <p className="text-white/50 text-sm mb-8">Dublaj severleri bulmak için sadece kullanıcı adlarını girmeniz yeterli.</p>
                   
@@ -663,11 +663,11 @@ export default function CommunityPage({ searchParams }: any) {
                       value={friendReqInput}
                       onChange={e => setFriendReqInput(e.target.value.toLowerCase())}
                       placeholder="Arkadaşının @KullanıcıAdı..." 
-                      className="w-full bg-black/50 border border-dublio-cyan/30 rounded-2xl py-4 flex-1 px-6 text-white outline-none focus:border-dublio-cyan shadow-inner text-lg placeholder:text-white/20"
+                      className="w-full bg-black/50 border border-stardublajweb-cyan/30 rounded-2xl py-4 flex-1 px-6 text-white outline-none focus:border-stardublajweb-cyan shadow-inner text-lg placeholder:text-white/20"
                     />
                   </div>
                   
-                  <button onClick={handleSendRequest} disabled={!friendReqInput} className="w-full py-4 bg-dublio-cyan text-black font-black uppercase text-sm rounded-xl hover:bg-cyan-400 disabled:opacity-50 transition-colors shadow-[0_0_15px_rgba(6,182,212,0.4)] block">
+                  <button onClick={handleSendRequest} disabled={!friendReqInput} className="w-full py-4 bg-stardublajweb-cyan text-black font-black uppercase text-sm rounded-xl hover:bg-cyan-400 disabled:opacity-50 transition-colors shadow-[0_0_15px_rgba(6,182,212,0.4)] block">
                     İstek Gönder
                   </button>
                   
@@ -676,7 +676,7 @@ export default function CommunityPage({ searchParams }: any) {
                   <div className="mt-8 pt-6 border-t border-white/5">
                     <p className="text-xs text-white/40 mb-2 uppercase tracking-widest font-bold">Senin Kullanıcı Adın</p>
                     <div className="inline-flex items-center gap-3 bg-white/5 px-4 py-2 rounded-lg border border-white/10">
-                      <span className="font-mono text-dublio-cyan">@{profile?.username}</span>
+                      <span className="font-mono text-stardublajweb-cyan">@{profile?.username}</span>
                       <button onClick={() => navigator.clipboard.writeText(profile?.username)} className="text-white/50 hover:text-white"><Copy className="w-4 h-4" /></button>
                     </div>
                   </div>
@@ -685,11 +685,11 @@ export default function CommunityPage({ searchParams }: any) {
           )}
 
            {incomingCallInfo && (
-              <div className="absolute top-8 right-8 md:right-1/2 md:translate-x-1/2 z-[9999] bg-[#121318] border border-dublio-cyan/30 rounded-3xl p-6 shadow-[0_0_50px_rgba(6,182,212,0.3)] animate-pulse flex flex-col md:flex-row items-center gap-6">
-                 <img src={incomingCallInfo.caller.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${incomingCallInfo.caller.username}`} className="w-16 h-16 rounded-full bg-black border-2 border-dublio-cyan ring-4 ring-dublio-cyan/20" />
+              <div className="absolute top-8 right-8 md:right-1/2 md:translate-x-1/2 z-[9999] bg-[#121318] border border-stardublajweb-cyan/30 rounded-3xl p-6 shadow-[0_0_50px_rgba(6,182,212,0.3)] animate-pulse flex flex-col md:flex-row items-center gap-6">
+                 <img src={incomingCallInfo.caller.image || `https://api.dicebear.com/7.x/avataaars/svg?seed=${incomingCallInfo.caller.username}`} className="w-16 h-16 rounded-full bg-black border-2 border-stardublajweb-cyan ring-4 ring-stardublajweb-cyan/20" />
                  <div className="text-center md:text-left">
                     <h3 className="font-black text-2xl text-white">{incomingCallInfo.caller.username}</h3>
-                    <p className="text-dublio-cyan text-sm font-bold uppercase tracking-widest mb-3">Seni Özel Odaya Çağırıyor!</p>
+                    <p className="text-stardublajweb-cyan text-sm font-bold uppercase tracking-widest mb-3">Seni Özel Odaya Çağırıyor!</p>
                     <div className="flex gap-3 justify-center md:justify-start">
                        <button onClick={() => { joinVoiceRoom(incomingCallInfo.room); setIncomingCallInfo(null); }} className="px-6 py-2 bg-green-500 text-white font-bold uppercase tracking-wider rounded-lg hover:bg-green-600 shadow-[0_0_15px_rgba(34,197,94,0.4)] flex items-center gap-2"><Phone className="w-4 h-4" /> Aç</button>
                        <button onClick={() => setIncomingCallInfo(null)} className="px-6 py-2 bg-red-500 text-white font-bold uppercase tracking-wider rounded-lg hover:bg-red-600 shadow-[0_0_15px_rgba(239,68,68,0.4)] flex items-center gap-2"><Phone className="w-4 h-4 rotate-[135deg]" /> Kapat</button>
@@ -794,7 +794,7 @@ export default function CommunityPage({ searchParams }: any) {
                <div className="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar">
                   {chatMessages.length === 0 && (
                      <div className="h-full flex flex-col items-center justify-center text-center opacity-50 select-none">
-                        <MessageSquare className="w-16 h-16 mb-4 text-dublio-cyan" />
+                        <MessageSquare className="w-16 h-16 mb-4 text-stardublajweb-cyan" />
                         <h3 className="text-2xl font-black">{chatUser.username} ile sohbet et!</h3>
                         <p className="text-sm">Mesajlar uçtan uca şifrelenmez (çünkü yapmadık 😄)</p>
                      </div>
@@ -839,7 +839,7 @@ export default function CommunityPage({ searchParams }: any) {
                {/* Chat Input */}
                <form onSubmit={handleSendMessage} className="p-4 bg-[#1a1c23] border-t border-white/5 shrink-0 flex flex-col gap-2">
                   {editingMsg && (
-                      <div className="flex items-center justify-between text-xs text-dublio-cyan bg-dublio-cyan/10 px-4 py-2 rounded-xl mb-1">
+                      <div className="flex items-center justify-between text-xs text-stardublajweb-cyan bg-stardublajweb-cyan/10 px-4 py-2 rounded-xl mb-1">
                           <span className="font-bold">Mesaj düzenleniyor...</span>
                           <button type="button" onClick={() => { setEditingMsg(null); setChatInput(""); }} className="hover:text-white"><X className="w-4 h-4" /></button>
                       </div>

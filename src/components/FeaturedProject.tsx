@@ -15,8 +15,8 @@ export default function FeaturedProject({ featuredProject }: { featuredProject: 
     <section className="py-24 px-8 relative overflow-hidden bg-[#0A0A0C]">
       {/* Dynamic Background */}
       <div className="absolute inset-0 flex justify-center items-center pointer-events-none overflow-hidden z-0">
-         <motion.div animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }} transition={{ repeat: Infinity, duration: 30, ease: "linear" }} className="w-[800px] h-[800px] bg-dublio-purple/10 blur-[150px] rounded-full"></motion.div>
-         <motion.div animate={{ scale: [1, 1.5, 1], rotate: [0, -90, 0] }} transition={{ repeat: Infinity, duration: 25, ease: "linear" }} className="w-[600px] h-[600px] bg-dublio-cyan/10 blur-[120px] rounded-full absolute mix-blend-screen"></motion.div>
+         <motion.div animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }} transition={{ repeat: Infinity, duration: 30, ease: "linear" }} className="w-[800px] h-[800px] bg-stardublajweb-purple/10 blur-[150px] rounded-full"></motion.div>
+         <motion.div animate={{ scale: [1, 1.5, 1], rotate: [0, -90, 0] }} transition={{ repeat: Infinity, duration: 25, ease: "linear" }} className="w-[600px] h-[600px] bg-stardublajweb-cyan/10 blur-[120px] rounded-full absolute mix-blend-screen"></motion.div>
       </div>
 
       <div className="container mx-auto max-w-7xl relative z-10">
@@ -26,9 +26,9 @@ export default function FeaturedProject({ featuredProject }: { featuredProject: 
             initial={{ width: 0 }} 
             whileInView={{ width: "4rem" }} 
             viewport={{ once: true }} 
-            className="h-[2px] bg-gradient-to-r from-dublio-cyan to-transparent"
+            className="h-[2px] bg-gradient-to-r from-stardublajweb-cyan to-transparent"
           ></motion.div>
-          <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-[0.3em]">Haftanın <span className="text-dublio-cyan">Seçimi</span></h2>
+          <h2 className="text-xl md:text-2xl font-black text-white uppercase tracking-[0.3em]">Haftanın <span className="text-stardublajweb-cyan">Seçimi</span></h2>
         </div>
 
         <motion.div 
@@ -50,7 +50,7 @@ export default function FeaturedProject({ featuredProject }: { featuredProject: 
              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent opacity-80"></div>
              
              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Link href={`/project/${featuredProject.slug || featuredProject.id}`} className="w-20 h-20 rounded-full bg-dublio-cyan/80 backdrop-blur-md flex items-center justify-center shadow-[0_0_30px_cyan] hover:scale-110 transition-transform">
+                <Link href={`/project/${featuredProject.slug || featuredProject.id}`} className="w-20 h-20 rounded-full bg-stardublajweb-cyan/80 backdrop-blur-md flex items-center justify-center shadow-[0_0_30px_cyan] hover:scale-110 transition-transform">
                   <Play className="w-8 h-8 text-black fill-current ml-1" />
                 </Link>
              </div>
@@ -62,8 +62,8 @@ export default function FeaturedProject({ featuredProject }: { featuredProject: 
 
            {/* Content */}
            <div className="z-10 relative">
-              <span className="text-dublio-cyan font-black tracking-widest text-sm uppercase mb-4 block animate-pulse">Yeni Çıktı</span>
-              <h3 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-dublio-cyan to-dublio-purple tracking-tighter mb-4 uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+              <span className="text-stardublajweb-cyan font-black tracking-widest text-sm uppercase mb-4 block animate-pulse">Yeni Çıktı</span>
+              <h3 className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-stardublajweb-cyan to-stardublajweb-purple tracking-tighter mb-4 uppercase drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
                  {featuredProject.title}
               </h3>
               <p className="text-white/60 text-lg leading-relaxed mb-10 max-w-lg line-clamp-3">

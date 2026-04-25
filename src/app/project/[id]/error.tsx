@@ -20,7 +20,7 @@ export default function ErrorBoundaryPage({ error, reset }: { error: Error & { d
       </div>
       <button 
         onClick={() => reset()} 
-        className="mt-8 px-8 py-4 bg-dublio-purple/20 hover:bg-dublio-purple/40 border border-dublio-purple transition-all text-white rounded-xl font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(168,85,247,0.3)]"
+        className="mt-8 px-8 py-4 bg-stardublajweb-purple/20 hover:bg-stardublajweb-purple/40 border border-stardublajweb-purple transition-all text-white rounded-xl font-bold uppercase tracking-widest shadow-[0_0_20px_rgba(168,85,247,0.3)]"
       >
         Ana Ekrandan Tekrar Dene
       </button>

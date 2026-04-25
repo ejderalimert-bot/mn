@@ -36,10 +36,10 @@ export default function PartnersPage() {
 
         <div className="container relative z-30 mx-auto px-6 max-w-5xl text-center">
             
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-dublio-cyan/10 border border-dublio-cyan/20 text-dublio-cyan text-xs font-black tracking-widest uppercase mb-10 shadow-[0_0_20px_rgba(6,182,212,0.3)] animate-float">
-             <span className="w-2 h-2 rounded-full bg-dublio-cyan animate-pulse"></span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-stardublajweb-cyan/10 border border-stardublajweb-cyan/20 text-stardublajweb-cyan text-xs font-black tracking-widest uppercase mb-10 shadow-[0_0_20px_rgba(6,182,212,0.3)] animate-float">
+             <span className="w-2 h-2 rounded-full bg-stardublajweb-cyan animate-pulse"></span>
              STAR DUBLAJ PARTNERİ
-             <span className="w-2 h-2 rounded-full bg-dublio-cyan animate-pulse"></span>
+             <span className="w-2 h-2 rounded-full bg-stardublajweb-cyan animate-pulse"></span>
           </div>
 
           {/* Epic Logo & Wave Animation Wrapper */}
@@ -47,7 +47,7 @@ export default function PartnersPage() {
              <div className="animate-ship-rocking relative flex flex-col items-center">
                 
                 {/* Neon Sea Glow behind logo! */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-dublio-cyan opacity-40 blur-[80px] rounded-full w-full h-full scale-150 z-0"></div>
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-stardublajweb-cyan opacity-40 blur-[80px] rounded-full w-full h-full scale-150 z-0"></div>
                 
                 {/* Korsan Logo (Behind the wave) */}
                 <img 
@@ -83,9 +83,9 @@ export default function PartnersPage() {
               href="https://www.youtube.com/@KorsanKayıtlarStüdyosu" 
               target="_blank" 
               rel="noopener noreferrer"
-              className="group relative px-8 py-5 bg-dublio-cyan text-black font-black text-sm uppercase tracking-[0.2em] rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(6,182,212,0.4)] hover:shadow-[0_0_60px_rgba(6,182,212,0.6)] transition-all hover:-translate-y-1 w-full sm:w-auto"
+              className="group relative px-8 py-5 bg-stardublajweb-cyan text-black font-black text-sm uppercase tracking-[0.2em] rounded-2xl overflow-hidden shadow-[0_0_40px_rgba(6,182,212,0.4)] hover:shadow-[0_0_60px_rgba(6,182,212,0.6)] transition-all hover:-translate-y-1 w-full sm:w-auto"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-dublio-cyan to-[#0891b2] opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-stardublajweb-cyan to-[#0891b2] opacity-0 group-hover:opacity-100 transition-opacity"></div>
               <span className="relative z-10 flex items-center justify-center gap-3">
                 <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
                 YOUTUBE KANALINA GİT

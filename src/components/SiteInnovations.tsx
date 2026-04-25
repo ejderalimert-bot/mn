@@ -122,7 +122,7 @@ export default function SiteInnovations() {
     <>
       {/* Top Scroll Indicator */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-dublio-cyan to-dublio-purple z-[9999] origin-left shadow-[0_0_15px_cyan]"
+        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-stardublajweb-cyan to-stardublajweb-purple z-[9999] origin-left shadow-[0_0_15px_cyan]"
         style={{ scaleX }}
       />
 
@@ -136,7 +136,7 @@ export default function SiteInnovations() {
             whileHover={{ scale: 1.1, y: -5, boxShadow: "0 0 20px cyan" }}
             whileTap={{ scale: 0.9 }}
             onClick={scrollToTop}
-            className="fixed bottom-8 right-8 z-[9000] p-4 bg-black/80 backdrop-blur-md border border-white/10 text-dublio-cyan rounded-full hover:text-white transition-colors"
+            className="fixed bottom-8 right-8 z-[9000] p-4 bg-black/80 backdrop-blur-md border border-white/10 text-stardublajweb-cyan rounded-full hover:text-white transition-colors"
           >
             <ArrowUp className="w-6 h-6" />
           </motion.button>

@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { useSession } from "next-auth/react";
-import { redirect } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import { Shield, Plus, Pencil, Trash2, LayoutGrid, Users, Newspaper, ListTree, Gamepad2, ArrowLeft, Search, Download, Activity, Eye, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -72,7 +71,7 @@ export default function AdminDashboardPage() {
 
   React.useEffect(() => {
     if (status === "unauthenticated" || (session && (session.user as any).role !== "admin")) {
-      redirect('/');
+      window.location.href = '/';
     }
   }, [session, status]);
 
@@ -205,14 +204,14 @@ export default function AdminDashboardPage() {
       };
       // Sadece başlık veya açıklama doldurulmuşsa kaydet
       if (formTitle || formDescription) {
-        localStorage.setItem('dublio_admin_draft', JSON.stringify(draft));
+        localStorage.setItem('stardublajweb_admin_draft', JSON.stringify(draft));
       }
     }
   }, [formTitle, formDescription, formCategory, formTags, formFocusKeyword, formSeoTitle, formSeoDesc, formSlug, formTrailer, view, editingProject]);
 
   const handleAddNew = () => {
     setEditingProject(null);
-    const draftStr = localStorage.getItem('dublio_admin_draft');
+    const draftStr = localStorage.getItem('stardublajweb_admin_draft');
     
     if (draftStr) {
       if (window.confirm("Kaydedilmemiş bir proje taslağınız (Draft) var. Geri yüklemek ister misiniz?")) {
@@ -231,7 +230,7 @@ export default function AdminDashboardPage() {
           return;
         } catch(e) {}
       } else {
-        localStorage.removeItem('dublio_admin_draft');
+        localStorage.removeItem('stardublajweb_admin_draft');
       }
     }
 
@@ -317,7 +316,7 @@ export default function AdminDashboardPage() {
       });
       const added = await res.json();
       setProjects([...projects, added]);
-      localStorage.removeItem('dublio_admin_draft'); // Clear draft on successful save
+      localStorage.removeItem('stardublajweb_admin_draft'); // Clear draft on successful save
     }
 
     setView('list');
@@ -471,8 +470,8 @@ export default function AdminDashboardPage() {
     <main className="min-h-screen bg-black text-white relative overflow-hidden">
       {/* SİNEMATİK ARKA PLAN */}
       <div className="absolute inset-0 pointer-events-none z-0 fixed">
-         <motion.div animate={{ rotate: 360, scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 15, ease: "linear" }} className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-dublio-cyan/20 blur-[200px] mix-blend-screen rounded-full" />
-         <motion.div animate={{ rotate: -360, scale: [1.2, 1, 1.2] }} transition={{ repeat: Infinity, duration: 12, ease: "linear" }} className="absolute bottom-[-10%] right-[-10%] w-[1000px] h-[1000px] bg-dublio-purple/20 blur-[250px] mix-blend-screen rounded-full" />
+         <motion.div animate={{ rotate: 360, scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 15, ease: "linear" }} className="absolute top-[-20%] left-[-10%] w-[800px] h-[800px] bg-stardublajweb-cyan/20 blur-[200px] mix-blend-screen rounded-full" />
+         <motion.div animate={{ rotate: -360, scale: [1.2, 1, 1.2] }} transition={{ repeat: Infinity, duration: 12, ease: "linear" }} className="absolute bottom-[-10%] right-[-10%] w-[1000px] h-[1000px] bg-stardublajweb-purple/20 blur-[250px] mix-blend-screen rounded-full" />
          <div className="absolute inset-0 bg-[url('/noise.png')] opacity-5 mix-blend-overlay"></div>
       </div>
 
@@ -487,22 +486,22 @@ export default function AdminDashboardPage() {
           <motion.div 
             animate={{ rotate: 360 }} 
             transition={{ repeat: Infinity, duration: 10, ease: "linear" }} 
-            className="p-4 bg-dublio-cyan/5 rounded-[2rem] border-2 border-dublio-cyan/50 shadow-[0_0_50px_rgba(106,255,235,0.4)] backdrop-blur-xl"
+            className="p-4 bg-stardublajweb-cyan/5 rounded-[2rem] border-2 border-stardublajweb-cyan/50 shadow-[0_0_50px_rgba(106,255,235,0.4)] backdrop-blur-xl"
           >
-             <Shield className="w-12 h-12 text-dublio-cyan" />
+             <Shield className="w-12 h-12 text-stardublajweb-cyan" />
           </motion.div>
           <div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-dublio-cyan to-dublio-purple uppercase drop-shadow-[0_0_30px_rgba(106,255,235,0.5)] leading-none mb-2">MERKEZİ YÖNETİM</h1>
-            <p className="text-dublio-cyan font-bold tracking-[0.3em] uppercase text-xs md:text-sm">Star Dublaj System Core v3.0</p>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-white via-stardublajweb-cyan to-stardublajweb-purple uppercase drop-shadow-[0_0_30px_rgba(106,255,235,0.5)] leading-none mb-2">MERKEZİ YÖNETİM</h1>
+            <p className="text-stardublajweb-cyan font-bold tracking-[0.3em] uppercase text-xs md:text-sm">Star Dublaj System Core v3.0</p>
           </div>
         </div>
 
         {/* Tabs */}
-        <div className="relative flex flex-wrap items-center gap-2 mb-10 bg-black/40 backdrop-blur-3xl p-3 rounded-2xl border border-dublio-cyan/30 shadow-[0_0_50px_rgba(106,255,235,0.1)] inline-flex w-full overflow-x-auto">
+        <div className="relative flex flex-wrap items-center gap-2 mb-10 bg-black/40 backdrop-blur-3xl p-3 rounded-2xl border border-stardublajweb-cyan/30 shadow-[0_0_50px_rgba(106,255,235,0.1)] inline-flex w-full overflow-x-auto">
           
           {/* Sliding Indicator */}
           <div 
-             className="absolute bg-gradient-to-r from-dublio-cyan to-[#00bfff] rounded-xl shadow-[0_0_20px_cyan] pointer-events-none transition-all duration-300 ease-in-out"
+             className="absolute bg-gradient-to-r from-stardublajweb-cyan to-[#00bfff] rounded-xl shadow-[0_0_20px_cyan] pointer-events-none transition-all duration-300 ease-in-out"
              style={{ 
                left: `${indicatorStyle.left}px`, 
                top: `${indicatorStyle.top}px`,
@@ -534,7 +533,7 @@ export default function AdminDashboardPage() {
           <AnimatePresence mode="wait">
         
         {activeTab === 'Projeler' && view === 'list' && (
-          <motion.div key="proj-list" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-black/50 backdrop-blur-3xl shadow-[0_0_80px_rgba(168,85,247,0.1)] border border-dublio-purple rounded-xl overflow-hidden shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
+          <motion.div key="proj-list" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-black/50 backdrop-blur-3xl shadow-[0_0_80px_rgba(168,85,247,0.1)] border border-stardublajweb-purple rounded-xl overflow-hidden shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
              
              {/* Header */}
              <div className="flex items-center justify-between p-6 border-b border-white/5">
@@ -554,7 +553,7 @@ export default function AdminDashboardPage() {
                   <motion.div 
                     initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.05 }}
                     key={project.id} 
-                    className="flex flex-col md:flex-row items-center justify-between p-4 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/5 hover:border-dublio-purple hover:scale-[1.01] rounded-xl transition-all gap-4 shadow-lg group"
+                    className="flex flex-col md:flex-row items-center justify-between p-4 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/5 hover:border-stardublajweb-purple hover:scale-[1.01] rounded-xl transition-all gap-4 shadow-lg group"
                   >
                      <div className="flex items-center gap-4 w-full md:w-auto">
                         {project.image || project.coverImage ? (
@@ -597,12 +596,12 @@ export default function AdminDashboardPage() {
 
         {/* Form View (Add / Edit) */}
         {activeTab === 'Projeler' && view === 'form' && (
-           <motion.div key="proj-form" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-black/50 backdrop-blur-3xl shadow-[0_0_80px_rgba(168,85,247,0.1)] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
+           <motion.div key="proj-form" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-black/50 backdrop-blur-3xl shadow-[0_0_80px_rgba(168,85,247,0.1)] border border-stardublajweb-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
               <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/5">
                  <button onClick={() => setView('list')} className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors">
                    <ArrowLeft className="w-5 h-5" />
                  </button>
-                 <h2 className="text-2xl font-black italic tracking-tight text-dublio-purple uppercase">
+                 <h2 className="text-2xl font-black italic tracking-tight text-stardublajweb-purple uppercase">
                    {editingProject ? 'PROJEYİ DÜZENLE' : 'YENİ PROJE EKLE'}
                  </h2>
               </div>
@@ -610,12 +609,12 @@ export default function AdminDashboardPage() {
               <form onSubmit={handleSave} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Video URL'si (YouTube / Shorts)</label>
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Video URL'si (YouTube / Shorts)</label>
                     <div className="flex">
                       <input 
                         type="text" 
                         placeholder="https://www.youtube.com..." 
-                        className="flex-1 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-l-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple"
+                        className="flex-1 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-l-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple"
                       />
                       <button type="button" className="bg-white text-black font-bold px-6 rounded-r-lg text-sm transition-colors hover:bg-gray-200">
                         Kapak Çek
@@ -624,7 +623,7 @@ export default function AdminDashboardPage() {
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Proje Başlığı <span className="text-red-500">*</span></label>
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Proje Başlığı <span className="text-red-500">*</span></label>
                     <input 
                       type="text" 
                       name="title"
@@ -632,13 +631,13 @@ export default function AdminDashboardPage() {
                       onChange={(e) => setFormTitle(e.target.value)}
                       required
                       placeholder="Proje başlığı" 
-                      className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple"
+                      className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple"
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <label className="text-dublio-purple text-sm font-bold tracking-wide">SEO Odak Anahtar Kelime <span className="text-red-500">*</span></label>
+                  <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">SEO Odak Anahtar Kelime <span className="text-red-500">*</span></label>
                   <input 
                     type="text" 
                     name="focusKeyword"
@@ -646,18 +645,18 @@ export default function AdminDashboardPage() {
                     onChange={(e) => setFormFocusKeyword(e.target.value)}
                     required
                     placeholder="Örn: The Witcher 3" 
-                    className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple"
+                    className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple"
                   />
                 </div>
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Açıklama</label>
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Açıklama</label>
                     <button 
                       type="button"
                       onClick={handleGeminiEnhance}
                       disabled={geminiEnhancing}
-                      className="flex items-center gap-2 bg-gradient-to-r from-dublio-purple to-[#9333ea] px-3 py-1.5 rounded-lg text-xs font-bold text-white hover:scale-105 transition-all w-fit"
+                      className="flex items-center gap-2 bg-gradient-to-r from-stardublajweb-purple to-[#9333ea] px-3 py-1.5 rounded-lg text-xs font-bold text-white hover:scale-105 transition-all w-fit"
                     >
                       {geminiEnhancing ? 'Gemini Düşünüyor...' : '✨ Gemini ile Düzenle'}
                     </button>
@@ -668,7 +667,7 @@ export default function AdminDashboardPage() {
                     value={formDescription}
                     onChange={(e) => setFormDescription(e.target.value)}
                     placeholder="Projeler hakkında detaylı bilgi"
-                    className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none"
+                    className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple resize-none"
                   ></textarea>
                   <p className={`text-[10px] text-right mt-1 font-bold ${formDescription.length < 600 ? 'text-red-500' : 'text-green-400'}`}>
                     {formDescription.length} / 600
@@ -677,7 +676,7 @@ export default function AdminDashboardPage() {
                 
                 {formTags && formTags.length > 0 && (
                   <div className="space-y-2">
-                     <label className="text-dublio-purple text-sm font-bold tracking-wide">Gemini Tarafından Üretilen Etiketler</label>
+                     <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Gemini Tarafından Üretilen Etiketler</label>
                      <div className="flex flex-wrap gap-2 p-3 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg">
                         {formTags.map((t, i) => (
                            <span key={i} className="px-3 py-1 bg-white/10 text-white text-xs font-bold rounded-md">{t}</span>
@@ -686,21 +685,21 @@ export default function AdminDashboardPage() {
                   </div>
                 )}
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner/50 p-4 rounded-xl border border-dublio-purple/20">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner/50 p-4 rounded-xl border border-stardublajweb-purple/20">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">SEO Başlığı</label>
-                    <input type="text" value={formSeoTitle} onChange={(e) => setFormSeoTitle(e.target.value)} className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">SEO Başlığı</label>
+                    <input type="text" value={formSeoTitle} onChange={(e) => setFormSeoTitle(e.target.value)} className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple" />
                     <p className={`text-[10px] text-right mt-1 ${formSeoTitle.length > 60 ? 'text-red-500' : 'text-white/40'}`}>
                       {formSeoTitle.length} / 60
                     </p>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">SEO URL (Slug)</label>
-                    <input type="text" value={formSlug} onChange={(e) => setFormSlug(e.target.value)} className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">SEO URL (Slug)</label>
+                    <input type="text" value={formSlug} onChange={(e) => setFormSlug(e.target.value)} className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple" />
                   </div>
                   <div className="space-y-2 md:col-span-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">SEO Meta Açıklaması</label>
-                    <textarea value={formSeoDesc} onChange={(e) => setFormSeoDesc(e.target.value)} rows={2} className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none"></textarea>
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">SEO Meta Açıklaması</label>
+                    <textarea value={formSeoDesc} onChange={(e) => setFormSeoDesc(e.target.value)} rows={2} className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple resize-none"></textarea>
                     <p className={`text-[10px] text-right mt-1 ${formSeoDesc.length > 150 ? 'text-red-500' : 'text-white/40'}`}>
                       {formSeoDesc.length} / 150
                     </p>
@@ -709,34 +708,34 @@ export default function AdminDashboardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Yatay Ana Sayfa Görseli 1 (URL veya Yükle)</label>
-                    <input id="inp_img1" type="text" name="image" defaultValue={editingProject?.image} placeholder="https://..." className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple mb-2" />
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Yatay Ana Sayfa Görseli 1 (URL veya Yükle)</label>
+                    <input id="inp_img1" type="text" name="image" defaultValue={editingProject?.image} placeholder="https://..." className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple mb-2" />
                     <CloudinaryUploader resourceType="image" label="1. Yatay Resim Yükle" onUploadSuccess={(url) => { (document.getElementById('inp_img1') as HTMLInputElement).value = url; }} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Yatay Ana Sayfa Görseli 2 (URL veya Yükle)</label>
-                    <input id="inp_img2" type="text" name="image2" defaultValue={editingProject?.image2} placeholder="https://..." className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple mb-2" />
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Yatay Ana Sayfa Görseli 2 (URL veya Yükle)</label>
+                    <input id="inp_img2" type="text" name="image2" defaultValue={editingProject?.image2} placeholder="https://..." className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple mb-2" />
                     <CloudinaryUploader resourceType="image" label="2. Yatay Resim Yükle" onUploadSuccess={(url) => { (document.getElementById('inp_img2') as HTMLInputElement).value = url; }} />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Dikey Kapak Görseli 1 (URL veya Yükle)</label>
-                    <input id="inp_cov1" type="text" name="coverImage" defaultValue={editingProject?.coverImage} placeholder="https://..." className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple mb-2" />
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Dikey Kapak Görseli 1 (URL veya Yükle)</label>
+                    <input id="inp_cov1" type="text" name="coverImage" defaultValue={editingProject?.coverImage} placeholder="https://..." className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple mb-2" />
                     <CloudinaryUploader resourceType="image" label="1. Dikey Kapak Yükle" onUploadSuccess={(url) => { (document.getElementById('inp_cov1') as HTMLInputElement).value = url; }} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Dikey Kapak Görseli 2 (URL veya Yükle)</label>
-                    <input id="inp_cov2" type="text" name="coverImage2" defaultValue={editingProject?.coverImage2} placeholder="https://..." className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple mb-2" />
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Dikey Kapak Görseli 2 (URL veya Yükle)</label>
+                    <input id="inp_cov2" type="text" name="coverImage2" defaultValue={editingProject?.coverImage2} placeholder="https://..." className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple mb-2" />
                     <CloudinaryUploader resourceType="image" label="2. Dikey Kapak Yükle" onUploadSuccess={(url) => { (document.getElementById('inp_cov2') as HTMLInputElement).value = url; }} />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Kategori</label>
-                    <select name="category" value={formCategory} onChange={(e) => setFormCategory(e.target.value)} className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple appearance-none">
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Kategori</label>
+                    <select name="category" value={formCategory} onChange={(e) => setFormCategory(e.target.value)} className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple appearance-none">
                       <option value="Oyunlar">Oyunlar</option>
                       <option value="Videolar">Videolar</option>
                       <option value="Yamalar">Yamalar</option>
@@ -746,16 +745,16 @@ export default function AdminDashboardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Durum</label>
-                    <select name="status" defaultValue={editingProject?.status || 'Devam Ediyor'} className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple appearance-none">
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Durum</label>
+                    <select name="status" defaultValue={editingProject?.status || 'Devam Ediyor'} className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple appearance-none">
                       <option>Devam Ediyor</option>
                       <option>Tamamlandı</option>
                       <option>İptal Edildi</option>
                     </select>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Seri</label>
-                    <select className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple appearance-none">
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Seri</label>
+                    <select className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple appearance-none">
                       <option>Seçilmedi</option>
                       <option>GTA Serisi</option>
                       <option>Witcher Serisi</option>
@@ -765,36 +764,36 @@ export default function AdminDashboardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Gemini YouTube Analiz Linki</label>
-                    <input type="text" value={formGeminiLink} onChange={(e) => setFormGeminiLink(e.target.value)} placeholder="YouTube linkini yapıştırın (Sadece YZ analizi için)" className="mb-2 w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Gemini YouTube Analiz Linki</label>
+                    <input type="text" value={formGeminiLink} onChange={(e) => setFormGeminiLink(e.target.value)} placeholder="YouTube linkini yapıştırın (Sadece YZ analizi için)" className="mb-2 w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Ana Fragman (YouTube Linki veya .MP4 Yükle)</label>
-                    <input id="inp_trailer" type="text" name="trailer" defaultValue={editingProject?.trailer} placeholder="https://youtube.com/watch?v=..." className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple mb-2" />
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Ana Fragman (YouTube Linki veya .MP4 Yükle)</label>
+                    <input id="inp_trailer" type="text" name="trailer" defaultValue={editingProject?.trailer} placeholder="https://youtube.com/watch?v=..." className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple mb-2" />
                     <CloudinaryUploader resourceType="video" label="Fragman Videosu Yükle (.mp4)" onUploadSuccess={(url) => { (document.getElementById('inp_trailer') as HTMLInputElement).value = url; }} />
                   </div>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Ek Videolar (Alt alta URL'ler)</label>
-                    <textarea id="inp_vdemos" name="videoDemos" defaultValue={editingProject?.videoDemos?.join('\n')} rows={3} placeholder="Her satıra URL" className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none mb-2" />
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Ek Videolar (Alt alta URL'ler)</label>
+                    <textarea id="inp_vdemos" name="videoDemos" defaultValue={editingProject?.videoDemos?.join('\n')} rows={3} placeholder="Her satıra URL" className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple resize-none mb-2" />
                     <CloudinaryUploader resourceType="video" label="Ekstra Video Yükle" onUploadSuccess={(url) => { 
                       const el = document.getElementById('inp_vdemos') as HTMLTextAreaElement;
                       el.value = el.value ? el.value + '\n' + url : url;
                     }} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Ses Örnekleri (Alt alta URL'ler)</label>
-                    <textarea id="inp_ademos" name="audioDemos" defaultValue={editingProject?.audioDemos?.join('\n')} rows={3} placeholder="Her satıra Ses URL" className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none mb-2" />
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Ses Örnekleri (Alt alta URL'ler)</label>
+                    <textarea id="inp_ademos" name="audioDemos" defaultValue={editingProject?.audioDemos?.join('\n')} rows={3} placeholder="Her satıra Ses URL" className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple resize-none mb-2" />
                     <CloudinaryUploader resourceType="video" label="Ses Dosyası Yükle (.mp3)" onUploadSuccess={(url) => { 
                       const el = document.getElementById('inp_ademos') as HTMLTextAreaElement;
                       el.value = el.value ? el.value + '\n' + url : url;
                     }} />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Oyun İçi Görseller (Galeri)</label>
-                    <textarea id="inp_gal" name="gallery" defaultValue={editingProject?.gallery?.join('\n')} rows={3} placeholder="Her satıra Resim URL" className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple resize-none mb-2" />
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Oyun İçi Görseller (Galeri)</label>
+                    <textarea id="inp_gal" name="gallery" defaultValue={editingProject?.gallery?.join('\n')} rows={3} placeholder="Her satıra Resim URL" className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple resize-none mb-2" />
                     <CloudinaryUploader resourceType="image" label="Galeriye Resim Ekle" onUploadSuccess={(url) => { 
                       const el = document.getElementById('inp_gal') as HTMLTextAreaElement;
                       el.value = el.value ? el.value + '\n' + url : url;
@@ -804,20 +803,20 @@ export default function AdminDashboardPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Tarih</label>
-                    <input type="date" className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple [color-scheme:dark]" />
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Tarih</label>
+                    <input type="date" className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple [color-scheme:dark]" />
                   </div>
                   <div className="space-y-2">
-                    <label className="text-dublio-purple text-sm font-bold tracking-wide">Mod İndirme Linki (URL)</label>
-                    <input name="modLink" type="text" defaultValue={editingProject?.modLink || ''} placeholder="https://..." className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple" />
+                    <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Mod İndirme Linki (URL)</label>
+                    <input name="modLink" type="text" defaultValue={editingProject?.modLink || ''} placeholder="https://..." className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple" />
                   </div>
                 </div>
                 
                 <h3 className="text-white mt-8 mb-4 font-bold border-b border-white/5 pb-2">Proje Mod İlerlemesi (%)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
-                    <label className="text-dublio-cyan text-xs font-bold tracking-wide uppercase">Çeviri Yüzdesi</label>
-                    <input name="progressTranslation" type="number" min="0" max="100" defaultValue={editingProject?.progressTranslation || 0} className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-cyan" />
+                    <label className="text-stardublajweb-cyan text-xs font-bold tracking-wide uppercase">Çeviri Yüzdesi</label>
+                    <input name="progressTranslation" type="number" min="0" max="100" defaultValue={editingProject?.progressTranslation || 0} className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-cyan" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-green-500 text-xs font-bold tracking-wide uppercase">Dublaj Yüzdesi</label>
@@ -833,7 +832,7 @@ export default function AdminDashboardPage() {
                    <button type="button" onClick={() => setView('list')} className="px-8 py-4 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-colors font-bold">
                       İPTAL
                    </button>
-                   <button type="submit" className="px-10 py-4 bg-gradient-to-r from-dublio-purple to-[#9333ea] hover:scale-105 text-white font-black italic tracking-widest rounded-xl transition-all shadow-lg shadow-dublio-purple/20">
+                   <button type="submit" className="px-10 py-4 bg-gradient-to-r from-stardublajweb-purple to-[#9333ea] hover:scale-105 text-white font-black italic tracking-widest rounded-xl transition-all shadow-lg shadow-stardublajweb-purple/20">
                       {editingProject ? 'GÜNCELLE' : 'KAYDET'}
                    </button>
                 </div>
@@ -843,18 +842,18 @@ export default function AdminDashboardPage() {
 
         {/* Steam Integration Tab */}
         {activeTab === 'Oyun Ekle' && (
-          <motion.div key="oyun-ekle" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-black/50 backdrop-blur-3xl border border-dublio-purple/40 rounded-[2rem] p-6 md:p-10 shadow-[0_0_80px_rgba(168,85,247,0.1)] relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-transparent to-dublio-purple/5 pointer-events-none"></div>
+          <motion.div key="oyun-ekle" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-black/50 backdrop-blur-3xl border border-stardublajweb-purple/40 rounded-[2rem] p-6 md:p-10 shadow-[0_0_80px_rgba(168,85,247,0.1)] relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-transparent to-stardublajweb-purple/5 pointer-events-none"></div>
             
-            <div className="flex items-center gap-6 mb-10 pb-6 border-b-2 border-dublio-purple/20 relative z-10">
-              <div className="p-4 rounded-[1.5rem] bg-dublio-purple/10 border border-dublio-purple/30 shadow-[0_0_30px_rgba(168,85,247,0.3)]">
-                 <Gamepad2 className="w-8 h-8 text-dublio-purple" />
+            <div className="flex items-center gap-6 mb-10 pb-6 border-b-2 border-stardublajweb-purple/20 relative z-10">
+              <div className="p-4 rounded-[1.5rem] bg-stardublajweb-purple/10 border border-stardublajweb-purple/30 shadow-[0_0_30px_rgba(168,85,247,0.3)]">
+                 <Gamepad2 className="w-8 h-8 text-stardublajweb-purple" />
               </div>
               <div>
-                 <h2 className="text-3xl font-black italic tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-dublio-purple uppercase drop-shadow-[0_0_10px_purple]">
+                 <h2 className="text-3xl font-black italic tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-stardublajweb-purple uppercase drop-shadow-[0_0_10px_purple]">
                    STEAM NETWORK
                  </h2>
-                 <p className="text-dublio-purple text-xs font-bold uppercase tracking-[0.2em] mt-1">Otomatik API Senkronizasyonu</p>
+                 <p className="text-stardublajweb-purple text-xs font-bold uppercase tracking-[0.2em] mt-1">Otomatik API Senkronizasyonu</p>
               </div>
             </div>
 
@@ -864,12 +863,12 @@ export default function AdminDashboardPage() {
                 value={steamQuery}
                 onChange={(e) => setSteamQuery(e.target.value)}
                 placeholder="Oyun adı ara (örn: The Witcher 3)" 
-                className="flex-1 bg-white/5 backdrop-blur-xl border border-dublio-purple/30 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-dublio-cyan focus:ring-2 focus:ring-dublio-cyan/20 transition-all font-medium placeholder:text-white/30"
+                className="flex-1 bg-white/5 backdrop-blur-xl border border-stardublajweb-purple/30 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-stardublajweb-cyan focus:ring-2 focus:ring-stardublajweb-cyan/20 transition-all font-medium placeholder:text-white/30"
               />
               <button 
                 type="submit" 
                 disabled={steamLoading}
-                className="px-10 py-4 bg-gradient-to-r from-dublio-purple to-[#9333ea] hover:scale-105 text-white font-black italic tracking-widest rounded-2xl transition-all shadow-[0_0_30px_rgba(168,85,247,0.4)] flex items-center justify-center gap-2"
+                className="px-10 py-4 bg-gradient-to-r from-stardublajweb-purple to-[#9333ea] hover:scale-105 text-white font-black italic tracking-widest rounded-2xl transition-all shadow-[0_0_30px_rgba(168,85,247,0.4)] flex items-center justify-center gap-2"
               >
                 <Search className="w-5 h-5" />
                 {steamLoading ? 'ARANIYOR...' : 'ARA'}
@@ -878,21 +877,21 @@ export default function AdminDashboardPage() {
 
             <div className="space-y-4 relative z-10">
               {steamResults.map((item: any) => (
-                <div key={item.id} className="flex flex-col md:flex-row items-center justify-between p-4 bg-black/40 backdrop-blur-xl border border-dublio-purple/20 rounded-2xl gap-4 hover:border-dublio-cyan/50 hover:shadow-[0_0_20px_rgba(106,255,235,0.2)] transition-all group">
+                <div key={item.id} className="flex flex-col md:flex-row items-center justify-between p-4 bg-black/40 backdrop-blur-xl border border-stardublajweb-purple/20 rounded-2xl gap-4 hover:border-stardublajweb-cyan/50 hover:shadow-[0_0_20px_rgba(106,255,235,0.2)] transition-all group">
                   <div className="flex items-center gap-6 w-full">
-                    <div className="relative rounded-xl overflow-hidden shadow-lg border border-white/10 group-hover:border-dublio-cyan/30 transition-colors">
+                    <div className="relative rounded-xl overflow-hidden shadow-lg border border-white/10 group-hover:border-stardublajweb-cyan/30 transition-colors">
                       <img src={item.tiny_image} alt={item.name} className="w-28 h-14 object-cover" />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
                     </div>
                     <div>
-                      <h3 className="text-white font-bold text-lg group-hover:text-dublio-cyan transition-colors">{item.name}</h3>
-                      <p className="text-dublio-purple text-xs font-bold tracking-widest uppercase">ID: {item.id}</p>
+                      <h3 className="text-white font-bold text-lg group-hover:text-stardublajweb-cyan transition-colors">{item.name}</h3>
+                      <p className="text-stardublajweb-purple text-xs font-bold tracking-widest uppercase">ID: {item.id}</p>
                     </div>
                   </div>
                   <button 
                     onClick={() => addFromSteam(item)}
                     disabled={steamAdding === item.id.toString()}
-                    className="w-full md:w-auto px-8 py-3 bg-white/5 hover:bg-dublio-cyan/20 border border-white/10 hover:border-dublio-cyan/50 disabled:opacity-50 text-white hover:text-dublio-cyan font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 shrink-0"
+                    className="w-full md:w-auto px-8 py-3 bg-white/5 hover:bg-stardublajweb-cyan/20 border border-white/10 hover:border-stardublajweb-cyan/50 disabled:opacity-50 text-white hover:text-stardublajweb-cyan font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 shrink-0"
                   >
                     <Download className="w-4 h-4" />
                     {steamAdding === item.id.toString() ? 'EKLENİYOR...' : 'SİSTEME ÇEK'}
@@ -928,15 +927,15 @@ export default function AdminDashboardPage() {
                    <p className="text-[#00ff00] text-xs font-bold mt-3 uppercase tracking-wider relative z-10">Sitenin Toplam Trafiği</p>
                 </motion.div>
 
-                <motion.div variants={{ hidden: { opacity: 0, y: 30, scale: 0.9 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: performanceMode === 'ultra' ? 'spring' : 'tween', bounce: performanceMode === 'ultra' ? 0.4 : 0, duration: 0.3 } } }} className="bg-black/60 backdrop-blur-3xl p-6 rounded-[2rem] border border-dublio-purple/40 shadow-[0_0_50px_rgba(168,85,247,0.1)] relative overflow-hidden group hover:scale-[1.05] transition-transform cursor-default">
-                   <div className="absolute -top-10 -right-10 w-40 h-40 bg-dublio-purple/20 rounded-full blur-[50px] group-hover:bg-dublio-purple/40 transition-all duration-500"></div>
-                   <div className="absolute inset-0 bg-gradient-to-br from-transparent to-dublio-purple/5 pointer-events-none"></div>
-                   <div className="relative z-10 w-12 h-12 rounded-xl bg-dublio-purple/10 border border-dublio-purple/30 flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(168,85,247,0.3)]">
-                     <Activity className="w-6 h-6 text-dublio-purple animate-pulse" />
+                <motion.div variants={{ hidden: { opacity: 0, y: 30, scale: 0.9 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: performanceMode === 'ultra' ? 'spring' : 'tween', bounce: performanceMode === 'ultra' ? 0.4 : 0, duration: 0.3 } } }} className="bg-black/60 backdrop-blur-3xl p-6 rounded-[2rem] border border-stardublajweb-purple/40 shadow-[0_0_50px_rgba(168,85,247,0.1)] relative overflow-hidden group hover:scale-[1.05] transition-transform cursor-default">
+                   <div className="absolute -top-10 -right-10 w-40 h-40 bg-stardublajweb-purple/20 rounded-full blur-[50px] group-hover:bg-stardublajweb-purple/40 transition-all duration-500"></div>
+                   <div className="absolute inset-0 bg-gradient-to-br from-transparent to-stardublajweb-purple/5 pointer-events-none"></div>
+                   <div className="relative z-10 w-12 h-12 rounded-xl bg-stardublajweb-purple/10 border border-stardublajweb-purple/30 flex items-center justify-center mb-6 shadow-[0_0_20px_rgba(168,85,247,0.3)]">
+                     <Activity className="w-6 h-6 text-stardublajweb-purple animate-pulse" />
                    </div>
                    <h3 className="text-white/50 font-bold mb-2 uppercase tracking-widest text-xs relative z-10">Aktif Ziyaretçi</h3>
                    <p className="text-5xl text-white font-black tracking-tighter relative z-10 flex items-center gap-3 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">
-                     <span className="w-4 h-4 rounded-full bg-dublio-purple shadow-[0_0_20px_purple] animate-[pulse_1.5s_infinite]"></span>
+                     <span className="w-4 h-4 rounded-full bg-stardublajweb-purple shadow-[0_0_20px_purple] animate-[pulse_1.5s_infinite]"></span>
                      {stats.activeUsers}
                    </p>
                    <p className="text-white/30 text-xs font-bold mt-3 uppercase tracking-wider relative z-10">Şu an sitede gezenler</p>
@@ -967,18 +966,18 @@ export default function AdminDashboardPage() {
              </motion.div>
              
              {/* Extended Dummy Chart Area */}
-             <div className="bg-black/50 backdrop-blur-3xl border-2 border-dublio-cyan/20 rounded-[2rem] p-8 md:p-12 shadow-[0_0_80px_rgba(106,255,235,0.05)] mt-8 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-t from-dublio-cyan/5 to-transparent pointer-events-none"></div>
+             <div className="bg-black/50 backdrop-blur-3xl border-2 border-stardublajweb-cyan/20 rounded-[2rem] p-8 md:p-12 shadow-[0_0_80px_rgba(106,255,235,0.05)] mt-8 relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-t from-stardublajweb-cyan/5 to-transparent pointer-events-none"></div>
                 <div className="flex items-center justify-between mb-12 relative z-10">
-                  <h3 className="text-2xl font-black italic text-transparent bg-clip-text bg-gradient-to-r from-white to-dublio-cyan uppercase tracking-wide">Yıllık Trafik İstatistiği</h3>
-                  <select className="bg-white/5 backdrop-blur-md border border-dublio-cyan/30 text-white text-sm font-bold uppercase tracking-wider rounded-xl px-6 py-3 outline-none focus:ring-2 focus:ring-dublio-cyan">
+                  <h3 className="text-2xl font-black italic text-transparent bg-clip-text bg-gradient-to-r from-white to-stardublajweb-cyan uppercase tracking-wide">Yıllık Trafik İstatistiği</h3>
+                  <select className="bg-white/5 backdrop-blur-md border border-stardublajweb-cyan/30 text-white text-sm font-bold uppercase tracking-wider rounded-xl px-6 py-3 outline-none focus:ring-2 focus:ring-stardublajweb-cyan">
                      <option>2026 Yılı</option>
                      <option>2025 Yılı</option>
                   </select>
                 </div>
-                <div className="w-full h-80 flex items-end justify-between gap-2 md:gap-6 border-b-2 border-dublio-cyan/20 pb-4 relative z-10">
+                <div className="w-full h-80 flex items-end justify-between gap-2 md:gap-6 border-b-2 border-stardublajweb-cyan/20 pb-4 relative z-10">
                   {stats.monthlyTraffic.map((h, i) => (
-                     <div key={i} className="w-full bg-gradient-to-t from-dublio-cyan/10 via-dublio-cyan/40 to-dublio-cyan hover:to-dublio-purple rounded-t-lg transition-all duration-500 relative group cursor-pointer shadow-[0_0_20px_rgba(106,255,235,0.3)]" style={{ height: `${Math.max(h > 0 ? (h / Math.max(...stats.monthlyTraffic)) * 100 : 5, 5)}%` }}>
+                     <div key={i} className="w-full bg-gradient-to-t from-stardublajweb-cyan/10 via-stardublajweb-cyan/40 to-stardublajweb-cyan hover:to-stardublajweb-purple rounded-t-lg transition-all duration-500 relative group cursor-pointer shadow-[0_0_20px_rgba(106,255,235,0.3)]" style={{ height: `${Math.max(h > 0 ? (h / Math.max(...stats.monthlyTraffic)) * 100 : 5, 5)}%` }}>
                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-white text-black text-sm font-black px-4 py-2 rounded-lg opacity-0 group-hover:opacity-100 group-hover:-translate-y-2 transition-all whitespace-nowrap shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
                          {h} ZİYARET
                        </div>
@@ -996,11 +995,11 @@ export default function AdminDashboardPage() {
 
         {/* Tab Placeholder */}
         {activeTab === 'Ekip' && (
-          <motion.div key="ekip" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-black/50 backdrop-blur-3xl shadow-[0_0_80px_rgba(168,85,247,0.1)] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
+          <motion.div key="ekip" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-black/50 backdrop-blur-3xl shadow-[0_0_80px_rgba(168,85,247,0.1)] border border-stardublajweb-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative">
             <div className="flex items-center gap-4 mb-8 pb-6 border-b border-white/5">
-              <Users className="w-8 h-8 text-dublio-purple" />
+              <Users className="w-8 h-8 text-stardublajweb-purple" />
               <div className="flex flex-col">
-                <h2 className="text-2xl font-black italic tracking-tight text-dublio-purple uppercase">
+                <h2 className="text-2xl font-black italic tracking-tight text-stardublajweb-purple uppercase">
                   EKİBİMİZİ YÖNET
                 </h2>
                 <p className="text-white/40 text-sm font-bold">Kayıtlı kullanıcılara tıklayarak onları ekip üyesi yapabilirsiniz.</p>
@@ -1011,7 +1010,7 @@ export default function AdminDashboardPage() {
               {usersList.length === 0 ? <p className="text-white/30 text-sm font-bold p-4">Hiç kayıtlı kullanıcı yok.</p> : usersList.map(u => (
                 <div 
                   key={u.id} 
-                  className={`flex items-center gap-4 p-4 rounded-xl border ${u.teamMember ? 'bg-dublio-purple/10 border-dublio-purple' : 'bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border-white/5'} transition-all`}
+                  className={`flex items-center gap-4 p-4 rounded-xl border ${u.teamMember ? 'bg-stardublajweb-purple/10 border-stardublajweb-purple' : 'bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border-white/5'} transition-all`}
                 >
                   <img src={u.image || '/globe.svg'} alt={u.name} className="w-12 h-12 rounded-full object-cover shrink-0 bg-black/50" />
                   <div className="flex flex-col flex-1 min-w-0 cursor-pointer" onClick={() => handleToggleTeamMember(u.id, u.teamMember?.roleTitle, !!u.teamMember, u.teamMember?.id)}>
@@ -1020,7 +1019,7 @@ export default function AdminDashboardPage() {
                     {u.teamMember && (
                       <div className="flex flex-wrap gap-1 mt-2">
                         {u.teamMember.roleTitle.split(',').map((role: string, idx: number) => (
-                          <span key={idx} className="text-[10px] font-black uppercase text-dublio-purple border border-dublio-purple/30 bg-dublio-purple/10 px-2 py-0.5 rounded">
+                          <span key={idx} className="text-[10px] font-black uppercase text-stardublajweb-purple border border-stardublajweb-purple/30 bg-stardublajweb-purple/10 px-2 py-0.5 rounded">
                             {role.trim()}
                           </span>
                         ))}
@@ -1028,7 +1027,7 @@ export default function AdminDashboardPage() {
                     )}
                   </div>
                   {u.teamMember && (
-                    <a href={`/user/${u.id}`} target="_blank" rel="noopener noreferrer" className="ml-2 w-8 h-8 rounded-full bg-dublio-cyan/10 border border-dublio-cyan/30 flex items-center justify-center hover:bg-dublio-cyan hover:text-black text-dublio-cyan transition-colors" title="Profile Git">
+                    <a href={`/user/${u.id}`} target="_blank" rel="noopener noreferrer" className="ml-2 w-8 h-8 rounded-full bg-stardublajweb-cyan/10 border border-stardublajweb-cyan/30 flex items-center justify-center hover:bg-stardublajweb-cyan hover:text-black text-stardublajweb-cyan transition-colors" title="Profile Git">
                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                     </a>
                   )}
@@ -1039,32 +1038,32 @@ export default function AdminDashboardPage() {
         )}
 
         {activeTab === 'Haberler' && (
-          <motion.div key="haberler" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-black/50 backdrop-blur-3xl shadow-[0_0_80px_rgba(168,85,247,0.1)] border border-dublio-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative flex flex-col md:flex-row gap-6">
+          <motion.div key="haberler" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-black/50 backdrop-blur-3xl shadow-[0_0_80px_rgba(168,85,247,0.1)] border border-stardublajweb-purple/50 rounded-2xl p-6 md:p-10 shadow-[0_0_30px_rgba(168,85,247,0.05)] relative flex flex-col md:flex-row gap-6">
             
             {/* Ekleme Formu */}
             <div className="md:w-1/2 flex flex-col space-y-6">
               <div className="flex items-center gap-4 mb-2 pb-6 border-b border-white/5">
-                <Newspaper className="w-8 h-8 text-dublio-purple" />
-                <h2 className="text-2xl font-black italic tracking-tight text-dublio-purple uppercase">Haber Ekle</h2>
+                <Newspaper className="w-8 h-8 text-stardublajweb-purple" />
+                <h2 className="text-2xl font-black italic tracking-tight text-stardublajweb-purple uppercase">Haber Ekle</h2>
               </div>
               <form onSubmit={handleSaveNews} className="space-y-4">
                 <div>
-                  <label className="text-dublio-purple text-sm font-bold tracking-wide">Haber Başlığı</label>
-                  <input type="text" value={newsTitle} onChange={e=>setNewsTitle(e.target.value)} required className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple mt-1" />
+                  <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Haber Başlığı</label>
+                  <input type="text" value={newsTitle} onChange={e=>setNewsTitle(e.target.value)} required className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple mt-1" />
                 </div>
                 <div>
-                  <label className="text-dublio-purple text-sm font-bold tracking-wide">Haber İçeriği</label>
-                  <textarea rows={5} value={newsContent} onChange={e=>setNewsContent(e.target.value)} required className="w-full resize-none bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-dublio-purple mt-1" />
+                  <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Haber İçeriği</label>
+                  <textarea rows={5} value={newsContent} onChange={e=>setNewsContent(e.target.value)} required className="w-full resize-none bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple mt-1" />
                 </div>
                 <div>
-                  <label className="text-dublio-purple text-sm font-bold tracking-wide">Görsel Yükle (İsteğe Bağlı)</label>
+                  <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Görsel Yükle (İsteğe Bağlı)</label>
                   <input type="file" name="newsImageFile" accept="image/*" className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer mt-1" />
                 </div>
                 <div>
-                  <label className="text-dublio-purple text-sm font-bold tracking-wide">Video Yükle (İsteğe Bağlı)</label>
+                  <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Video Yükle (İsteğe Bağlı)</label>
                   <input type="file" name="newsVideoFile" accept="video/mp4" className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg text-sm text-[#848496] file:mr-4 file:py-3 file:px-4 file:border-0 file:bg-white/5 file:text-white file:font-bold hover:file:bg-white/10 cursor-pointer mt-1" />
                 </div>
-                <button type="submit" disabled={newsAdding} className="w-full py-4 mt-2 bg-gradient-to-r from-dublio-purple to-[#9333ea] hover:scale-105 text-white font-black italic tracking-widest rounded-xl transition-all shadow-lg shadow-dublio-purple/20">
+                <button type="submit" disabled={newsAdding} className="w-full py-4 mt-2 bg-gradient-to-r from-stardublajweb-purple to-[#9333ea] hover:scale-105 text-white font-black italic tracking-widest rounded-xl transition-all shadow-lg shadow-stardublajweb-purple/20">
                   {newsAdding ? 'EKLENİYOR...' : 'HABERİ YAYINLA'}
                 </button>
               </form>
@@ -1075,7 +1074,7 @@ export default function AdminDashboardPage() {
               <h3 className="text-xl font-bold text-white mb-2 pt-8 md:pt-0">Yayınlanmış Haberler</h3>
               <div className="flex flex-col space-y-3 max-h-[600px] overflow-y-auto custom-scrollbar pr-2">
                 {newsList.map(n => (
-                  <div key={n.id} className="bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/5 rounded-xl p-4 flex gap-4 items-start group hover:border-dublio-purple/30 transition-colors">
+                  <div key={n.id} className="bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/5 rounded-xl p-4 flex gap-4 items-start group hover:border-stardublajweb-purple/30 transition-colors">
                     {n.image && <img src={n.image} className="w-20 h-16 object-cover rounded bg-black/50 shrink-0" />}
                     <div className="flex flex-col flex-1 min-w-0">
                       <h4 className="text-white font-bold text-sm truncate">{n.title}</h4>

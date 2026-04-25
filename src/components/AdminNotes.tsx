@@ -9,7 +9,7 @@ export default function AdminNotes() {
   const [newNote, setNewNote] = useState("");
 
   useEffect(() => {
-    const saved = localStorage.getItem("dublio_admin_kanban");
+    const saved = localStorage.getItem("stardublajweb_admin_kanban");
     if (saved) {
       try {
         setNotes(JSON.parse(saved));
@@ -19,7 +19,7 @@ export default function AdminNotes() {
 
   const saveNotes = (updated: any) => {
     setNotes(updated);
-    localStorage.setItem("dublio_admin_kanban", JSON.stringify(updated));
+    localStorage.setItem("stardublajweb_admin_kanban", JSON.stringify(updated));
   };
 
   const addNote = (e: React.FormEvent) => {
@@ -66,7 +66,7 @@ export default function AdminNotes() {
 
             <div className="mt-4 flex gap-2 w-full justify-between border-t border-white/5 pt-3">
               {statusValue !== 'todo' && <button onClick={() => updateStatus(note.id, 'todo')} className="text-xs px-2 py-1 rounded bg-white/5 text-white/50 hover:text-white font-bold transition">Todo</button>}
-              {statusValue !== 'doing' && <button onClick={() => updateStatus(note.id, 'doing')} className="text-xs px-2 py-1 rounded bg-dublio-cyan/10 text-dublio-cyan hover:bg-dublio-cyan/20 font-bold transition flex items-center gap-1"><Clock className="w-3 h-3"/> Doing</button>}
+              {statusValue !== 'doing' && <button onClick={() => updateStatus(note.id, 'doing')} className="text-xs px-2 py-1 rounded bg-stardublajweb-cyan/10 text-stardublajweb-cyan hover:bg-stardublajweb-cyan/20 font-bold transition flex items-center gap-1"><Clock className="w-3 h-3"/> Doing</button>}
               {statusValue !== 'done' && <button onClick={() => updateStatus(note.id, 'done')} className="text-xs px-2 py-1 rounded bg-[#00ff00]/10 text-[#00ff00] hover:bg-[#00ff00]/20 font-bold transition flex items-center gap-1"><Check className="w-3 h-3"/> Done</button>}
             </div>
           </motion.div>
@@ -102,7 +102,7 @@ export default function AdminNotes() {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-10">
         {renderColumn('todo', '⏳ Bekliyor', 'text-white', 'border-white/10')}
-        {renderColumn('doing', '⚙️ Yapılıyor', 'text-dublio-cyan', 'border-dublio-cyan/20')}
+        {renderColumn('doing', '⚙️ Yapılıyor', 'text-stardublajweb-cyan', 'border-stardublajweb-cyan/20')}
         {renderColumn('done', '✅ Tamamlandı', 'text-[#00ff00]', 'border-[#00ff00]/20')}
       </div>
     </div>

@@ -14,8 +14,8 @@ export default function HomeStatsBar() {
           
           {/* Stat 1 */}
           <div className="flex items-center gap-4 group">
-            <div className="w-10 h-10 rounded-lg bg-dublio-purple/10 border border-dublio-purple/20 flex items-center justify-center group-hover:bg-dublio-purple/20 transition-colors shadow-[0_0_15px_rgba(168,85,247,0.1)]">
-              <Activity className="w-5 h-5 text-dublio-purple" />
+            <div className="w-10 h-10 rounded-lg bg-stardublajweb-purple/10 border border-stardublajweb-purple/20 flex items-center justify-center group-hover:bg-stardublajweb-purple/20 transition-colors shadow-[0_0_15px_rgba(168,85,247,0.1)]">
+              <Activity className="w-5 h-5 text-stardublajweb-purple" />
             </div>
             <div>
               <span className="block text-2xl font-black text-white leading-none tracking-tight">450K+</span>
@@ -27,8 +27,8 @@ export default function HomeStatsBar() {
 
           {/* Stat 2 */}
           <div className="flex items-center gap-4 group">
-            <div className="w-10 h-10 rounded-lg bg-dublio-cyan/10 border border-dublio-cyan/20 flex items-center justify-center group-hover:bg-dublio-cyan/20 transition-colors shadow-[0_0_15px_rgba(6,182,212,0.1)]">
-              <Download className="w-5 h-5 text-dublio-cyan" />
+            <div className="w-10 h-10 rounded-lg bg-stardublajweb-cyan/10 border border-stardublajweb-cyan/20 flex items-center justify-center group-hover:bg-stardublajweb-cyan/20 transition-colors shadow-[0_0_15px_rgba(6,182,212,0.1)]">
+              <Download className="w-5 h-5 text-stardublajweb-cyan" />
             </div>
             <div>
               <span className="block text-2xl font-black text-white leading-none tracking-tight">85+</span>

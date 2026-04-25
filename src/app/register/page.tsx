@@ -22,10 +22,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <main className="min-h-screen bg-dublio-dark flex items-center justify-center p-6 relative overflow-hidden">
+    <main className="min-h-screen bg-stardublajweb-dark flex items-center justify-center p-6 relative overflow-hidden">
       {/* Background decoration */}
-      <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-dublio-purple/10 blur-[120px] rounded-full animate-pulse-slow"></div>
-      <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-dublio-cyan/10 blur-[100px] rounded-full animate-pulse-slow"></div>
+      <div className="absolute top-[-20%] left-[-10%] w-[600px] h-[600px] bg-stardublajweb-purple/10 blur-[120px] rounded-full animate-pulse-slow"></div>
+      <div className="absolute bottom-[-20%] right-[-10%] w-[500px] h-[500px] bg-stardublajweb-cyan/10 blur-[100px] rounded-full animate-pulse-slow"></div>
 
       <div className="w-full max-w-md relative z-10 glass-panel p-10 rounded-[40px] border border-white/5 shadow-2xl">
         <div className="text-center mb-10">
@@ -47,7 +47,7 @@ export default function RegisterPage() {
             <span className="text-white font-black text-3xl">S</span>
           </div>
           <h1 className="text-3xl font-black italic uppercase text-white tracking-tighter mb-2">Aramıza Katıl</h1>
-          <p className="text-dublio-text-dark font-medium">Star Dublaj topluluğuna hoş geldin.</p>
+          <p className="text-stardublajweb-text-dark font-medium">Star Dublaj topluluğuna hoş geldin.</p>
         </div>
 
         {!success ? (
@@ -57,7 +57,7 @@ export default function RegisterPage() {
               <input 
                 type="email" 
                 placeholder="ornek@mail.com" 
-                className="w-full bg-black/40 border border-white/5 rounded-2xl py-4 px-6 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-dublio-purple transition-all"
+                className="w-full bg-black/40 border border-white/5 rounded-2xl py-4 px-6 text-white placeholder:text-white/20 focus:outline-none focus:ring-2 focus:ring-stardublajweb-purple transition-all"
                 onChange={(e) => setFormData({email: e.target.value})}
                 required
               />
@@ -97,15 +97,15 @@ export default function RegisterPage() {
               <button 
                 onClick={() => signIn('discord', { callbackUrl: '/' })}
                 type="button"
-                className="flex items-center justify-center gap-2 py-3 bg-[#2f2f38]/50 border border-white/10 rounded-xl text-xs font-bold hover:bg-dublio-purple/80 hover:text-white transition-all"
+                className="flex items-center justify-center gap-2 py-3 bg-[#2f2f38]/50 border border-white/10 rounded-xl text-xs font-bold hover:bg-stardublajweb-purple/80 hover:text-white transition-all"
               >
                  DISCORD
               </button>
            </div>
         </div>
 
-        <p className="mt-8 text-center text-sm text-dublio-text-dark">
-          Zaten üye misin? <Link href="/login" className="text-white hover:text-dublio-purple transition-colors font-bold">Giriş Yap</Link>
+        <p className="mt-8 text-center text-sm text-stardublajweb-text-dark">
+          Zaten üye misin? <Link href="/login" className="text-white hover:text-stardublajweb-purple transition-colors font-bold">Giriş Yap</Link>
         </p>
       </div>
     </main>

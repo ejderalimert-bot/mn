@@ -6,7 +6,7 @@ import HomeFooter from "@/components/HomeFooter";
 
 const ContactPage = () => {
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-dublio-cyan/30 flex flex-col">
+    <div className="min-h-screen bg-black text-white selection:bg-stardublajweb-cyan/30 flex flex-col">
       <Navbar />
       <main className="flex-1 pt-32 pb-20 px-6 sm:px-12 relative overflow-hidden flex flex-col items-center justify-center">
         {/* Arka plan efektleri */}
@@ -42,7 +42,7 @@ const ContactPage = () => {
                 <p className="text-white/60">iletisim@stardublaj.com</p>
              </div>
              <div className="bg-white/5 border border-white/10 rounded-3xl p-8 backdrop-blur-xl flex flex-col items-center">
-                <h3 className="text-xl font-black mb-2 uppercase tracking-wider text-dublio-purple">Discord</h3>
+                <h3 className="text-xl font-black mb-2 uppercase tracking-wider text-stardublajweb-purple">Discord</h3>
                 <p className="text-white/60">discord.gg/stardublaj</p>
              </div>
           </motion.div>

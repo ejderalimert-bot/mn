@@ -22,7 +22,7 @@ export default function NotFound() {
           <motion.div 
             animate={{ x: [0, -20, 20, 0], y: [0, 20, -20, 0], opacity: [0.1, 0.2, 0.1] }} 
             transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-            className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-dublio-cyan/10 blur-[150px] rounded-full"
+            className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-stardublajweb-cyan/10 blur-[150px] rounded-full"
           />
         </div>
 

@@ -29,8 +29,8 @@ export default function HomeFooter() {
       <motion.div className="pointer-events-none absolute inset-0 z-0 opacity-0 group-hover:opacity-100 transition duration-500 will-change-transform mix-blend-screen" style={{ background: spotlightStyle }} />
       
       {/* Background Glows */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-dublio-purple/5 blur-[120px] rounded-full pointer-events-none"></div>
-      <div className="absolute bottom-0 left-0 w-96 h-96 bg-dublio-cyan/5 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-96 h-96 bg-stardublajweb-purple/5 blur-[120px] rounded-full pointer-events-none"></div>
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-stardublajweb-cyan/5 blur-[120px] rounded-full pointer-events-none"></div>
 
       <div className="container mx-auto px-8 relative z-10">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
@@ -40,10 +40,10 @@ export default function HomeFooter() {
             <Link href="/" className="inline-block relative">
                <motion.div whileHover={{ scale: 1.05 }} className="flex items-center gap-3">
                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#1a1c23] to-black border border-white/10 flex items-center justify-center shadow-lg relative overflow-hidden">
-                   <div className="absolute inset-0 bg-gradient-to-tr from-dublio-purple/20 to-dublio-cyan/20 opacity-50"></div>
+                   <div className="absolute inset-0 bg-gradient-to-tr from-stardublajweb-purple/20 to-stardublajweb-cyan/20 opacity-50"></div>
                    <Zap className="w-6 h-6 text-white relative z-10" />
                  </div>
-                 <span className="text-2xl font-black italic uppercase tracking-widest text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">STAR<br/><span className="text-dublio-cyan">DUBLAJ</span></span>
+                 <span className="text-2xl font-black italic uppercase tracking-widest text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">STAR<br/><span className="text-stardublajweb-cyan">DUBLAJ</span></span>
                </motion.div>
             </Link>
             <p className="text-white/50 text-sm font-medium leading-relaxed max-w-xs">
@@ -61,7 +61,7 @@ export default function HomeFooter() {
 
           {/* Links Col 1 */}
           <div>
-            <h4 className="font-black text-white/90 uppercase tracking-[0.2em] mb-8 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-dublio-purple"></span> Keşfet</h4>
+            <h4 className="font-black text-white/90 uppercase tracking-[0.2em] mb-8 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-stardublajweb-purple"></span> Keşfet</h4>
             <ul className="space-y-4">
               {[
                 { name: 'Tüm Modlar', path: '/mods' },
@@ -71,7 +71,7 @@ export default function HomeFooter() {
               ].map((item, i) => (
                 <li key={i}>
                   <Link href={item.path} className="text-white/50 hover:text-white font-medium text-sm transition-colors flex items-center gap-2 group/link">
-                    <ArrowUpRight className="w-3 h-3 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all text-dublio-purple" />
+                    <ArrowUpRight className="w-3 h-3 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all text-stardublajweb-purple" />
                     {item.name}
                   </Link>
                 </li>
@@ -81,7 +81,7 @@ export default function HomeFooter() {
 
           {/* Links Col 2 */}
           <div>
-            <h4 className="font-black text-white/90 uppercase tracking-[0.2em] mb-8 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-dublio-cyan"></span> Kurumsal</h4>
+            <h4 className="font-black text-white/90 uppercase tracking-[0.2em] mb-8 flex items-center gap-2"><span className="w-2 h-2 rounded-full bg-stardublajweb-cyan"></span> Kurumsal</h4>
             <ul className="space-y-4">
               {[
                 { name: 'Hakkımızda', path: '/about' },
@@ -91,7 +91,7 @@ export default function HomeFooter() {
               ].map((item, i) => (
                 <li key={i}>
                   <Link href={item.path} className="text-white/50 hover:text-white font-medium text-sm transition-colors flex items-center gap-2 group/link">
-                    <ArrowUpRight className="w-3 h-3 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all text-dublio-cyan" />
+                    <ArrowUpRight className="w-3 h-3 opacity-0 -ml-5 group-hover:opacity-100 group-hover:ml-0 transition-all text-stardublajweb-cyan" />
                     {item.name}
                   </Link>
                 </li>

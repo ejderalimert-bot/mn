@@ -16,25 +16,25 @@ export default async function PublicUserProfile({ params }: { params: Promise<{ 
   const isTeam = !!user.teamMember;
 
   return (
-    <main className={`min-h-screen ${isTeam ? 'bg-[#050b14]' : 'bg-[#0b0c10]'} text-white selection:bg-dublio-cyan/30`}>
+    <main className={`min-h-screen ${isTeam ? 'bg-[#050b14]' : 'bg-[#0b0c10]'} text-white selection:bg-stardublajweb-cyan/30`}>
       <Navbar />
 
       {/* Banner / Header */}
       <section className="relative w-full h-64 md:h-80 overflow-hidden border-b border-white/5">
-        <div className={`absolute inset-0 ${isTeam ? 'bg-gradient-to-br from-[#0c1829] via-[#050b14] to-dublio-cyan/20' : 'bg-gradient-to-r from-dublio-purple/20 to-transparent'} z-0`}></div>
+        <div className={`absolute inset-0 ${isTeam ? 'bg-gradient-to-br from-[#0c1829] via-[#050b14] to-stardublajweb-cyan/20' : 'bg-gradient-to-r from-stardublajweb-purple/20 to-transparent'} z-0`}></div>
         {isTeam && (
           <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] mix-blend-overlay"></div>
         )}
         
         <div className="container mx-auto h-full flex flex-col items-center justify-end pb-12 relative z-10">
           <div className="relative group">
-            <div className={`absolute -inset-2 ${isTeam ? 'bg-dublio-cyan' : 'bg-dublio-purple'} rounded-full blur-lg opacity-40 group-hover:opacity-70 transition-opacity`}></div>
+            <div className={`absolute -inset-2 ${isTeam ? 'bg-stardublajweb-cyan' : 'bg-stardublajweb-purple'} rounded-full blur-lg opacity-40 group-hover:opacity-70 transition-opacity`}></div>
             <img 
               src={user.image || '/globe.svg'} 
-              className={`w-32 h-32 md:w-40 md:h-40 rounded-full object-cover relative z-10 border-4 ${isTeam ? 'border-dublio-cyan shadow-[0_0_30px_cyan]' : 'border-[#1a1c23]'}`}
+              className={`w-32 h-32 md:w-40 md:h-40 rounded-full object-cover relative z-10 border-4 ${isTeam ? 'border-stardublajweb-cyan shadow-[0_0_30px_cyan]' : 'border-[#1a1c23]'}`}
             />
             {isTeam && (
-              <div className="absolute -bottom-2 -right-2 bg-dublio-cyan rounded-full p-2 text-[#050b14] shadow-lg z-20" title="Star Dublaj Yetkili Ekibi">
+              <div className="absolute -bottom-2 -right-2 bg-stardublajweb-cyan rounded-full p-2 text-[#050b14] shadow-lg z-20" title="Star Dublaj Yetkili Ekibi">
                 <ShieldCheck className="w-6 h-6" />
               </div>
             )}
@@ -50,7 +50,7 @@ export default async function PublicUserProfile({ params }: { params: Promise<{ 
         {isTeam ? (
           <div className="flex flex-wrap gap-2 justify-center mt-2 max-w-xl">
              {user.teamMember?.roleTitle.split(',').map((role, i) => (
-                <span key={i} className="text-xs font-black uppercase tracking-widest text-dublio-cyan border border-dublio-cyan/50 bg-dublio-cyan/10 px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(0,255,255,0.2)]">
+                <span key={i} className="text-xs font-black uppercase tracking-widest text-stardublajweb-cyan border border-stardublajweb-cyan/50 bg-stardublajweb-cyan/10 px-4 py-1.5 rounded-full shadow-[0_0_15px_rgba(0,255,255,0.2)]">
                   {role.trim()}
                 </span>
              ))}
@@ -67,8 +67,8 @@ export default async function PublicUserProfile({ params }: { params: Promise<{ 
         
         {/* Left Column - Stats / About */}
         <div className="flex flex-col gap-6">
-          <div className={`rounded-3xl p-8 border ${isTeam ? 'bg-gradient-to-br from-dublio-cyan/5 to-transparent border-dublio-cyan/20' : 'bg-[#15171e] border-white/5'}`}>
-             <h3 className={`text-xl font-black italic uppercase mb-6 flex items-center gap-2 ${isTeam ? 'text-dublio-cyan' : 'text-dublio-purple'}`}>
+          <div className={`rounded-3xl p-8 border ${isTeam ? 'bg-gradient-to-br from-stardublajweb-cyan/5 to-transparent border-stardublajweb-cyan/20' : 'bg-[#15171e] border-white/5'}`}>
+             <h3 className={`text-xl font-black italic uppercase mb-6 flex items-center gap-2 ${isTeam ? 'text-stardublajweb-cyan' : 'text-stardublajweb-purple'}`}>
                 Kullanıcı İstatistikleri
              </h3>
              <ul className="space-y-4">

@@ -50,7 +50,7 @@ const MarkdownVideo = ({ src }: { src: string }) => {
       />
       <button
         onClick={togglePlay}
-        className="absolute top-4 right-4 bg-black/60 hover:bg-dublio-purple/80 text-white p-2.5 rounded-xl backdrop-blur-md transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-xl border border-white/10 hover:scale-110 z-10"
+        className="absolute top-4 right-4 bg-black/60 hover:bg-stardublajweb-purple/80 text-white p-2.5 rounded-xl backdrop-blur-md transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100 shadow-xl border border-white/10 hover:scale-110 z-10"
       >
         {isPlaying ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4 ml-0.5" />}
       </button>
@@ -291,7 +291,7 @@ export default function ProjectDetailPage() {
             </div>
             <div className="h-4 md:h-6 w-full bg-[#1a1c23] border border-white/10 rounded-full overflow-hidden p-0.5 shadow-2xl relative">
               <div
-                className="h-full bg-gradient-to-r from-dublio-purple via-pink-500 to-dublio-cyan rounded-full relative overflow-hidden"
+                className="h-full bg-gradient-to-r from-stardublajweb-purple via-pink-500 to-stardublajweb-cyan rounded-full relative overflow-hidden"
                 style={{
                   width: `${Math.max(2, progress)}%`,
                   transition: `width 50ms linear`
@@ -390,7 +390,7 @@ export default function ProjectDetailPage() {
                             whileHover={{ scale: 1.1, rotate: 2 }}
                             whileTap={{ scale: 0.9, rotate: -2 }}
                             onClick={toggleFavorite}
-                            className={`flex items-center justify-center gap-3 px-8 h-14 rounded-2xl font-black text-sm transition-all duration-300 relative overflow-hidden group ${isFavorite ? 'bg-gradient-to-r from-dublio-purple to-pink-500 text-white shadow-[0_0_40px_rgba(236,72,153,0.5)]' : 'bg-white/5 text-white backdrop-blur-xl border border-white/10'}`}
+                            className={`flex items-center justify-center gap-3 px-8 h-14 rounded-2xl font-black text-sm transition-all duration-300 relative overflow-hidden group ${isFavorite ? 'bg-gradient-to-r from-stardublajweb-purple to-pink-500 text-white shadow-[0_0_40px_rgba(236,72,153,0.5)]' : 'bg-white/5 text-white backdrop-blur-xl border border-white/10'}`}
                           >
                             <span className="absolute w-full h-full bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-in-out skew-x-12"></span>
                             <Heart className={`w-5 h-5 relative z-10 ${isFavorite ? 'fill-current' : ''}`} /> <span className="relative z-10">FAVORİLERE EKLE</span>
@@ -413,13 +413,13 @@ export default function ProjectDetailPage() {
                    variants={{ visible: { transition: { staggerChildren: 0.2 } } }}
                    className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-20 bg-gradient-to-r from-white/[0.03] to-transparent p-6 rounded-3xl border border-white/[0.05] shadow-2xl relative overflow-hidden"
                  >
-                    <div className="absolute -inset-x-20 -top-20 -bottom-20 bg-gradient-to-r from-dublio-purple/5 to-transparent blur-3xl pointer-events-none"></div>
+                    <div className="absolute -inset-x-20 -top-20 -bottom-20 bg-gradient-to-r from-stardublajweb-purple/5 to-transparent blur-3xl pointer-events-none"></div>
                     <motion.div variants={{ hidden: { opacity: 0, y: 30, scale: 0.8 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", bounce: 0.6 } } }} className="p-5 rounded-2xl bg-black/40 border border-white/[0.02] relative z-10 hover:bg-white/[0.05] hover:scale-105 transition-all">
-                       <span className="block text-dublio-cyan/80 text-xs font-black tracking-[0.2em] uppercase mb-2">Geliştirici</span>
+                       <span className="block text-stardublajweb-cyan/80 text-xs font-black tracking-[0.2em] uppercase mb-2">Geliştirici</span>
                        <span className="text-white font-bold text-lg">{project.team || 'Star Dublaj'}</span>
                     </motion.div>
                     <motion.div variants={{ hidden: { opacity: 0, y: 30, scale: 0.8 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", bounce: 0.6 } } }} className="p-5 rounded-2xl bg-black/40 border border-white/[0.02] relative z-10 hover:bg-white/[0.05] hover:scale-105 transition-all">
-                       <span className="block text-dublio-purple/80 text-xs font-black tracking-[0.2em] uppercase mb-2">Yayımcı</span>
+                       <span className="block text-stardublajweb-purple/80 text-xs font-black tracking-[0.2em] uppercase mb-2">Yayımcı</span>
                        <span className="text-white font-bold text-lg">{project.team || 'Star Dublaj'}</span>
                     </motion.div>
                     <motion.div variants={{ hidden: { opacity: 0, y: 30, scale: 0.8 }, visible: { opacity: 1, y: 0, scale: 1, transition: { type: "spring", bounce: 0.6 } } }} className="p-5 rounded-2xl bg-black/40 border border-white/[0.02] relative z-10 hover:bg-white/[0.05] hover:scale-105 transition-all">
@@ -466,11 +466,11 @@ export default function ProjectDetailPage() {
                        {project.trailer && (
                           <div 
                             onClick={() => setActiveMedia({ type: 'video', url: project.trailer })} 
-                            className={`w-64 h-36 shrink-0 bg-black rounded-2xl relative overflow-hidden group/thumb cursor-pointer border-[3px] transition-all duration-300 ${activeMedia?.url === project.trailer ? 'border-dublio-purple shadow-[0_0_30px_rgba(168,85,247,0.4)]' : 'border-transparent hover:border-white/20 hover:-translate-y-1 shadow-lg'}`}
+                            className={`w-64 h-36 shrink-0 bg-black rounded-2xl relative overflow-hidden group/thumb cursor-pointer border-[3px] transition-all duration-300 ${activeMedia?.url === project.trailer ? 'border-stardublajweb-purple shadow-[0_0_30px_rgba(168,85,247,0.4)]' : 'border-transparent hover:border-white/20 hover:-translate-y-1 shadow-lg'}`}
                           >
                              <img src={project.image || project.thumbnail || "https://images.unsplash.com/photo-1550745165-9bc0b252726f"} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover/thumb:opacity-90 transition-opacity" />
                              <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-t from-black/80 to-transparent group-hover/thumb:opacity-0 transition-opacity"></div>
-                             <div className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-dublio-purple/90 backdrop-blur-md flex items-center justify-center shadow-[0_0_15px_purple] group-hover/thumb:scale-110 transition-transform">
+                             <div className="absolute bottom-3 right-3 w-10 h-10 rounded-full bg-stardublajweb-purple/90 backdrop-blur-md flex items-center justify-center shadow-[0_0_15px_purple] group-hover/thumb:scale-110 transition-transform">
                                <Play className="w-4 h-4 text-white ml-0.5 fill-current" />
                              </div>
                              <span className="absolute top-3 left-3 px-2 py-1 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold rounded uppercase tracking-wider">Fragman</span>
@@ -480,7 +480,7 @@ export default function ProjectDetailPage() {
                           <div 
                             key={i}
                             onClick={() => setActiveMedia({ type: 'image', url: imgUrl })} 
-                            className={`w-64 h-36 shrink-0 bg-black rounded-2xl relative overflow-hidden cursor-pointer border-[3px] transition-all duration-300 ${activeMedia?.url === imgUrl ? 'border-dublio-cyan shadow-[0_0_30px_rgba(6,182,212,0.4)]' : 'border-transparent hover:border-white/20 hover:-translate-y-1 shadow-lg'}`}
+                            className={`w-64 h-36 shrink-0 bg-black rounded-2xl relative overflow-hidden cursor-pointer border-[3px] transition-all duration-300 ${activeMedia?.url === imgUrl ? 'border-stardublajweb-cyan shadow-[0_0_30px_rgba(6,182,212,0.4)]' : 'border-transparent hover:border-white/20 hover:-translate-y-1 shadow-lg'}`}
                           >
                              <img src={imgUrl} className="w-full h-full object-cover opacity-50 hover:opacity-100 transition-opacity" />
                              <span className="absolute bottom-3 left-3 px-2 py-1 bg-black/60 backdrop-blur-md text-white text-[10px] font-bold rounded opacity-0 transition-opacity duration-300">Görüntüle</span>
@@ -504,18 +504,18 @@ export default function ProjectDetailPage() {
                    <motion.div variants={{ hidden: { opacity: 0, x: -100, rotateY: 30 }, visible: { opacity: 1, x: 0, rotateY: 0, transition: { type: "spring", stiffness: 40, damping: 15, duration: 2 } } }} className="lg:col-span-2 space-y-16 [perspective:2000px]">
                       
                       <div className={`bg-[#14151a] rounded-[2rem] p-8 md:p-12 border border-white/[0.05] relative overflow-hidden ${performanceMode === 'ultra' ? 'shadow-2xl' : 'shadow-none'}`}>
-                        {performanceMode === 'ultra' && <div className="absolute top-0 right-0 w-64 h-64 bg-dublio-purple/20 blur-[100px] pointer-events-none rounded-full"></div>}
+                        {performanceMode === 'ultra' && <div className="absolute top-0 right-0 w-64 h-64 bg-stardublajweb-purple/20 blur-[100px] pointer-events-none rounded-full"></div>}
                         
                         {/* Tabs */}
                         <div className="flex items-center gap-10 border-b border-white/10 pb-6 mb-10 relative z-10">
                           <button onClick={() => setActiveTab('genel')} className={`text-sm md:text-base font-black transition-all uppercase tracking-[0.2em] relative ${activeTab === 'genel' ? 'text-white' : 'text-white/30 hover:text-white/60'}`}>
                             Hikaye & Detaylar
-                            {activeTab === 'genel' && <motion.span layoutId="tab-underline" className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-gradient-to-r from-dublio-purple to-dublio-cyan shadow-[0_0_20px_rgba(168,85,247,0.8)]"></motion.span>}
+                            {activeTab === 'genel' && <motion.span layoutId="tab-underline" className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-gradient-to-r from-stardublajweb-purple to-stardublajweb-cyan shadow-[0_0_20px_rgba(168,85,247,0.8)]"></motion.span>}
                           </button>
                           {!isVideo && (
                             <button onClick={() => setActiveTab('mod')} className={`text-sm md:text-base font-black transition-all uppercase tracking-[0.2em] relative ${activeTab === 'mod' ? 'text-white' : 'text-white/30 hover:text-white/60'}`}>
                               MOD / İNDİR
-                              {activeTab === 'mod' && <motion.span layoutId="tab-underline" className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-gradient-to-r from-dublio-purple to-dublio-cyan shadow-[0_0_20px_rgba(168,85,247,0.8)]"></motion.span>}
+                              {activeTab === 'mod' && <motion.span layoutId="tab-underline" className="absolute -bottom-[25px] left-0 w-full h-[4px] rounded-t-full bg-gradient-to-r from-stardublajweb-purple to-stardublajweb-cyan shadow-[0_0_20px_rgba(168,85,247,0.8)]"></motion.span>}
                             </button>
                           )}
                         </div>
@@ -530,14 +530,14 @@ export default function ProjectDetailPage() {
                                 animate={{ opacity: 1, x: 0, rotateY: 0 }}
                                 exit={{ opacity: 0, x: 50, rotateY: -30 }}
                                 transition={{ type: "spring", bounce: 0.3 }}
-                                className="prose prose-invert prose-lg max-w-none prose-headings:font-black prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-h3:text-dublio-purple prose-a:text-dublio-cyan hover:prose-a:text-pink-500 prose-img:rounded-3xl prose-img:shadow-2xl prose-img:border prose-img:border-white/10 prose-p:text-white/70 prose-p:leading-relaxed"
+                                className="prose prose-invert prose-lg max-w-none prose-headings:font-black prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-h3:text-stardublajweb-purple prose-a:text-stardublajweb-cyan hover:prose-a:text-pink-500 prose-img:rounded-3xl prose-img:shadow-2xl prose-img:border prose-img:border-white/10 prose-p:text-white/70 prose-p:leading-relaxed"
                               >
                                  <ReactMarkdown
                                    remarkPlugins={[remarkGfm]}
                                    components={{
                                      a: ({ node, href, ...props }) => {
                                        const isInternal = href?.startsWith('/');
-                                       return <Link href={href || '#'} target={isInternal ? undefined : "_blank"} rel={isInternal ? undefined : "noopener noreferrer"} className="font-bold underline underline-offset-4 decoration-dublio-cyan tooltip-trigger hover:text-white" {...props} />;
+                                       return <Link href={href || '#'} target={isInternal ? undefined : "_blank"} rel={isInternal ? undefined : "noopener noreferrer"} className="font-bold underline underline-offset-4 decoration-stardublajweb-cyan tooltip-trigger hover:text-white" {...props} />;
                                      },
                                      img: ({ node, src, alt, ...props }) => {
                                        if (typeof src === 'string' && src.match(/\.(mp4|webm|ogg|mkv|avi)(\?.*)?(#.*)?$/i)) {
@@ -563,16 +563,16 @@ export default function ProjectDetailPage() {
                                  className="space-y-12"
                                >
                                 {/* Download Section */}
-                                <div className="bg-gradient-to-r from-dublio-purple/20 to-dublio-cyan/20 p-[1px] rounded-3xl">
+                                <div className="bg-gradient-to-r from-stardublajweb-purple/20 to-stardublajweb-cyan/20 p-[1px] rounded-3xl">
                                   <div className="bg-[#14151a] p-8 md:p-12 rounded-3xl flex flex-col md:flex-row items-center justify-between gap-8 h-full relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-l from-dublio-cyan/10 to-transparent pointer-events-none"></div>
+                                    <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-l from-stardublajweb-cyan/10 to-transparent pointer-events-none"></div>
                                     <div className="relative z-10 flex-1">
                                       <h3 className="text-2xl md:text-3xl font-black text-white mb-2 uppercase tracking-wide">TÜRKÇE DUBLAJ MODU</h3>
                                       <p className="text-white/60 font-medium">Büyük ustalıkla hazırlanan Türkçe Dublaj mod dosyasını şimdi indir ve oyununa entegre et.</p>
                                     </div>
                                     {project.modLink ? (
                                       <a href={project.modLink} target="_blank" rel="noopener noreferrer" className="shrink-0 relative z-10 group overflow-hidden bg-white text-black font-black text-lg px-8 py-5 rounded-2xl transition-transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.2)] block">
-                                        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-dublio-cyan via-[#60a5fa] to-dublio-purple opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                                        <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-stardublajweb-cyan via-[#60a5fa] to-stardublajweb-purple opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                         <span className="relative z-10 flex items-center justify-center gap-3 group-hover:text-white transition-colors">
                                           <Download className="w-6 h-6" /> DOSYAYI İNDİR
                                         </span>
@@ -623,7 +623,7 @@ export default function ProjectDetailPage() {
                                     <div className="space-y-3 relative z-10 group/bar">
                                       <div className="flex justify-between items-end">
                                         <span className="text-white font-bold text-xs md:text-sm tracking-widest uppercase transition-colors group-hover/bar:text-white/80">Post-Prodüksiyon & Miksaj</span>
-                                        <span className="text-dublio-purple font-black text-lg drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]">{project?.progressMix || '0'}%</span>
+                                        <span className="text-stardublajweb-purple font-black text-lg drop-shadow-[0_0_10px_rgba(168,85,247,0.5)]">{project?.progressMix || '0'}%</span>
                                       </div>
                                       <div className="w-full h-4 bg-white/[0.02] rounded-full overflow-hidden border border-white/[0.05]">
                                         <div className="h-full bg-gradient-to-r from-[#7e22ce] to-[#a855f7] shadow-[0_0_20px_rgba(168,85,247,0.6)] rounded-full relative transition-all duration-[2100ms] ease-out flex items-center justify-end pr-2 overflow-hidden" style={{ width: animatedProgress ? `${project?.progressMix || 0}%` : '0%' }}>
@@ -699,9 +699,9 @@ export default function ProjectDetailPage() {
                    >
                       {/* Requirements Panel */}
                       <motion.div variants={{ hidden: { opacity: 0, x: 50, rotateY: -30 }, visible: { opacity: 1, x: 0, rotateY: 0, transition: { type: "spring", bounce: 0.5 } } }} className="bg-[#14151a] border border-white/[0.05] rounded-[2rem] p-8 md:p-10 shadow-2xl relative overflow-hidden group/req">
-                        <div className="absolute -inset-20 bg-gradient-to-tr from-dublio-cyan/5 to-transparent pointer-events-none group-hover/req:opacity-100 transition-opacity opacity-0 duration-500 blur-xl"></div>
+                        <div className="absolute -inset-20 bg-gradient-to-tr from-stardublajweb-cyan/5 to-transparent pointer-events-none group-hover/req:opacity-100 transition-opacity opacity-0 duration-500 blur-xl"></div>
                         <div className="flex items-center gap-4 mb-10 relative z-10">
-                           <motion.div whileHover={{ rotate: 180, scale: 1.2 }} className="w-12 h-12 rounded-xl bg-gradient-to-br from-dublio-cyan to-blue-600 flex items-center justify-center shadow-lg">
+                           <motion.div whileHover={{ rotate: 180, scale: 1.2 }} className="w-12 h-12 rounded-xl bg-gradient-to-br from-stardublajweb-cyan to-blue-600 flex items-center justify-center shadow-lg">
                              <MoreVertical className="w-6 h-6 text-white" />
                            </motion.div>
                            <h3 className="text-white font-black text-xl uppercase tracking-wider">Sistem Gereksinimleri</h3>
@@ -709,7 +709,7 @@ export default function ProjectDetailPage() {
 
                         <div className="space-y-10 relative z-10">
                           <motion.div whileHover={{ x: 10 }} className="bg-white/[0.02] p-6 rounded-2xl border border-white/[0.02] hover:bg-white/[0.05] transition-colors cursor-default">
-                            <strong className="text-dublio-cyan mb-4 block tracking-[0.2em] font-black uppercase text-xs">Minimum</strong>
+                            <strong className="text-stardublajweb-cyan mb-4 block tracking-[0.2em] font-black uppercase text-xs">Minimum</strong>
                             <ul className="space-y-3 text-sm text-white/70">
                               <li className="flex flex-col"><span className="text-white/30 text-[10px] font-bold uppercase tracking-wider">İşletim Sistemi</span> <span>Windows 10/11</span></li>
                               <li className="flex flex-col"><span className="text-white/30 text-[10px] font-bold uppercase tracking-wider">İşlemci</span> <span>Intel Core i3 / AMD Ryzen 5</span></li>
@@ -719,7 +719,7 @@ export default function ProjectDetailPage() {
                           </motion.div>
                           
                           <motion.div whileHover={{ x: 10 }} className="bg-white/[0.02] p-6 rounded-2xl border border-white/[0.02] hover:bg-white/[0.05] transition-colors cursor-default">
-                            <strong className="text-dublio-purple mb-4 block tracking-[0.2em] font-black uppercase text-xs">Önerilen</strong>
+                            <strong className="text-stardublajweb-purple mb-4 block tracking-[0.2em] font-black uppercase text-xs">Önerilen</strong>
                             <ul className="space-y-3 text-sm text-white/70">
                               <li className="flex flex-col"><span className="text-white/30 text-[10px] font-bold uppercase tracking-wider">İşletim Sistemi</span> <span>Windows 10/11</span></li>
                               <li className="flex flex-col"><span className="text-white/30 text-[10px] font-bold uppercase tracking-wider">İşlemci</span> <span>Intel Core i9 / AMD Ryzen 9</span></li>
@@ -732,8 +732,8 @@ export default function ProjectDetailPage() {
 
                       {/* Comments Section moved to Sidebar for better dynamic layout */}
                       <motion.div variants={{ hidden: { opacity: 0, x: 50, rotateY: -30 }, visible: { opacity: 1, x: 0, rotateY: 0, transition: { type: "spring", bounce: 0.5 } } }} className={`bg-[#14151a] border border-white/[0.05] rounded-[2rem] p-8 md:p-10 flex flex-col h-[600px] relative overflow-hidden group/comments ${performanceMode === 'ultra' ? 'shadow-2xl' : 'shadow-none'}`}>
-                        {performanceMode === 'ultra' && <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-dublio-purple/10 pointer-events-none group-hover/comments:scale-150 transition-transform duration-1000 blur-3xl rounded-full"></div>}
-                        <h3 className="text-white font-black text-xl uppercase tracking-wider mb-8 relative z-10">Oyuncu Yorumları <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="text-dublio-purple bg-dublio-purple/20 px-3 py-1 rounded-lg ml-2 inline-block">{comments.length}</motion.span></h3>
+                        {performanceMode === 'ultra' && <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-stardublajweb-purple/10 pointer-events-none group-hover/comments:scale-150 transition-transform duration-1000 blur-3xl rounded-full"></div>}
+                        <h3 className="text-white font-black text-xl uppercase tracking-wider mb-8 relative z-10">Oyuncu Yorumları <motion.span animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="text-stardublajweb-purple bg-stardublajweb-purple/20 px-3 py-1 rounded-lg ml-2 inline-block">{comments.length}</motion.span></h3>
                         
                         <div className="flex-1 overflow-y-auto pr-4 space-y-6 custom-scrollbar mb-8 relative z-10">
                           {comments.length === 0 ? (
@@ -751,12 +751,12 @@ export default function ProjectDetailPage() {
                                   transition={{ delay: index * 0.1, type: "spring" }}
                                   className="flex gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/[0.02] hover:bg-white/[0.05] hover:scale-105 transition-all shadow-md group/comment"
                                 >
-                                  <Link href={`/user/${c.userId}`} className="w-10 h-10 rounded-xl bg-gradient-to-tr from-dublio-purple to-dublio-cyan overflow-hidden shrink-0 shadow-lg group-hover/comment:shadow-[0_0_20px_purple] transition-shadow">
+                                  <Link href={`/user/${c.userId}`} className="w-10 h-10 rounded-xl bg-gradient-to-tr from-stardublajweb-purple to-stardublajweb-cyan overflow-hidden shrink-0 shadow-lg group-hover/comment:shadow-[0_0_20px_purple] transition-shadow">
                                     {c.userAvatar ? <img src={c.userAvatar} className="w-full h-full object-cover" referrerPolicy="no-referrer" /> : <div className="w-full h-full flex items-center justify-center font-black text-white">{c.userName?.charAt(0) || '?'}</div>}
                                   </Link>
                                   <div className="flex-1">
                                     <div className="flex items-center justify-between mb-2">
-                                      <Link href={`/user/${c.userId}`} className="text-white text-sm font-black hover:text-dublio-cyan transition-colors group-hover/comment:text-pink-500">{c.userName || 'Anonim'}</Link>
+                                      <Link href={`/user/${c.userId}`} className="text-white text-sm font-black hover:text-stardublajweb-cyan transition-colors group-hover/comment:text-pink-500">{c.userName || 'Anonim'}</Link>
                                       <span className="text-white/30 text-[10px] font-bold">{new Date(c.date).toLocaleDateString()}</span>
                                     </div>
                                     <p className="text-white/60 text-sm leading-relaxed">{c.text}</p>
@@ -774,9 +774,9 @@ export default function ProjectDetailPage() {
                             value={commentText}
                             onChange={(e) => setCommentText(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleCommentSubmit()}
-                            className="w-full bg-[#0a0a0c] border border-white/10 rounded-2xl py-4 pl-5 pr-24 text-sm text-white font-medium focus:outline-none focus:border-dublio-cyan/50 shadow-inner focus:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-shadow"
+                            className="w-full bg-[#0a0a0c] border border-white/10 rounded-2xl py-4 pl-5 pr-24 text-sm text-white font-medium focus:outline-none focus:border-stardublajweb-cyan/50 shadow-inner focus:shadow-[0_0_20px_rgba(6,182,212,0.2)] transition-shadow"
                           />
-                          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} onClick={handleCommentSubmit} className="absolute right-2 top-2 bottom-2 px-5 bg-gradient-to-r from-dublio-cyan to-blue-600 hover:from-blue-500 hover:to-dublio-cyan text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-md">Fırlat</motion.button>
+                          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.9 }} onClick={handleCommentSubmit} className="absolute right-2 top-2 bottom-2 px-5 bg-gradient-to-r from-stardublajweb-cyan to-blue-600 hover:from-blue-500 hover:to-stardublajweb-cyan text-white font-black text-xs uppercase tracking-widest rounded-xl shadow-md">Fırlat</motion.button>
                         </div>
                       </motion.div>
                    </motion.div>

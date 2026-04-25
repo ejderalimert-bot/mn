@@ -41,7 +41,7 @@ export default function CustomCursor() {
   return (
     <>
       <motion.div
-        className="fixed top-0 left-0 w-8 h-8 rounded-full border-[3px] border-dublio-cyan pointer-events-none z-[99999] shadow-[0_0_15px_#6affeb] blur-[1px]"
+        className="fixed top-0 left-0 w-8 h-8 rounded-full border-[3px] border-stardublajweb-cyan pointer-events-none z-[99999] shadow-[0_0_15px_#6affeb] blur-[1px]"
         style={{
           x: cursorXSpring,
           y: cursorYSpring,
@@ -49,7 +49,7 @@ export default function CustomCursor() {
         }}
       />
       <motion.div
-        className="fixed top-0 left-0 w-3 h-3 rounded-full bg-dublio-purple pointer-events-none z-[99999] shadow-[0_0_20px_10px_rgba(168,85,247,0.8)]"
+        className="fixed top-0 left-0 w-3 h-3 rounded-full bg-stardublajweb-purple pointer-events-none z-[99999] shadow-[0_0_20px_10px_rgba(168,85,247,0.8)]"
         style={{
           x: innerXSpring,
           y: innerYSpring,

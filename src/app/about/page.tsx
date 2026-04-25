@@ -6,19 +6,19 @@ import HomeFooter from "@/components/HomeFooter";
 
 const AboutPage = () => {
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-dublio-cyan/30 flex flex-col">
+    <div className="min-h-screen bg-black text-white selection:bg-stardublajweb-cyan/30 flex flex-col">
       <Navbar />
       <main className="flex-1 pt-32 pb-20 px-6 sm:px-12 relative overflow-hidden flex flex-col items-center justify-center">
         {/* Arka plan efektleri */}
-        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-dublio-cyan/20 blur-[150px] mix-blend-screen rounded-full pointer-events-none" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[800px] bg-dublio-purple/20 blur-[200px] mix-blend-screen rounded-full pointer-events-none" />
+        <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-stardublajweb-cyan/20 blur-[150px] mix-blend-screen rounded-full pointer-events-none" />
+        <div className="absolute bottom-[-10%] right-[-10%] w-[800px] h-[800px] bg-stardublajweb-purple/20 blur-[200px] mix-blend-screen rounded-full pointer-events-none" />
 
         <div className="relative z-10 max-w-4xl text-center">
           <motion.h1 
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-dublio-cyan to-dublio-purple tracking-tighter mb-8"
+            className="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-br from-white via-stardublajweb-cyan to-stardublajweb-purple tracking-tighter mb-8"
           >
             HAKKIMIZDA
           </motion.h1>

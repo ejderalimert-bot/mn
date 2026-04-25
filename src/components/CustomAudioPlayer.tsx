@@ -75,7 +75,7 @@ export default function CustomAudioPlayer({ src }: { src: string }) {
       {/* Play/Pause Button */}
       <button 
         onClick={togglePlay}
-        className="w-12 h-12 rounded-full bg-gradient-to-tr from-dublio-purple to-pink-500 text-white flex items-center justify-center flex-shrink-0 shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-transform hover:scale-105"
+        className="w-12 h-12 rounded-full bg-gradient-to-tr from-stardublajweb-purple to-pink-500 text-white flex items-center justify-center flex-shrink-0 shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-transform hover:scale-105"
       >
          {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 ml-1 fill-current" />}
       </button>
@@ -89,7 +89,7 @@ export default function CustomAudioPlayer({ src }: { src: string }) {
             <div className="absolute w-full h-full bg-white/10 rounded-full overflow-hidden pointer-events-none">
                {/* Colorful progress */}
                <div 
-                 className="h-full bg-gradient-to-r from-dublio-purple to-pink-500 relative transition-all duration-75" 
+                 className="h-full bg-gradient-to-r from-stardublajweb-purple to-pink-500 relative transition-all duration-75" 
                  style={{ width: `${progress}%` }}
                >
                </div>

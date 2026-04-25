@@ -149,7 +149,7 @@ export default function CustomVideoPlayer({ src, autoPlay = false }: { src: stri
               <div className="w-full h-full absolute inset-0 group-hover:opacity-100 bg-[#111]">
                  <img src={`https://img.youtube.com/vi/${ytId}/maxresdefault.jpg`} className="w-full h-full object-cover opacity-60" onError={(e) => (e.currentTarget.src = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`)} />
                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none group-hover:scale-110 transition-transform">
-                    <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-dublio-purple to-pink-500 text-white flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.8)]">
+                    <div className="w-20 h-20 rounded-full bg-gradient-to-tr from-stardublajweb-purple to-pink-500 text-white flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.8)]">
                        <Play className="w-10 h-10 ml-2 fill-current" />
                     </div>
                  </div>
@@ -203,7 +203,7 @@ export default function CustomVideoPlayer({ src, autoPlay = false }: { src: stri
               animate={{ scale: 1, opacity: 1, rotate: 0 }}
               exit={{ scale: 0, opacity: 0, rotate: 45 }}
               transition={{ type: "spring", bounce: 0.6 }}
-              className="w-24 h-24 rounded-full bg-gradient-to-tr from-dublio-purple to-pink-500 text-white flex items-center justify-center shadow-[0_0_50px_rgba(168,85,247,0.8)] transition-transform hover:scale-125"
+              className="w-24 h-24 rounded-full bg-gradient-to-tr from-stardublajweb-purple to-pink-500 text-white flex items-center justify-center shadow-[0_0_50px_rgba(168,85,247,0.8)] transition-transform hover:scale-125"
             >
                <Play className="w-12 h-12 ml-2 fill-current" />
             </motion.div>
@@ -227,7 +227,7 @@ export default function CustomVideoPlayer({ src, autoPlay = false }: { src: stri
             <div className="relative flex-1 h-3 group/slider flex items-center cursor-pointer">
               <div className="absolute w-full h-1.5 bg-white/20 rounded-full overflow-hidden pointer-events-none">
                  <div 
-                   className="h-full bg-gradient-to-r from-cyan-400 via-dublio-purple to-pink-500 shadow-[0_0_15px_rgba(168,85,247,1)] relative transition-all duration-75" 
+                   className="h-full bg-gradient-to-r from-cyan-400 via-stardublajweb-purple to-pink-500 shadow-[0_0_15px_rgba(168,85,247,1)] relative transition-all duration-75" 
                    style={{ width: `${progress}%` }}
                  />
               </div>
@@ -241,15 +241,15 @@ export default function CustomVideoPlayer({ src, autoPlay = false }: { src: stri
 
         <div className="flex items-center justify-between px-1 relative z-[60]">
            <div className="flex items-center gap-5">
-              <button onClick={togglePlay} className="text-white hover:text-dublio-purple transition-transform hover:scale-110 outline-none focus:outline-none">
+              <button onClick={togglePlay} className="text-white hover:text-stardublajweb-purple transition-transform hover:scale-110 outline-none focus:outline-none">
                  {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current" />}
               </button>
-              <button onClick={toggleMute} className="text-white hover:text-dublio-purple transition-transform hover:scale-110 outline-none focus:outline-none">
+              <button onClick={toggleMute} className="text-white hover:text-stardublajweb-purple transition-transform hover:scale-110 outline-none focus:outline-none">
                  {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5 fill-current" />}
               </button>
            </div>
            <div>
-               <button onClick={handleFullscreen} className="text-white hover:text-dublio-purple transition-transform hover:scale-110 outline-none focus:outline-none">
+               <button onClick={handleFullscreen} className="text-white hover:text-stardublajweb-purple transition-transform hover:scale-110 outline-none focus:outline-none">
                   {isFullscreen ? <Minimize className="w-5 h-5" /> : <Maximize className="w-5 h-5" />}
                </button>
             </div>
