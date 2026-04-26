@@ -571,7 +571,7 @@ export default function ProjectDetailPage() {
                                       <p className="text-white/60 font-medium">Büyük ustalıkla hazırlanan Türkçe Dublaj mod dosyasını şimdi indir ve oyununa entegre et.</p>
                                     </div>
                                     {project.modLink ? (
-                                      <a href={project.modLink} target="_blank" rel="noopener noreferrer" className="shrink-0 relative z-10 group overflow-hidden bg-white text-black font-black text-lg px-8 py-5 rounded-2xl transition-transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.2)] block">
+                                      <a href={project.modLink} download className="shrink-0 relative z-10 group overflow-hidden bg-white text-black font-black text-lg px-8 py-5 rounded-2xl transition-transform hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.2)] block">
                                         <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-stardublajweb-cyan via-[#60a5fa] to-stardublajweb-purple opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                         <span className="relative z-10 flex items-center justify-center gap-3 group-hover:text-white transition-colors">
                                           <Download className="w-6 h-6" /> DOSYAYI İNDİR
