@@ -11,7 +11,8 @@ export async function GET() {
       gallery: JSON.parse(p.gallery || '[]'),
       tags: p.tags ? JSON.parse(p.tags) : [],
       audioDemos: p.audioDemos ? JSON.parse(p.audioDemos) : [],
-      videoDemos: p.videoDemos ? JSON.parse(p.videoDemos) : []
+      videoDemos: p.videoDemos ? JSON.parse(p.videoDemos) : [],
+      credits: p.credits ? JSON.parse(p.credits) : []
     }));
     return NextResponse.json(formatted);
   } catch (error) {
@@ -86,6 +87,7 @@ GÖREVLER VE KESİN SEO KURALLARI:
         progressVoice: body.progressVoice || "0",
         progressMix: body.progressMix || "0",
         modLink: body.modLink || null,
+        credits: typeof body.credits === 'string' ? body.credits : JSON.stringify(body.credits || []),
       } as any
     });
     return NextResponse.json({ 
@@ -93,7 +95,8 @@ GÖREVLER VE KESİN SEO KURALLARI:
       gallery: JSON.parse(created.gallery || '[]'), 
       tags: JSON.parse(created.tags || '[]'),
       audioDemos: JSON.parse(created.audioDemos || '[]'),
-      videoDemos: JSON.parse(created.videoDemos || '[]')
+      videoDemos: JSON.parse(created.videoDemos || '[]'),
+      credits: JSON.parse(created.credits || '[]')
     });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to save' }, { status: 500 });
@@ -112,6 +115,7 @@ export async function PUT(request: Request) {
     if (data.tags && Array.isArray(data.tags)) data.tags = JSON.stringify(data.tags);
     if (data.audioDemos && Array.isArray(data.audioDemos)) data.audioDemos = JSON.stringify(data.audioDemos);
     if (data.videoDemos && Array.isArray(data.videoDemos)) data.videoDemos = JSON.stringify(data.videoDemos);
+    if (data.credits && Array.isArray(data.credits)) data.credits = JSON.stringify(data.credits);
 
     const updated: any = await prisma.project.update({
       where: { id },
@@ -122,7 +126,8 @@ export async function PUT(request: Request) {
        gallery: JSON.parse(updated.gallery || '[]'),
        tags: updated.tags ? JSON.parse(updated.tags) : [],
        audioDemos: JSON.parse(updated.audioDemos || '[]'),
-       videoDemos: JSON.parse(updated.videoDemos || '[]')
+       videoDemos: JSON.parse(updated.videoDemos || '[]'),
+       credits: JSON.parse(updated.credits || '[]')
     });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update' }, { status: 500 });

@@ -37,6 +37,7 @@ model Project {
   progressVoice       String @default("0")
   progressMix         String @default("0")
   modLink             String?
+  credits             String     @default("[]") // JSON array of contributors
 
   createdAt   DateTime   @default(now())
 

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '@/components/Navbar';
 import { useSession } from 'next-auth/react';
 import { useParams } from 'next/navigation';
-import { Bookmark, Heart, ThumbsUp, MoreVertical, Play, Pause, Video as VideoIcon, Music, Image as ImageIcon, Download } from 'lucide-react';
+import { Bookmark, Heart, ThumbsUp, MoreVertical, Play, Pause, Video as VideoIcon, Music, Image as ImageIcon, Download, Mic, Users, Crown } from 'lucide-react';
 import CustomVideoPlayer from '@/components/CustomVideoPlayer';
 import CustomAudioPlayer from '@/components/CustomAudioPlayer';
 import Link from 'next/link';
@@ -524,7 +524,58 @@ export default function ProjectDetailPage() {
                           <AnimatePresence mode="wait">
                             {/* Markdown Content (Genel) */}
                             {activeTab === 'genel' && (
-                              <motion.div 
+                              <div className="space-y-12">
+                                {/* Ekipler / Credits */}
+                                {project.credits && project.credits.length > 0 && (
+                                  <div>
+                                    <div className="flex items-center gap-3 mb-6">
+                                      <div className="p-2 bg-stardublajweb-purple/20 rounded-lg border border-stardublajweb-purple/40">
+                                        <Users className="w-5 h-5 text-stardublajweb-purple" />
+                                      </div>
+                                      <h3 className="text-2xl font-black text-white uppercase tracking-wider">
+                                        Proje Ekibi <span className="text-stardublajweb-purple/50">({project.credits.length})</span>
+                                      </h3>
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                                      {project.credits.map((credit: any, idx: number) => (
+                                        <div key={idx} className="bg-[#1a1b22] border border-white/5 p-4 rounded-2xl flex items-center justify-between relative overflow-hidden group hover:border-white/20 transition-all shadow-lg hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]">
+                                          {/* BG Effect */}
+                                          <div className="absolute inset-0 bg-gradient-to-r from-stardublajweb-cyan/5 to-[#e2b714]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                          
+                                          {/* User Avatar + Name */}
+                                          <div className="flex flex-col items-center justify-center gap-2 flex-1 relative z-10 w-1/3">
+                                            <div className="relative">
+                                              <div className="w-14 h-14 rounded-full overflow-hidden border-[3px] border-white/10 bg-black/50 flex items-center justify-center relative z-10 group-hover:border-stardublajweb-cyan transition-colors">
+                                                {credit.image ? <img src={credit.image} className="w-full h-full object-cover" /> : <span className="font-black text-xl text-white/50">{credit.name?.charAt(0)}</span>}
+                                              </div>
+                                              {idx === 0 && <Crown className="w-5 h-5 text-[#e2b714] absolute -top-2 -right-2 z-20 drop-shadow-[0_0_10px_#e2b714]" />}
+                                            </div>
+                                            <span className="text-white font-bold text-[13px] text-center w-full truncate px-1">{credit.name}</span>
+                                          </div>
+
+                                          {/* Center Mic icon and subtle line */}
+                                          <div className="flex items-center justify-center shrink-0 relative z-10 px-2">
+                                            <div className="w-6 h-px bg-white/10 mr-2"></div>
+                                            <Mic className="w-4 h-4 text-white/30 group-hover:text-stardublajweb-purple transition-colors drop-shadow-[0_0_10px_purple]" />
+                                            <div className="w-6 h-px bg-white/10 ml-2"></div>
+                                          </div>
+
+                                          {/* Character Info */}
+                                          <div className="flex flex-col items-center justify-center gap-2 flex-1 relative z-10 w-1/3">
+                                            <div className="w-14 h-14 rounded-full overflow-hidden border-[3px] border-[#e2b714]/30 bg-black/50 flex items-center justify-center group-hover:border-[#e2b714] transition-colors relative">
+                                              <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay"></div>
+                                              <span className="text-[#e2b714] font-black text-xl relative z-10 drop-shadow-[0_0_10px_#e2b714]">?</span>
+                                            </div>
+                                            <span className="text-[#e2b714] font-bold text-[13px] text-center w-full truncate px-1">{credit.characters.join(', ')}</span>
+                                          </div>
+                                        </div>
+                                      ))}
+                                    </div>
+                                    <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mt-12"></div>
+                                  </div>
+                                )}
+
+                                <motion.div 
                                 key="genel"
                                 initial={{ opacity: 0, x: -50, rotateY: 30 }}
                                 animate={{ opacity: 1, x: 0, rotateY: 0 }}
@@ -549,7 +600,8 @@ export default function ProjectDetailPage() {
                                  >
                                    {project.description || 'Bu proje için henüz detaylı bir açıklama girilmemiş.'}
                                  </ReactMarkdown>
-                              </motion.div>
+                               </motion.div>
+                              </div>
                             )}
 
                             {/* Mod & Progress Content */}

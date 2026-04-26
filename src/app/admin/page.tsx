@@ -61,6 +61,9 @@ export default function AdminDashboardPage() {
   const [formSeoTitle, setFormSeoTitle] = useState<string>('');
   const [formSeoDesc, setFormSeoDesc] = useState<string>('');
   const [formSlug, setFormSlug] = useState<string>('');
+  const [formCredits, setFormCredits] = useState<any[]>([]);
+  const [creditSelectedUserId, setCreditSelectedUserId] = useState('');
+  const [creditCharacters, setCreditCharacters] = useState('');
   const [geminiEnhancing, setGeminiEnhancing] = useState(false);
   
   const [stats, setStats] = useState({
@@ -255,6 +258,7 @@ export default function AdminDashboardPage() {
     setFormSeoTitle('');
     setFormSeoDesc('');
     setFormSlug('');
+    setFormCredits([]);
     setView('form');
   };
 
@@ -271,6 +275,7 @@ export default function AdminDashboardPage() {
     setFormSeoTitle(project.seoTitle || '');
     setFormSeoDesc(project.seoDesc || '');
     setFormSlug(project.slug || '');
+    setFormCredits(project.credits || []);
     setView('form');
   };
 
@@ -312,7 +317,8 @@ export default function AdminDashboardPage() {
       progressTranslation: formData.get('progressTranslation')?.toString() || '0',
       progressVoice: formData.get('progressVoice')?.toString() || '0',
       progressMix: formData.get('progressMix')?.toString() || '0',
-      modLink: formData.get('modLink')?.toString() || ''
+      modLink: formData.get('modLink')?.toString() || '',
+      credits: formCredits
     };
 
     try {
@@ -836,6 +842,75 @@ export default function AdminDashboardPage() {
                   </div>
                 </div>
                 
+                {/* PROJE EKİBİ / EMEĞİ GEÇENLER EKLENTİSİ */}
+                <div className="bg-white/5 p-6 rounded-2xl border border-white/10 mt-8">
+                  <h3 className="text-white font-bold mb-4 uppercase tracking-wider text-sm flex items-center gap-2">
+                    <Users className="w-4 h-4 text-stardublajweb-cyan" /> Proje Ekibi / Emeği Geçenleri Ekle
+                  </h3>
+                  <div className="flex flex-col md:flex-row gap-4 mb-6">
+                    <select 
+                      value={creditSelectedUserId} 
+                      onChange={(e) => setCreditSelectedUserId(e.target.value)} 
+                      className="flex-1 bg-black/50 border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-cyan"
+                    >
+                      <option value="">-- Kullanıcı Seçin --</option>
+                      {usersList.map((u: any) => (
+                        <option key={u.id} value={u.id}>{u.name || u.username} ({u.email || 'Bilinmiyor'})</option>
+                      ))}
+                    </select>
+                    <input 
+                      type="text" 
+                      value={creditCharacters}
+                      onChange={(e) => setCreditCharacters(e.target.value)}
+                      placeholder="Konuştuğu Karakterler (Virgülle ayırın, Örn: Leon, Çevirmen)"
+                      className="flex-1 bg-black/50 border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-cyan"
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => {
+                        if (!creditSelectedUserId) return alert("Lütfen kullanıcı seçin");
+                        const user = usersList.find(u => u.id === creditSelectedUserId);
+                        const chars = creditCharacters.split(',').map(c => c.trim()).filter(c => c);
+                        if (!user) return;
+                        setFormCredits([...formCredits, {
+                          userId: user.id,
+                          name: user.name || user.username,
+                          image: user.image,
+                          characters: chars
+                        }]);
+                        setCreditSelectedUserId('');
+                        setCreditCharacters('');
+                      }} 
+                      className="px-6 py-3 bg-gradient-to-r from-stardublajweb-cyan to-blue-600 hover:from-blue-500 hover:to-stardublajweb-cyan font-bold rounded-lg transition-all"
+                    >
+                      EKLE
+                    </button>
+                  </div>
+
+                  {formCredits.length > 0 && (
+                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                       {formCredits.map((credit, idx) => (
+                         <div key={idx} className="bg-black/50 border border-white/5 p-3 rounded-xl flex items-center justify-between group">
+                            <div className="flex items-center gap-3">
+                               {credit.image ? (
+                                 <img src={credit.image} className="w-8 h-8 rounded-md object-cover" />
+                               ) : (
+                                 <div className="w-8 h-8 rounded-md bg-white/10 flex items-center justify-center text-xs font-bold">{credit.name?.charAt(0)}</div>
+                               )}
+                               <div>
+                                 <p className="text-xs text-white font-bold">{credit.name}</p>
+                                 <p className="text-[10px] text-white/50">{credit.characters.join(', ') || 'Ekip'}</p>
+                               </div>
+                            </div>
+                            <button type="button" onClick={() => setFormCredits(formCredits.filter((_, i) => i !== idx))} className="text-red-500 opacity-0 group-hover:opacity-100 p-1">
+                               <Trash2 className="w-4 h-4" />
+                            </button>
+                         </div>
+                       ))}
+                     </div>
+                  )}
+                </div>
+
                 <h3 className="text-white mt-8 mb-4 font-bold border-b border-white/5 pb-2">Proje Mod İlerlemesi (%)</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-2">
