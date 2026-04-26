@@ -32,6 +32,7 @@ export default function AdminDashboardPage() {
   const [projects, setProjects] = useState<any[]>([]);
   const [editingProject, setEditingProject] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [steamQuery, setSteamQuery] = useState('');
   const [steamResults, setSteamResults] = useState<any[]>([]);
   const [steamLoading, setSteamLoading] = useState(false);
@@ -282,6 +283,9 @@ export default function AdminDashboardPage() {
 
   const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (saving) return;
+    setSaving(true);
+    
     const formData = new FormData(e.currentTarget);
 
     const projData = {
@@ -311,26 +315,31 @@ export default function AdminDashboardPage() {
       modLink: formData.get('modLink')?.toString() || ''
     };
 
-    if (editingProject) {
-      const res = await fetch('/api/projects', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...editingProject, ...projData })
-      });
-      const updated = await res.json();
-      setProjects(projects.map(p => p.id === updated.id ? updated : p));
-    } else {
-      const res = await fetch('/api/projects', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(projData)
-      });
-      const added = await res.json();
-      setProjects([...projects, added]);
-      localStorage.removeItem('stardublajweb_admin_draft'); // Clear draft on successful save
+    try {
+      if (editingProject) {
+        const res = await fetch('/api/projects', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...editingProject, ...projData })
+        });
+        const updated = await res.json();
+        setProjects(projects.map(p => p.id === updated.id ? updated : p));
+      } else {
+        const res = await fetch('/api/projects', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(projData)
+        });
+        const added = await res.json();
+        setProjects([...projects, added]);
+        localStorage.removeItem('stardublajweb_admin_draft'); // Clear draft on successful save
+      }
+      setView('list');
+    } catch (err) {
+      alert("Hata oluştu!");
+    } finally {
+      setSaving(false);
     }
-
-    setView('list');
   };
 
   const searchSteam = async (e: React.FormEvent) => {
@@ -847,8 +856,8 @@ export default function AdminDashboardPage() {
                    <button type="button" onClick={() => setView('list')} className="px-8 py-4 bg-white/5 hover:bg-white/10 text-white rounded-xl transition-colors font-bold">
                       İPTAL
                    </button>
-                   <button type="submit" className="px-10 py-4 bg-gradient-to-r from-stardublajweb-purple to-[#9333ea] hover:scale-105 text-white font-black italic tracking-widest rounded-xl transition-all shadow-lg shadow-stardublajweb-purple/20">
-                      {editingProject ? 'GÜNCELLE' : 'KAYDET'}
+                   <button type="submit" disabled={saving} className="px-10 py-4 bg-gradient-to-r from-stardublajweb-purple to-[#9333ea] hover:scale-105 disabled:opacity-50 text-white font-black italic tracking-widest rounded-xl transition-all shadow-lg shadow-stardublajweb-purple/20">
+                      {saving ? 'KAYDEDİLİYOR...' : (editingProject ? 'GÜNCELLE' : 'KAYDET')}
                    </button>
                 </div>
               </form>
