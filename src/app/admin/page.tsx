@@ -63,7 +63,10 @@ export default function AdminDashboardPage() {
   const [formSlug, setFormSlug] = useState<string>('');
   const [formCredits, setFormCredits] = useState<any[]>([]);
   const [creditSelectedUserId, setCreditSelectedUserId] = useState('');
+  const [creditType, setCreditType] = useState('Seslendirmen');
   const [creditCharacters, setCreditCharacters] = useState('');
+  const [creditRoles, setCreditRoles] = useState('');
+  const [creditCharAvatar, setCreditCharAvatar] = useState('');
   const [geminiEnhancing, setGeminiEnhancing] = useState(false);
   
   const [stats, setStats] = useState({
@@ -847,62 +850,119 @@ export default function AdminDashboardPage() {
                   <h3 className="text-white font-bold mb-4 uppercase tracking-wider text-sm flex items-center gap-2">
                     <Users className="w-4 h-4 text-stardublajweb-cyan" /> Proje Ekibi / Emeği Geçenleri Ekle
                   </h3>
-                  <div className="flex flex-col md:flex-row gap-4 mb-6">
-                    <select 
-                      value={creditSelectedUserId} 
-                      onChange={(e) => setCreditSelectedUserId(e.target.value)} 
-                      className="flex-1 bg-black/50 border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-cyan"
-                    >
-                      <option value="">-- Kullanıcı Seçin --</option>
-                      {usersList.map((u: any) => (
-                        <option key={u.id} value={u.id}>{u.name || u.username} ({u.email || 'Bilinmiyor'})</option>
-                      ))}
-                    </select>
-                    <input 
-                      type="text" 
-                      value={creditCharacters}
-                      onChange={(e) => setCreditCharacters(e.target.value)}
-                      placeholder="Konuştuğu Karakterler (Virgülle ayırın, Örn: Leon, Çevirmen)"
-                      className="flex-1 bg-black/50 border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-cyan"
-                    />
-                    <button 
-                      type="button" 
-                      onClick={() => {
-                        if (!creditSelectedUserId) return alert("Lütfen kullanıcı seçin");
-                        const user = usersList.find(u => u.id === creditSelectedUserId);
-                        const chars = creditCharacters.split(',').map(c => c.trim()).filter(c => c);
-                        if (!user) return;
-                        setFormCredits([...formCredits, {
-                          userId: user.id,
-                          name: user.name || user.username,
-                          image: user.image,
-                          characters: chars
-                        }]);
-                        setCreditSelectedUserId('');
-                        setCreditCharacters('');
-                      }} 
-                      className="px-6 py-3 bg-gradient-to-r from-stardublajweb-cyan to-blue-600 hover:from-blue-500 hover:to-stardublajweb-cyan font-bold rounded-lg transition-all"
-                    >
-                      EKLE
-                    </button>
+                  <div className="flex flex-col gap-4 mb-6">
+                    <div className="flex flex-col md:flex-row gap-4">
+                      <select 
+                        value={creditSelectedUserId} 
+                        onChange={(e) => setCreditSelectedUserId(e.target.value)} 
+                        className="flex-1 bg-black/50 border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-cyan"
+                      >
+                        <option value="">-- Kullanıcı Seçin --</option>
+                        {usersList.map((u: any) => (
+                          <option key={u.id} value={u.id}>{u.name || u.username} ({u.email || 'Bilinmiyor'})</option>
+                        ))}
+                      </select>
+                      
+                      <select 
+                        value={creditType} 
+                        onChange={(e) => setCreditType(e.target.value)} 
+                        className="w-full md:w-48 bg-black/50 border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-cyan"
+                      >
+                        <option value="Seslendirmen">Seslendirmen</option>
+                        <option value="Diğer">Diğer (Ekip)</option>
+                      </select>
+                    </div>
+
+                    <div className="flex flex-col md:flex-row gap-4">
+                      {creditType === 'Seslendirmen' ? (
+                        <>
+                          <input 
+                            type="text" 
+                            value={creditCharacters}
+                            onChange={(e) => setCreditCharacters(e.target.value)}
+                            placeholder="Konuştuğu Karakter(ler) (Virgül ile ayırın)"
+                            className="flex-1 bg-black/50 border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-cyan"
+                          />
+                          <input 
+                            type="text" 
+                            value={creditCharAvatar}
+                            onChange={(e) => setCreditCharAvatar(e.target.value)}
+                            placeholder="Karakterin Görsel URL (Opsiyonel)"
+                            className="flex-1 bg-black/50 border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-cyan"
+                          />
+                        </>
+                      ) : (
+                        <input 
+                          type="text" 
+                          value={creditRoles}
+                          onChange={(e) => setCreditRoles(e.target.value)}
+                          placeholder="Kullanıcının Projedeki Rolü (Örn: Çevirmen, Kodlayan)"
+                          className="flex-1 bg-black/50 border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-cyan"
+                        />
+                      )}
+                      
+                      <button 
+                        type="button" 
+                        onClick={() => {
+                          if (!creditSelectedUserId) return alert("Lütfen kullanıcı seçin");
+                          const user = usersList.find(u => u.id === creditSelectedUserId);
+                          if (!user) return;
+                          
+                          let chars: string[] = [];
+                          let addedRole = 'Seslendirmen';
+                          let charImg = '';
+
+                          if (creditType === 'Seslendirmen') {
+                             if(!creditCharacters.trim()) return alert("Seslendirdiği karakteri yazmadınız.");
+                             chars = creditCharacters.split(',').map(c => c.trim()).filter(c => c);
+                             charImg = creditCharAvatar;
+                          } else {
+                             if(!creditRoles.trim()) return alert("Rolü yazmadınız.");
+                             addedRole = creditRoles;
+                          }
+
+                          setFormCredits([...formCredits, {
+                            userId: user.id,
+                            name: user.name || user.username,
+                            image: user.image,
+                            type: creditType,
+                            role: addedRole,
+                            characters: chars,
+                            charAvatar: charImg
+                          }]);
+                          
+                          setCreditSelectedUserId('');
+                          setCreditCharacters('');
+                          setCreditRoles('');
+                          setCreditCharAvatar('');
+                        }} 
+                        className="px-8 py-3 bg-gradient-to-r from-stardublajweb-cyan to-blue-600 hover:from-blue-500 hover:to-stardublajweb-cyan text-white font-bold rounded-lg transition-all"
+                      >
+                        EKLE
+                      </button>
+                    </div>
                   </div>
 
                   {formCredits.length > 0 && (
-                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                        {formCredits.map((credit, idx) => (
                          <div key={idx} className="bg-black/50 border border-white/5 p-3 rounded-xl flex items-center justify-between group">
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3 w-full pr-4">
                                {credit.image ? (
-                                 <img src={credit.image} className="w-8 h-8 rounded-md object-cover" />
+                                 <img src={credit.image} className="w-10 h-10 rounded-full object-cover border border-white/10" />
                                ) : (
-                                 <div className="w-8 h-8 rounded-md bg-white/10 flex items-center justify-center text-xs font-bold">{credit.name?.charAt(0)}</div>
+                                 <div className="w-10 h-10 rounded-full border border-white/10 bg-white/10 flex items-center justify-center text-sm font-bold">{credit.name?.charAt(0)}</div>
                                )}
-                               <div>
-                                 <p className="text-xs text-white font-bold">{credit.name}</p>
-                                 <p className="text-[10px] text-white/50">{credit.characters.join(', ') || 'Ekip'}</p>
+                               <div className="flex flex-col">
+                                 <p className="text-sm text-white font-bold">{credit.name}</p>
+                                 {credit.type === 'Seslendirmen' ? (
+                                   <p className="text-xs text-stardublajweb-cyan font-medium">🎤 {credit.characters.join(', ')}</p>
+                                 ) : (
+                                   <p className="text-xs text-stardublajweb-purple font-medium">📋 {credit.role}</p>
+                                 )}
                                </div>
                             </div>
-                            <button type="button" onClick={() => setFormCredits(formCredits.filter((_, i) => i !== idx))} className="text-red-500 opacity-0 group-hover:opacity-100 p-1">
+                            <button type="button" onClick={() => setFormCredits(formCredits.filter((_, i) => i !== idx))} className="text-red-500 opacity-0 group-hover:opacity-100 p-2 hover:bg-red-500/20 rounded-lg transition-all shrink-0">
                                <Trash2 className="w-4 h-4" />
                             </button>
                          </div>
