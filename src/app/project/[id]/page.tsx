@@ -537,64 +537,93 @@ export default function ProjectDetailPage() {
                                       </h3>
                                     </div>
                                     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-                                      {project.credits.map((credit: any, idx: number) => (
-                                        <div key={idx} className="bg-[#1a1b22] border border-white/5 p-4 rounded-2xl flex items-center justify-between relative overflow-hidden group hover:border-white/20 transition-all shadow-lg hover:shadow-[0_0_30px_rgba(255,255,255,0.05)]">
-                                          {/* BG Effect */}
-                                          <div className={`absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-100 transition-opacity ${credit.type === 'Diğer' ? 'from-stardublajweb-purple/5 to-pink-500/5' : 'from-stardublajweb-cyan/5 to-[#e2b714]/5'}`}></div>
+                                      {project.credits.map((credit: any, idx: number) => {
+                                        const isVoiceActor = credit.type !== 'Diğer';
+                                        
+                                        return (
+                                        <div key={idx} className="relative group p-[1px] rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-1">
+                                          {/* Animated Gradient Border */}
+                                          <div className={`absolute inset-0 bg-gradient-to-br opacity-20 group-hover:opacity-100 transition-opacity duration-500 ${isVoiceActor ? 'from-dublio-cyan/40 via-[#e2b714]/40 to-transparent' : 'from-dublio-purple/40 via-pink-500/40 to-transparent'}`}></div>
                                           
-                                          {credit.type === 'Diğer' ? (
-                                             // DİĞER / EKİP GÖRÜNÜMÜ
-                                             <div className="flex items-center gap-4 w-full relative z-10 px-2 h-full py-2">
+                                          <div className="bg-[#101115]/95 backdrop-blur-2xl px-5 py-4 rounded-[23px] flex items-center justify-between relative overflow-hidden h-full z-10 border border-white/5 shadow-2xl">
+                                            {/* Subtle Inner Gradient */}
+                                            <div className={`absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-20 transition-opacity duration-700 ease-out ${isVoiceActor ? 'from-dublio-cyan/20 to-[#e2b714]/20' : 'from-dublio-purple/20 to-pink-500/20'}`}></div>
+                                            
+                                            {credit.type === 'Diğer' ? (
+                                              // DİĞER / EKİP GÖRÜNÜMÜ - PREMIUM REDESIGN
+                                              <div className="flex items-center gap-5 relative z-10 w-full h-full py-1">
                                                 <div className="relative shrink-0">
-                                                  <div className="w-14 h-14 rounded-full overflow-hidden border-[3px] border-white/10 bg-black/50 flex items-center justify-center group-hover:border-stardublajweb-purple transition-colors">
-                                                    {credit.image ? <img src={credit.image} className="w-full h-full object-cover" /> : <span className="font-black text-xl text-white/50">{credit.name?.charAt(0)}</span>}
+                                                  {/* Glowing Ring Effect */}
+                                                  <div className="absolute -inset-1 bg-gradient-to-tr from-dublio-purple to-pink-500 rounded-full opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-500"></div>
+                                                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-transparent bg-black/60 shadow-inner flex items-center justify-center relative z-10">
+                                                    {credit.image ? <img src={credit.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" /> : <span className="font-black text-2xl text-white/50">{credit.name?.charAt(0)}</span>}
                                                   </div>
-                                                  {idx === 0 && <Crown className="w-5 h-5 text-stardublajweb-purple absolute -top-2 -right-2 z-20 drop-shadow-[0_0_10px_purple]" />}
-                                                </div>
-                                                <div className="flex flex-col flex-1 min-w-0">
-                                                   <span className="text-white font-bold text-[15px] break-words">{credit.name}</span>
-                                                   <span className="text-stardublajweb-purple font-medium text-xs uppercase tracking-wider break-words">{credit.role}</span>
-                                                </div>
-                                             </div>
-                                          ) : (
-                                             // SESLENDİRMEN GÖRÜNÜMÜ
-                                             <div className="flex w-full items-start justify-between relative z-10 py-2">
-                                                {/* User Avatar + Name */}
-                                                <div className="flex flex-col items-center gap-2 flex-1 relative z-10 w-1/3 min-w-0">
-                                                  <div className="relative shrink-0">
-                                                    <div className="w-14 h-14 rounded-full overflow-hidden border-[3px] border-white/10 bg-black/50 flex items-center justify-center relative z-10 group-hover:border-stardublajweb-cyan transition-colors">
-                                                      {credit.image ? <img src={credit.image} className="w-full h-full object-cover" /> : <span className="font-black text-xl text-white/50">{credit.name?.charAt(0)}</span>}
+                                                  {/* Master/Leader Crown */}
+                                                  {idx === 0 && (
+                                                    <div className="absolute -top-3 -right-3 bg-gradient-to-br from-[#e2b714] to-[#f59e0b] p-1.5 rounded-full z-20 shadow-[0_0_15px_#e2b714] animate-bounce">
+                                                      <Crown className="w-4 h-4 text-[#101115] fill-current" />
                                                     </div>
-                                                    {idx === 0 && <Crown className="w-5 h-5 text-[#e2b714] absolute -top-2 -right-2 z-20 drop-shadow-[0_0_10px_#e2b714]" />}
-                                                  </div>
-                                                  <span className="text-white font-bold text-[13px] text-center w-full break-words px-1">{credit.name}</span>
+                                                  )}
                                                 </div>
+                                                
+                                                <div className="flex flex-col flex-1 min-w-0 justify-center">
+                                                   <span className="text-white font-black text-lg tracking-tight truncate group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/50 transition-all">{credit.name}</span>
+                                                   <div className="flex flex-wrap gap-1.5 mt-1.5">
+                                                     {credit.role?.split(',').map((r: string, i: number) => (
+                                                        <span key={i} className="text-[9px] font-black uppercase text-dublio-purple/90 border border-dublio-purple/20 bg-dublio-purple/10 backdrop-blur-sm px-2 py-0.5 rounded-full whitespace-nowrap shadow-[0_0_10px_rgba(168,85,247,0)] group-hover:shadow-[0_0_10px_rgba(168,85,247,0.3)] transition-shadow">
+                                                          {r.trim()}
+                                                        </span>
+                                                     ))}
+                                                   </div>
+                                                </div>
+                                              </div>
+                                            ) : (
+                                              // SESLENDİRMEN GÖRÜNÜMÜ - PREMIUM CONNECTION
+                                              <div className="flex w-full items-center justify-between relative z-10 py-1">
+                                                 {/* Voice Actor */}
+                                                 <div className="flex flex-col items-center gap-3 flex-1 relative z-10 w-[40%]">
+                                                   <div className="relative shrink-0 group/actor">
+                                                     <div className="absolute -inset-2 bg-dublio-cyan/20 rounded-full opacity-0 group-hover:opacity-100 blur-lg transition-all duration-500 scale-50 group-hover:scale-100"></div>
+                                                     <div className="w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-[2px] border-white/5 bg-black/80 flex items-center justify-center relative z-10 shadow-lg group-hover:border-dublio-cyan/50 transition-colors">
+                                                       {credit.image ? <img src={credit.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" /> : <span className="font-black text-xl text-white/30">{credit.name?.charAt(0)}</span>}
+                                                     </div>
+                                                     {idx === 0 && <div className="absolute -top-1 -right-1 z-20 text-[#e2b714] drop-shadow-[0_0_8px_#e2b714]"><Crown className="w-4 h-4 fill-current"/></div>}
+                                                   </div>
+                                                   <span className="text-white font-bold text-xs md:text-sm text-center w-full truncate px-1 group-hover:text-dublio-cyan transition-colors">{credit.name}</span>
+                                                 </div>
 
-                                                {/* Center Mic icon and subtle line */}
-                                                <div className="flex items-center justify-center shrink-0 relative z-10 px-1 xl:px-2 pt-5">
-                                                  <div className="w-3 sm:w-6 h-px bg-white/10 mr-1 sm:mr-2"></div>
-                                                  <Mic className="w-4 h-4 text-white/30 group-hover:text-stardublajweb-purple transition-colors drop-shadow-[0_0_10px_purple] shrink-0" />
-                                                  <div className="w-3 sm:w-6 h-px bg-white/10 ml-1 sm:ml-2"></div>
-                                                </div>
+                                                 {/* Connection UI - Wave/Mic */}
+                                                 <div className="flex flex-col items-center justify-center relative z-10 w-[20%] px-1">
+                                                   <div className="absolute top-1/2 left-0 w-full h-[2px] -translate-y-1/2 overflow-hidden flex items-center opacity-30 group-hover:opacity-80 transition-opacity rounded-full bg-white/5">
+                                                      <div className="w-full h-full bg-gradient-to-r from-dublio-cyan via-[#e2b714] to-[#f59e0b] translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-1000 ease-in-out"></div>
+                                                   </div>
+                                                   <div className="w-8 h-8 rounded-full bg-[#15161c] border border-white/10 flex items-center justify-center relative z-10 shadow-xl group-hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] group-hover:border-dublio-cyan/50 transition-all group-hover:scale-110 animate-pulse">
+                                                     <Mic className="w-3.5 h-3.5 text-white/40 group-hover:text-[#e2b714] transition-colors" />
+                                                   </div>
+                                                 </div>
 
-                                                {/* Character Info */}
-                                                <div className="flex flex-col items-center gap-2 flex-1 relative z-10 w-1/3 min-w-0">
-                                                  <div className="w-14 h-14 rounded-full shrink-0 overflow-hidden border-[3px] border-[#e2b714]/30 bg-black/50 flex items-center justify-center group-hover:border-[#e2b714] transition-colors relative text-center">
-                                                    {credit.charAvatar ? (
-                                                       <img src={credit.charAvatar} className="w-full h-full object-cover" />
-                                                    ) : (
-                                                       <>
-                                                          <div className="absolute inset-0 bg-[url('/noise.png')] opacity-20 mix-blend-overlay"></div>
-                                                          <span className="text-[#e2b714] font-black text-xl relative z-10 drop-shadow-[0_0_10px_#e2b714]">?</span>
-                                                       </>
-                                                    )}
-                                                  </div>
-                                                  <span className="text-[#e2b714] font-bold text-[13px] text-center w-full break-words px-1">{(credit.characters || []).join(', ')}</span>
-                                                </div>
-                                             </div>
-                                          )}
+                                                 {/* Character */}
+                                                 <div className="flex flex-col items-center gap-3 flex-1 relative z-10 w-[40%]">
+                                                   <div className="relative shrink-0 group/char">
+                                                     <div className="absolute -inset-2 bg-[#e2b714]/20 rounded-full opacity-0 group-hover:opacity-100 blur-lg transition-all duration-500 scale-50 group-hover:scale-100"></div>
+                                                     <div className="w-14 h-14 md:w-16 md:h-16 rounded-full shrink-0 overflow-hidden border-[2px] border-white/5 bg-[#0a0a0c] flex items-center justify-center transition-colors relative z-10 shadow-lg group-hover:border-[#e2b714]/50">
+                                                       {credit.charAvatar ? (
+                                                          <img src={credit.charAvatar} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                                       ) : (
+                                                          <>
+                                                             <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
+                                                             <span className="text-[#e2b714]/50 font-black text-xl relative z-10">?</span>
+                                                          </>
+                                                       )}
+                                                     </div>
+                                                   </div>
+                                                   <span className="text-[#e2b714] font-bold text-xs md:text-sm text-center w-full truncate px-1 group-hover:text-[#f59e0b] group-hover:drop-shadow-[0_0_5px_rgba(226,183,20,0.5)] transition-all">{(credit.characters || []).join(', ')}</span>
+                                                 </div>
+                                              </div>
+                                            )}
+                                          </div>
                                         </div>
-                                      ))}
+                                      )})}
                                     </div>
                                     <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mt-12"></div>
                                   </div>
