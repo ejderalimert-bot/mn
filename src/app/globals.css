@@ -141,17 +141,58 @@ a:active, button:active {
   animation: waveSlide 12s linear infinite;
 }
 
-/* --- PATOTO MODE: DISABLE ALL ANIMATIONS --- */
+/* --- PATOTO MODE: DISABLE ALL ANIMATIONS AND SIMPLIFY UI (SADE TEMA) --- */
+.patoto-mode {
+  --background: #0e0e12 !important;
+  --stardublajweb-dark: #0e0e12 !important;
+  --stardublajweb-purple-glow: transparent !important;
+}
+
 .patoto-mode *,
 .patoto-mode *::before,
 .patoto-mode *::after {
+  /* Kill all motion */
   animation: none !important;
   transition: none !important;
   transition-duration: 0s !important;
   scroll-behavior: auto !important;
+  
+  /* Kill all visual weight */
+  backdrop-filter: none !important;
+  filter: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
 }
 
-/* Disable Framer Motion layout transitions and other hardware accelerated transforms if possible */
+/* Remove all gradients and replace with solid colors */
+.patoto-mode [class*="bg-gradient-"],
+.patoto-mode [class*="from-"],
+.patoto-mode [class*="to-"],
+.patoto-mode [class*="via-"],
+.patoto-mode .stardublajweb-gradient-text {
+  background-image: none !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+  color: inherit !important;
+}
+
+/* Specific overrides for common UI elements in Patoto mode */
+.patoto-mode .glass-panel,
+.patoto-mode [class*="bg-white/5"],
+.patoto-mode [class*="bg-black/"],
+.patoto-mode [class*="bg-[#"] {
+  background-color: #14151a !important;
+  border-color: #2f2f38 !important;
+  backdrop-filter: none !important;
+}
+
+/* Hide decorative blurred elements entirely */
+.patoto-mode [class*="blur-"],
+.patoto-mode .absolute[class*="bg-stardublajweb-"] {
+  display: none !important;
+}
+
+/* Fallback for Framer Motion layout transitions */
 .patoto-mode .motion-div, 
 .patoto-mode [data-framer-generated] {
   transform: none !important;
