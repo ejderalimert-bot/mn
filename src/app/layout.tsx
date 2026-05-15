@@ -11,6 +11,7 @@ import SocialChatWidget from "@/components/SocialChatWidget";
 import AdminShortcutsHUD from "@/components/AdminShortcutsHUD";
 import { PerformanceProvider, PerformanceMode } from "@/context/PerformanceContext";
 import { cookies } from "next/headers";
+import { MotionConfig } from "framer-motion";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,11 +31,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const rawMode = cookieStore.get('stardublajweb_perf_v2')?.value;
-  const defaultMode = (rawMode === 'ultra' || rawMode === 'potato') ? rawMode as PerformanceMode : null;
+  const rawMode = cookieStore.get('stardublajweb_perf_v3')?.value;
+  const defaultMode = (rawMode === 'ultra' || rawMode === 'potato' || rawMode === 'patoto') ? rawMode as PerformanceMode : null;
 
   return (
-    <html lang="tr" translate="no" className="notranslate">
+    <html lang="tr" translate="no" className={`notranslate ${defaultMode === 'patoto' ? 'patoto-mode' : ''}`}>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -55,10 +56,12 @@ export default async function RootLayout({
         <AuthProvider>
           <SocialChatWidget />
           <PerformanceProvider defaultMode={defaultMode}>
-            <AnalyticsProvider />
-            <SiteProtection />
-            <AdminShortcutsHUD />
-            {children}
+            <MotionConfig {...(defaultMode === 'patoto' ? { transition: { duration: 0 } } : {})}>
+              <AnalyticsProvider />
+              <SiteProtection />
+              <AdminShortcutsHUD />
+              {children}
+            </MotionConfig>
           </PerformanceProvider>
         </AuthProvider>
       </body>

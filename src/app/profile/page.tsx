@@ -5,11 +5,13 @@ import Navbar from '@/components/Navbar';
 import { useSession } from "next-auth/react";
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
-import { Camera, Save, X, Settings, User as UserIcon, Heart, Shield } from 'lucide-react';
+import { Camera, Save, X, Settings, User as UserIcon, Heart, Shield, Zap, Feather } from 'lucide-react';
 import CloudinaryUploader from '@/components/CloudinaryUploader';
+import { usePerformance } from '@/context/PerformanceContext';
 
 export default function ProfilePage() {
   const { data: session, status, update } = useSession();
+  const { performanceMode, setPerformanceMode } = usePerformance();
   const [favorites, setFavorites] = React.useState<any[]>([]);
   const [likes, setLikes] = React.useState<any[]>([]);
   const [loadingFavs, setLoadingFavs] = React.useState(true);
@@ -321,8 +323,8 @@ export default function ProfilePage() {
                         </button>
                      </div>
 
-                     {/* THEME SETTING */}
-                     <div className="bg-black/20 p-6 rounded-2xl border border-white/5 flex items-center justify-between gap-4">
+                      {/* THEME SETTING */}
+                      <div className="bg-black/20 p-6 rounded-2xl border border-white/5 flex items-center justify-between gap-4">
                         <div>
                            <label className="text-xs font-black text-gray-400 tracking-[0.2em] uppercase mb-2 block flex items-center gap-2">Görünüm</label>
                            <h4 className="text-white font-bold text-lg">Mod Seçimi</h4>
@@ -342,7 +344,58 @@ export default function ProfilePage() {
                             AÇIK
                           </button>
                         </div>
-                     </div>
+                      </div>
+
+                      {/* PERFORMANCE SETTING */}
+                      <div className="bg-black/20 p-6 rounded-2xl border border-white/5 space-y-6">
+                        <div>
+                           <label className="text-xs font-black text-stardublajweb-purple tracking-[0.2em] uppercase mb-2 block flex items-center gap-2">Performans</label>
+                           <h4 className="text-white font-bold text-lg">Platform Deneyimi</h4>
+                           <p className="text-xs text-white/40 mt-1 max-w-xl">Cihazınızın gücüne göre görsel efektleri ve animasyonları yönetin.</p>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                           <button 
+                             onClick={() => setPerformanceMode('ultra')}
+                             className={`group flex flex-col items-center gap-3 p-4 rounded-2xl border transition-all ${performanceMode === 'ultra' ? 'bg-stardublajweb-purple/20 border-stardublajweb-purple shadow-[0_0_20px_rgba(168,85,247,0.2)]' : 'bg-black/40 border-white/5 hover:bg-white/5'}`}
+                           >
+                             <Zap className={`w-6 h-6 ${performanceMode === 'ultra' ? 'text-stardublajweb-purple' : 'text-white/30 group-hover:text-white/60'}`} />
+                             <div className="text-center">
+                               <div className={`text-xs font-black uppercase ${performanceMode === 'ultra' ? 'text-white' : 'text-white/40'}`}>SİNEMATİK</div>
+                               <div className="text-[9px] text-white/20 font-bold uppercase mt-1">Full Görsel</div>
+                             </div>
+                           </button>
+
+                           <button 
+                             onClick={() => setPerformanceMode('potato')}
+                             className={`group flex flex-col items-center gap-3 p-4 rounded-2xl border transition-all ${performanceMode === 'potato' ? 'bg-yellow-500/20 border-yellow-500 shadow-[0_0_20px_rgba(234,179,8,0.2)]' : 'bg-black/40 border-white/5 hover:bg-white/5'}`}
+                           >
+                             <Feather className={`w-6 h-6 ${performanceMode === 'potato' ? 'text-yellow-500' : 'text-white/30 group-hover:text-white/60'}`} />
+                             <div className="text-center">
+                               <div className={`text-xs font-black uppercase ${performanceMode === 'potato' ? 'text-white' : 'text-white/40'}`}>OPTİMİZE</div>
+                               <div className="text-[9px] text-white/20 font-bold uppercase mt-1">Dengeli Hız</div>
+                             </div>
+                           </button>
+
+                           <button 
+                             onClick={() => setPerformanceMode('patoto')}
+                             className={`group flex flex-col items-center gap-3 p-4 rounded-2xl border transition-all ${performanceMode === 'patoto' ? 'bg-red-600/20 border-red-600 shadow-[0_0_20px_rgba(220,38,38,0.2)]' : 'bg-black/40 border-white/5 hover:bg-white/5'}`}
+                           >
+                             <div className={`text-xl ${performanceMode === 'patoto' ? 'opacity-100' : 'opacity-30 group-hover:opacity-60'}`}>🥔</div>
+                             <div className="text-center">
+                               <div className={`text-xs font-black uppercase ${performanceMode === 'patoto' ? 'text-white' : 'text-white/40'}`}>PATOTO</div>
+                               <div className="text-[9px] text-white/20 font-bold uppercase mt-1">Sıfır Animasyon</div>
+                             </div>
+                           </button>
+                        </div>
+                        <p className="text-[10px] text-white/30 font-bold italic text-center">
+                          {performanceMode === 'patoto' 
+                            ? "Patoto modunda tüm animasyonlar ve geçişler tamamen devre dışı bırakılır." 
+                            : performanceMode === 'potato' 
+                              ? "Optimize modunda sadece temel animasyonlar gösterilir."
+                              : "Sinematik modda tüm görsel ihtişam aktiftir."}
+                        </p>
+                      </div>
 
                      <div className="flex flex-col sm:flex-row items-center gap-4 pt-6 border-t border-white/10">
                         <button 

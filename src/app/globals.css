@@ -140,3 +140,19 @@ a:active, button:active {
 .animate-wave-slide {
   animation: waveSlide 12s linear infinite;
 }
+
+/* --- PATOTO MODE: DISABLE ALL ANIMATIONS --- */
+.patoto-mode *,
+.patoto-mode *::before,
+.patoto-mode *::after {
+  animation: none !important;
+  transition: none !important;
+  transition-duration: 0s !important;
+  scroll-behavior: auto !important;
+}
+
+/* Disable Framer Motion layout transitions and other hardware accelerated transforms if possible */
+.patoto-mode .motion-div, 
+.patoto-mode [data-framer-generated] {
+  transform: none !important;
+}

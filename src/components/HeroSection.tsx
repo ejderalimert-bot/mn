@@ -149,7 +149,7 @@ const CleanHero = () => {
 
 const HeroSection = () => {
   const { performanceMode } = usePerformance();
-  return performanceMode === 'potato' ? <CleanHero /> : <AggressiveHero />;
+  return (performanceMode === 'potato' || performanceMode === 'patoto') ? <CleanHero /> : <AggressiveHero />;
 };
 
 export default HeroSection;
