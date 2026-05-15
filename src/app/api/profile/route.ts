@@ -65,3 +65,40 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Kullanıcı kayıt edilemedi." }, { status: 500 });
   }
 }
+
+// UPDATE full profile
+export async function PUT(req: Request) {
+  try {
+    const session = await auth();
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await req.json();
+    const { name, image, publicFavorites } = body;
+
+    const email = session.user.email;
+    
+    // Update user
+    // @ts-ignore
+    const updated: any = await (prisma.user as any).update({
+      where: { email: email as string },
+      data: { 
+        name, 
+        image, 
+        publicFavorites: publicFavorites ?? true 
+      }
+    });
+
+    return NextResponse.json({ 
+      success: true, 
+      user: {
+        name: updated.name,
+        image: updated.image,
+        publicFavorites: updated.publicFavorites
+      } 
+    });
+  } catch (error) {
+    return NextResponse.json({ error: "Profil güncellenemedi." }, { status: 500 });
+  }
+}
