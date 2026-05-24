@@ -18,6 +18,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "Star Dublaj Studios",
   description: "En iyi oyun modları, profesyonel Türkçe dublajlar .",
+  icons: {
+    icon: "/logo.png",
+    shortcut: "/logo.png",
+    apple: "/logo.png",
+  },
   other: {
     google: "notranslate"
   }

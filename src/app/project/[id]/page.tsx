@@ -536,94 +536,118 @@ export default function ProjectDetailPage() {
                                         Proje Ekibi <span className="text-stardublajweb-purple/50">({project.credits.length})</span>
                                       </h3>
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                       {project.credits.map((credit: any, idx: number) => {
                                         const isVoiceActor = credit.type !== 'Diğer';
                                         
                                         return (
-                                        <div key={idx} className="relative group p-[1px] rounded-3xl overflow-hidden transition-all duration-500 hover:-translate-y-1">
-                                          {/* Animated Gradient Border */}
-                                          <div className={`absolute inset-0 bg-gradient-to-br opacity-20 group-hover:opacity-100 transition-opacity duration-500 ${isVoiceActor ? 'from-dublio-cyan/40 via-[#e2b714]/40 to-transparent' : 'from-dublio-purple/40 via-pink-500/40 to-transparent'}`}></div>
-                                          
-                                          <div className="bg-[#101115]/95 backdrop-blur-2xl px-5 py-4 rounded-[23px] flex items-center justify-between relative overflow-hidden h-full z-10 border border-white/5 shadow-2xl">
-                                            {/* Subtle Inner Gradient */}
-                                            <div className={`absolute inset-0 bg-gradient-to-r opacity-0 group-hover:opacity-20 transition-opacity duration-700 ease-out ${isVoiceActor ? 'from-dublio-cyan/20 to-[#e2b714]/20' : 'from-dublio-purple/20 to-pink-500/20'}`}></div>
+                                          <motion.div
+                                            key={idx}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            whileInView={{ opacity: 1, y: 0 }}
+                                            viewport={{ once: true }}
+                                            transition={{ delay: idx * 0.1 }}
+                                            whileHover={{ y: -5, scale: 1.02 }}
+                                            className="relative group h-full"
+                                          >
+                                            {/* Card Background with Glow */}
+                                            <div className="absolute -inset-0.5 bg-gradient-to-r from-[#22222b] to-[#1a1a21] rounded-[2.5rem] blur opacity-30 group-hover:opacity-75 transition duration-500"></div>
                                             
-                                            {credit.type === 'Diğer' ? (
-                                              // DİĞER / EKİP GÖRÜNÜMÜ - PREMIUM REDESIGN
-                                              <div className="flex items-center gap-5 relative z-10 w-full h-full py-1">
-                                                <div className="relative shrink-0">
-                                                  {/* Glowing Ring Effect */}
-                                                  <div className="absolute -inset-1 bg-gradient-to-tr from-dublio-purple to-pink-500 rounded-full opacity-0 group-hover:opacity-100 blur-md transition-opacity duration-500"></div>
-                                                  <div className="w-16 h-16 rounded-full overflow-hidden border-2 border-white/10 group-hover:border-transparent bg-black/60 shadow-inner flex items-center justify-center relative z-10">
-                                                    {credit.image ? <img src={credit.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" /> : <span className="font-black text-2xl text-white/50">{credit.name?.charAt(0)}</span>}
-                                                  </div>
-                                                  {/* Master/Leader Crown */}
-                                                  {idx === 0 && (
-                                                    <div className="absolute -top-3 -right-3 bg-gradient-to-br from-[#e2b714] to-[#f59e0b] p-1.5 rounded-full z-20 shadow-[0_0_15px_#e2b714] animate-bounce">
-                                                      <Crown className="w-4 h-4 text-[#101115] fill-current" />
+                                            <div className="relative h-full bg-[#111115]/80 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] p-6 overflow-hidden flex flex-col justify-center">
+                                              {/* Animated Background Gradients */}
+                                              <div className={`absolute top-0 right-0 w-32 h-32 blur-[60px] opacity-20 pointer-events-none rounded-full transition-colors duration-500 ${isVoiceActor ? 'bg-stardublajweb-cyan group-hover:bg-[#e2b714]' : 'bg-stardublajweb-purple group-hover:bg-pink-500'}`}></div>
+                                              
+                                              {credit.type === 'Diğer' ? (
+                                                // STAFF / TEAM MEMBER DESIGN
+                                                <div className="flex items-center gap-6 relative z-10">
+                                                  <div className="relative">
+                                                    <div className="absolute -inset-2 bg-gradient-to-tr from-stardublajweb-purple to-pink-500 rounded-full opacity-40 group-hover:opacity-100 blur-md transition-all duration-700 scale-90 group-hover:scale-110"></div>
+                                                    <div className="w-20 h-20 rounded-2xl overflow-hidden border-2 border-white/10 bg-black/40 relative z-10 shadow-2xl backdrop-blur-sm">
+                                                      {credit.image ? (
+                                                        <img src={credit.image} alt={credit.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                                      ) : (
+                                                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-white/10 to-transparent">
+                                                          <span className="text-3xl font-black text-white/20">{credit.name?.charAt(0)}</span>
+                                                        </div>
+                                                      )}
                                                     </div>
-                                                  )}
-                                                </div>
-                                                
-                                                <div className="flex flex-col flex-1 min-w-0 justify-center">
-                                                   <span className="text-white font-black text-lg tracking-tight truncate group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/50 transition-all">{credit.name}</span>
-                                                   <div className="flex flex-wrap gap-1.5 mt-1.5">
-                                                     {credit.role?.split(',').map((r: string, i: number) => (
-                                                        <span key={i} className="text-[9px] font-black uppercase text-dublio-purple/90 border border-dublio-purple/20 bg-dublio-purple/10 backdrop-blur-sm px-2 py-0.5 rounded-full whitespace-nowrap shadow-[0_0_10px_rgba(168,85,247,0)] group-hover:shadow-[0_0_10px_rgba(168,85,247,0.3)] transition-shadow">
+                                                    {idx === 0 && (
+                                                      <div className="absolute -top-3 -right-3 bg-[#e2b714] p-2 rounded-xl z-20 shadow-[0_10px_20px_rgba(226,183,20,0.4)] border border-white/20">
+                                                        <Crown className="w-5 h-5 text-black fill-current" />
+                                                      </div>
+                                                    )}
+                                                  </div>
+
+                                                  <div className="flex flex-col flex-1 min-w-0">
+                                                    <h4 className="text-2xl font-black text-white tracking-tight mb-2 group-hover:text-stardublajweb-purple transition-colors">
+                                                      {credit.name}
+                                                    </h4>
+                                                    <div className="flex flex-wrap gap-2">
+                                                      {credit.role?.split(',').map((r: string, i: number) => (
+                                                        <span key={i} className="px-3 py-1 bg-white/5 border border-white/10 rounded-lg text-[10px] font-black uppercase tracking-widest text-white/50 group-hover:text-white/80 group-hover:border-white/20 transition-all">
                                                           {r.trim()}
                                                         </span>
-                                                     ))}
-                                                   </div>
+                                                      ))}
+                                                    </div>
+                                                  </div>
                                                 </div>
-                                              </div>
-                                            ) : (
-                                              // SESLENDİRMEN GÖRÜNÜMÜ - PREMIUM CONNECTION
-                                              <div className="flex w-full items-center justify-between relative z-10 py-1">
-                                                 {/* Voice Actor */}
-                                                 <div className="flex flex-col items-center gap-3 flex-1 relative z-10 w-[40%]">
-                                                   <div className="relative shrink-0 group/actor">
-                                                     <div className="absolute -inset-2 bg-dublio-cyan/20 rounded-full opacity-0 group-hover:opacity-100 blur-lg transition-all duration-500 scale-50 group-hover:scale-100"></div>
-                                                     <div className="w-14 h-14 md:w-16 md:h-16 rounded-full overflow-hidden border-[2px] border-white/5 bg-black/80 flex items-center justify-center relative z-10 shadow-lg group-hover:border-dublio-cyan/50 transition-colors">
-                                                       {credit.image ? <img src={credit.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" /> : <span className="font-black text-xl text-white/30">{credit.name?.charAt(0)}</span>}
-                                                     </div>
-                                                     {idx === 0 && <div className="absolute -top-1 -right-1 z-20 text-[#e2b714] drop-shadow-[0_0_8px_#e2b714]"><Crown className="w-4 h-4 fill-current"/></div>}
-                                                   </div>
-                                                   <span className="text-white font-bold text-xs md:text-sm text-center w-full truncate px-1 group-hover:text-dublio-cyan transition-colors">{credit.name}</span>
-                                                 </div>
+                                              ) : (
+                                                // VOICE ACTOR & CHARACTER DESIGN
+                                                <div className="flex items-center justify-between gap-4 relative z-10">
+                                                  {/* Actor Side */}
+                                                  <div className="flex flex-col items-center gap-3 w-[45%]">
+                                                    <div className="relative group/actor">
+                                                      <div className="absolute -inset-1.5 bg-stardublajweb-cyan/20 rounded-full opacity-0 group-hover:opacity-100 blur-md transition-all duration-500"></div>
+                                                      <div className="w-20 h-20 rounded-full overflow-hidden border-[3px] border-white/5 bg-black/60 shadow-xl relative z-10 transition-colors group-hover:border-stardublajweb-cyan/50">
+                                                        {credit.image ? (
+                                                          <img src={credit.image} alt={credit.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                                        ) : (
+                                                          <div className="w-full h-full flex items-center justify-center text-white/20 font-black text-2xl uppercase">{credit.name?.charAt(0)}</div>
+                                                        )}
+                                                      </div>
+                                                    </div>
+                                                    <div className="text-center space-y-1">
+                                                      <span className="block text-white font-black text-sm tracking-tight truncate max-w-full">{credit.name}</span>
+                                                      <span className="block text-[10px] font-black uppercase text-stardublajweb-cyan/80 tracking-widest">Sanatçı</span>
+                                                    </div>
+                                                  </div>
 
-                                                 {/* Connection UI - Wave/Mic */}
-                                                 <div className="flex flex-col items-center justify-center relative z-10 w-[20%] px-1">
-                                                   <div className="absolute top-1/2 left-0 w-full h-[2px] -translate-y-1/2 overflow-hidden flex items-center opacity-30 group-hover:opacity-80 transition-opacity rounded-full bg-white/5">
-                                                      <div className="w-full h-full bg-gradient-to-r from-dublio-cyan via-[#e2b714] to-[#f59e0b] translate-x-[-100%] group-hover:translate-x-0 transition-transform duration-1000 ease-in-out"></div>
-                                                   </div>
-                                                   <div className="w-8 h-8 rounded-full bg-[#15161c] border border-white/10 flex items-center justify-center relative z-10 shadow-xl group-hover:shadow-[0_0_20px_rgba(6,182,212,0.4)] group-hover:border-dublio-cyan/50 transition-all group-hover:scale-110 animate-pulse">
-                                                     <Mic className="w-3.5 h-3.5 text-white/40 group-hover:text-[#e2b714] transition-colors" />
-                                                   </div>
-                                                 </div>
+                                                  {/* Connector */}
+                                                  <div className="flex flex-col items-center justify-center w-[10%]">
+                                                    <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center relative shadow-lg group-hover:border-[#e2b714]/50 transition-colors">
+                                                      <Mic className="w-4 h-4 text-white/30 group-hover:text-[#e2b714] transition-all group-hover:scale-110" />
+                                                      {/* Pulse rings */}
+                                                      <div className="absolute inset-0 rounded-full border border-[#e2b714]/50 animate-ping opacity-0 group-hover:opacity-100"></div>
+                                                    </div>
+                                                  </div>
 
-                                                 {/* Character */}
-                                                 <div className="flex flex-col items-center gap-3 flex-1 relative z-10 w-[40%]">
-                                                   <div className="relative shrink-0 group/char">
-                                                     <div className="absolute -inset-2 bg-[#e2b714]/20 rounded-full opacity-0 group-hover:opacity-100 blur-lg transition-all duration-500 scale-50 group-hover:scale-100"></div>
-                                                     <div className="w-14 h-14 md:w-16 md:h-16 rounded-full shrink-0 overflow-hidden border-[2px] border-white/5 bg-[#0a0a0c] flex items-center justify-center transition-colors relative z-10 shadow-lg group-hover:border-[#e2b714]/50">
-                                                       {credit.charAvatar ? (
-                                                          <img src={credit.charAvatar} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
-                                                       ) : (
-                                                          <>
-                                                             <div className="absolute inset-0 bg-[url('/noise.png')] opacity-10 mix-blend-overlay"></div>
-                                                             <span className="text-[#e2b714]/50 font-black text-xl relative z-10">?</span>
-                                                          </>
-                                                       )}
-                                                     </div>
-                                                   </div>
-                                                   <span className="text-[#e2b714] font-bold text-xs md:text-sm text-center w-full truncate px-1 group-hover:text-[#f59e0b] group-hover:drop-shadow-[0_0_5px_rgba(226,183,20,0.5)] transition-all">{(credit.characters || []).join(', ')}</span>
-                                                 </div>
-                                              </div>
-                                            )}
-                                          </div>
-                                        </div>
-                                      )})}
+                                                  {/* Character Side */}
+                                                  <div className="flex flex-col items-center gap-3 w-[45%]">
+                                                    <div className="relative group/char">
+                                                      <div className="absolute -inset-1.5 bg-[#e2b714]/20 rounded-full opacity-0 group-hover:opacity-100 blur-md transition-all duration-500"></div>
+                                                      <div className="w-20 h-20 rounded-full overflow-hidden border-[3px] border-white/5 bg-[#0a0a0c] shadow-xl relative z-10 transition-colors group-hover:border-[#e2b714]/50">
+                                                        {credit.charAvatar ? (
+                                                          <img src={credit.charAvatar} alt={credit.characters?.join(', ')} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" />
+                                                        ) : (
+                                                          <div className="w-full h-full flex items-center justify-center text-[#e2b714]/20 font-black text-2xl">?</div>
+                                                        )}
+                                                      </div>
+                                                    </div>
+                                                    <div className="text-center space-y-1">
+                                                      <span className="block text-[#e2b714] font-black text-sm tracking-tight truncate max-w-full">{(credit.characters || []).join(', ')}</span>
+                                                      <span className="block text-[10px] font-black uppercase text-white/30 tracking-widest">Karakter</span>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              )}
+
+                                              {/* Decorative Scanlines or Noise */}
+                                              <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none mix-blend-overlay"></div>
+                                              <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-white/5 to-transparent"></div>
+                                            </div>
+                                          </motion.div>
+                                        );
+                                      })}
                                     </div>
                                     <div className="w-full h-px bg-gradient-to-r from-transparent via-white/10 to-transparent mt-12"></div>
                                   </div>
