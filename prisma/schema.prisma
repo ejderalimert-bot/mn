@@ -38,6 +38,9 @@ model Project {
   progressMix         String @default("0")
   modLink             String?
   credits             String     @default("[]") // JSON array of contributors
+  isMobile            Boolean    @default(false)
+  launcherLink        String?
+  packageName         String?
 
   createdAt   DateTime   @default(now())
 

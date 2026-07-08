@@ -88,6 +88,9 @@ GÖREVLER VE KESİN SEO KURALLARI:
         progressMix: body.progressMix || "0",
         modLink: body.modLink || null,
         credits: typeof body.credits === 'string' ? body.credits : JSON.stringify(body.credits || []),
+        isMobile: body.isMobile ?? false,
+        launcherLink: body.launcherLink || null,
+        packageName: body.packageName || null,
       } as any
     });
     return NextResponse.json({ 

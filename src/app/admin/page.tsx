@@ -62,6 +62,9 @@ export default function AdminDashboardPage() {
   const [formSeoDesc, setFormSeoDesc] = useState<string>('');
   const [formSlug, setFormSlug] = useState<string>('');
   const [formCredits, setFormCredits] = useState<any[]>([]);
+  const [formIsMobile, setFormIsMobile] = useState(false);
+  const [formLauncherLink, setFormLauncherLink] = useState('');
+  const [formPackageName, setFormPackageName] = useState('');
   const [creditSelectedUserId, setCreditSelectedUserId] = useState('');
   const [creditType, setCreditType] = useState('Seslendirmen');
   const [creditCharacters, setCreditCharacters] = useState('');
@@ -253,6 +256,9 @@ export default function AdminDashboardPage() {
     setFormTitle('');
     setFormDescription('');
     setFormCategory('Oyunlar');
+    setFormIsMobile(false);
+    setFormLauncherLink('');
+    setFormPackageName('');
     setFormTrailer('');
     setFormGeminiLink('');
     setFormReferenceUrl('');
@@ -279,6 +285,9 @@ export default function AdminDashboardPage() {
     setFormSeoDesc(project.seoDesc || '');
     setFormSlug(project.slug || '');
     setFormCredits(project.credits || []);
+    setFormIsMobile(project.isMobile || false);
+    setFormLauncherLink(project.launcherLink || '');
+    setFormPackageName(project.packageName || '');
     setView('form');
   };
 
@@ -321,7 +330,10 @@ export default function AdminDashboardPage() {
       progressVoice: formData.get('progressVoice')?.toString() || '0',
       progressMix: formData.get('progressMix')?.toString() || '0',
       modLink: formData.get('modLink')?.toString() || '',
-      credits: formCredits
+      credits: formCredits,
+      isMobile: formIsMobile,
+      launcherLink: formLauncherLink,
+      packageName: formPackageName
     };
 
     try {
@@ -843,6 +855,50 @@ export default function AdminDashboardPage() {
                     <label className="text-stardublajweb-purple text-sm font-bold tracking-wide">Mod İndirme Linki (URL)</label>
                     <input name="modLink" type="text" defaultValue={editingProject?.modLink || ''} placeholder="https://..." className="w-full bg-white/5 backdrop-blur-xl hover:bg-white/10 transition-colors shadow-inner border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-purple" />
                   </div>
+                </div>
+
+                {/* MOBİL UYGULAMA AYARLARI */}
+                <div className="bg-white/5 p-6 rounded-2xl border border-white/10 mt-8 space-y-6">
+                  <h3 className="text-white font-bold uppercase tracking-wider text-sm flex items-center gap-2">
+                     <Gamepad2 className="w-4 h-4 text-stardublajweb-cyan" /> Mobil Uygulama Ayarları
+                  </h3>
+                  <div className="flex items-center gap-3">
+                    <input 
+                      type="checkbox" 
+                      id="formIsMobile" 
+                      checked={formIsMobile}
+                      onChange={(e) => setFormIsMobile(e.target.checked)}
+                      className="w-5 h-5 rounded border-white/10 bg-black/50 text-stardublajweb-cyan focus:ring-0 focus:outline-none cursor-pointer"
+                    />
+                    <label htmlFor="formIsMobile" className="text-white/80 text-sm font-bold cursor-pointer select-none">
+                      Bu Proje Mobil Uygulamada Gösterilsin (Mobil İşareti)
+                    </label>
+                  </div>
+
+                  {formIsMobile && (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+                      <div className="space-y-2">
+                        <label className="text-stardublajweb-cyan text-sm font-bold tracking-wide">APK İndirme Linki (launcherLink)</label>
+                        <input 
+                          type="text" 
+                          value={formLauncherLink}
+                          onChange={(e) => setFormLauncherLink(e.target.value)}
+                          placeholder="https://github.com/.../releases/...apk" 
+                          className="w-full bg-black/50 border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-cyan"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label className="text-stardublajweb-cyan text-sm font-bold tracking-wide">Paket Adı (packageName)</label>
+                        <input 
+                          type="text" 
+                          value={formPackageName}
+                          onChange={(e) => setFormPackageName(e.target.value)}
+                          placeholder="com.stardublaj.gta3" 
+                          className="w-full bg-black/50 border border-white/10 rounded-lg py-3 px-4 text-sm text-white focus:outline-none focus:border-stardublajweb-cyan"
+                        />
+                      </div>
+                    </div>
+                  )}
                 </div>
                 
                 {/* PROJE EKİBİ / EMEĞİ GEÇENLER EKLENTİSİ */}
