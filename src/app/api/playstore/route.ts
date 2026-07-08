@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-const gplay = require('google-play-scraper');
+const gplay = require('google-play-scraper').default || require('google-play-scraper');
 
 export const dynamic = 'force-dynamic';
 

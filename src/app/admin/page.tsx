@@ -1246,7 +1246,7 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              <div className="mb-10 flex gap-4 relative z-10">
+              <form onSubmit={(e) => e.preventDefault()} className="mb-10 flex gap-4 relative z-10">
                 <input 
                   type="text" 
                   value={playstoreQuery}
@@ -1255,13 +1255,14 @@ export default function AdminDashboardPage() {
                   className="flex-1 bg-white/5 backdrop-blur-xl border border-stardublajweb-cyan/30 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-stardublajweb-purple focus:ring-2 focus:ring-stardublajweb-purple/20 transition-all font-medium placeholder:text-white/30"
                 />
                 <button 
+                  type="submit"
                   disabled={playstoreLoading}
                   className="px-8 py-4 bg-gradient-to-r from-stardublajweb-cyan to-blue-500 hover:scale-105 text-white font-black italic tracking-widest rounded-2xl transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] flex items-center justify-center gap-2"
                 >
                   <Search className="w-5 h-5" />
                   {playstoreLoading ? 'ARANIYOR...' : 'ARA'}
                 </button>
-              </div>
+              </form>
 
               <div className="space-y-4 relative z-10 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
                 {playstoreResults.map((item: any) => (
