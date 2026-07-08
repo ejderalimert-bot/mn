@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useSession } from "next-auth/react";
 import Navbar from '@/components/Navbar';
-import { Shield, Plus, Pencil, Trash2, LayoutGrid, Users, Newspaper, ListTree, Gamepad2, ArrowLeft, Search, Download, Activity, Eye, Play } from 'lucide-react';
+import { Shield, Plus, Pencil, Trash2, LayoutGrid, Users, Newspaper, ListTree, Gamepad2, ArrowLeft, Search, Download, Activity, Eye, Play, Smartphone } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePerformance } from "@/context/PerformanceContext";
 import CloudinaryUploader from '@/components/CloudinaryUploader';
@@ -37,6 +37,11 @@ export default function AdminDashboardPage() {
   const [steamResults, setSteamResults] = useState<any[]>([]);
   const [steamLoading, setSteamLoading] = useState(false);
   const [steamAdding, setSteamAdding] = useState<string | null>(null);
+
+  const [playstoreQuery, setPlaystoreQuery] = useState('');
+  const [playstoreResults, setPlaystoreResults] = useState<any[]>([]);
+  const [playstoreLoading, setPlaystoreLoading] = useState(false);
+  const [playstoreAdding, setPlaystoreAdding] = useState<string | null>(null);
 
   // Users & Team
   const [usersList, setUsersList] = useState<any[]>([]);
@@ -139,6 +144,26 @@ export default function AdminDashboardPage() {
     }, 500);
     return () => clearTimeout(timer);
   }, [steamQuery]);
+
+  React.useEffect(() => {
+    if (!playstoreQuery.trim()) {
+      setPlaystoreResults([]);
+      return;
+    }
+    const timer = setTimeout(async () => {
+      setPlaystoreLoading(true);
+      try {
+        const res = await fetch(`/api/playstore?action=search&q=${encodeURIComponent(playstoreQuery)}`);
+        const data = await res.json();
+        setPlaystoreResults(data.items || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setPlaystoreLoading(false);
+      }
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [playstoreQuery]);
 
   const handleGeminiEnhance = async () => {
     if (!formTitle) {
@@ -442,6 +467,85 @@ export default function AdminDashboardPage() {
       alert('Eklenirken bir hata oluştu');
     } finally {
       setSteamAdding(null);
+    }
+  };
+
+  const addFromPlayStore = async (item: any) => {
+    setPlaystoreAdding(item.id);
+    try {
+      const res = await fetch(`/api/playstore?action=details&appid=${item.id}`);
+      const data = await res.json();
+      const details = data[item.id]?.data;
+      
+      const image = details?.header_image || item.tiny_image;
+      let description = details?.short_description || item.name;
+      const gallery = details?.screenshots?.map((s: any) => s.path_full) || [];
+      let trailer = '';
+      let tags: string[] = [];
+      let seoTitle = '';
+      let seoDesc = '';
+      let slug = '';
+      let focusKeyword = item.name;
+
+      const customTitle = `${item.name} Türkçe Dublaj`;
+
+      try {
+        const geminiRes = await fetch('/api/gemini/enhance', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ title: customTitle, description, category: 'Oyunlar', trailer: '', focusKeyword })
+        });
+        
+        if (geminiRes.ok) {
+          const geminiData = await geminiRes.json();
+          if (geminiData.description) description = geminiData.description;
+          if (geminiData.tags) tags = geminiData.tags;
+          if (geminiData.seoTitle) seoTitle = geminiData.seoTitle;
+          if (geminiData.seoDesc) seoDesc = geminiData.seoDesc;
+          if (geminiData.slug) slug = geminiData.slug;
+        }
+      } catch (geminiErr) {
+        console.error("Gemini enhance failed during playstore add:", geminiErr);
+      }
+
+      const projData = {
+        title: customTitle,
+        category: 'Oyunlar',
+        status: 'Devam Ediyor',
+        description,
+        retention: '0%',
+        views: '0', 
+        swiped: '0%', 
+        stayed: '0%', 
+        downloads: '0', 
+        team: 'Star Dublaj', 
+        image,
+        trailer,
+        gallery,
+        tags,
+        focusKeyword,
+        seoTitle,
+        seoDesc,
+        slug,
+        isMobile: true,
+        packageName: item.id,
+        launcherLink: ''
+      };
+
+      const addRes = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(projData)
+      });
+      const added = await addRes.json();
+      setProjects([...projects, added]);
+
+      alert(item.name + ' başarıyla eklendi (Mobil Oyun)!');
+    } catch (err) {
+      console.error(err);
+      alert('Eklenirken bir hata oluştu');
+    } finally {
+      setPlaystoreAdding(null);
     }
   };
 
@@ -1055,75 +1159,145 @@ export default function AdminDashboardPage() {
            </motion.div>
         )}
 
-        {/* Steam Integration Tab */}
+        {/* Steam & Play Store Integration Tab */}
         {activeTab === 'Oyun Ekle' && (
-          <motion.div key="oyun-ekle" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-black/50 backdrop-blur-3xl border border-stardublajweb-purple/40 rounded-[2rem] p-6 md:p-10 shadow-[0_0_80px_rgba(168,85,247,0.1)] relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-br from-transparent to-stardublajweb-purple/5 pointer-events-none"></div>
-            
-            <div className="flex items-center gap-6 mb-10 pb-6 border-b-2 border-stardublajweb-purple/20 relative z-10">
-              <div className="p-4 rounded-[1.5rem] bg-stardublajweb-purple/10 border border-stardublajweb-purple/30 shadow-[0_0_30px_rgba(168,85,247,0.3)]">
-                 <Gamepad2 className="w-8 h-8 text-stardublajweb-purple" />
-              </div>
-              <div>
-                 <h2 className="text-3xl font-black italic tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-stardublajweb-purple uppercase drop-shadow-[0_0_10px_purple]">
-                   STEAM NETWORK
-                 </h2>
-                 <p className="text-stardublajweb-purple text-xs font-bold uppercase tracking-[0.2em] mt-1">Otomatik API Senkronizasyonu</p>
-              </div>
-            </div>
-
-            <form onSubmit={searchSteam} className="mb-10 flex gap-4 relative z-10">
-              <input 
-                type="text" 
-                value={steamQuery}
-                onChange={(e) => setSteamQuery(e.target.value)}
-                placeholder="Oyun adı ara (örn: The Witcher 3)" 
-                className="flex-1 bg-white/5 backdrop-blur-xl border border-stardublajweb-purple/30 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-stardublajweb-cyan focus:ring-2 focus:ring-stardublajweb-cyan/20 transition-all font-medium placeholder:text-white/30"
-              />
-              <button 
-                type="submit" 
-                disabled={steamLoading}
-                className="px-10 py-4 bg-gradient-to-r from-stardublajweb-purple to-[#9333ea] hover:scale-105 text-white font-black italic tracking-widest rounded-2xl transition-all shadow-[0_0_30px_rgba(168,85,247,0.4)] flex items-center justify-center gap-2"
-              >
-                <Search className="w-5 h-5" />
-                {steamLoading ? 'ARANIYOR...' : 'ARA'}
-              </button>
-            </form>
-
-            <div className="space-y-4 relative z-10">
-              {steamResults.map((item: any) => (
-                <div key={item.id} className="flex flex-col md:flex-row items-center justify-between p-4 bg-black/40 backdrop-blur-xl border border-stardublajweb-purple/20 rounded-2xl gap-4 hover:border-stardublajweb-cyan/50 hover:shadow-[0_0_20px_rgba(106,255,235,0.2)] transition-all group">
-                  <div className="flex items-center gap-6 w-full">
-                    <div className="relative rounded-xl overflow-hidden shadow-lg border border-white/10 group-hover:border-stardublajweb-cyan/30 transition-colors">
-                      <img src={item.tiny_image} alt={item.name} className="w-28 h-14 object-cover" />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
-                    </div>
-                    <div>
-                      <h3 className="text-white font-bold text-lg group-hover:text-stardublajweb-cyan transition-colors">{item.name}</h3>
-                      <p className="text-stardublajweb-purple text-xs font-bold tracking-widest uppercase">ID: {item.id}</p>
-                    </div>
-                  </div>
-                  <button 
-                    onClick={() => addFromSteam(item)}
-                    disabled={steamAdding === item.id.toString()}
-                    className="w-full md:w-auto px-8 py-3 bg-white/5 hover:bg-stardublajweb-cyan/20 border border-white/10 hover:border-stardublajweb-cyan/50 disabled:opacity-50 text-white hover:text-stardublajweb-cyan font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 shrink-0"
-                  >
-                    <Download className="w-4 h-4" />
-                    {steamAdding === item.id.toString() ? 'EKLENİYOR...' : 'SİSTEME ÇEK'}
-                  </button>
-                </div>
-              ))}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Steam Integration Panel */}
+            <motion.div key="steam-ekle" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-black/50 backdrop-blur-3xl border border-stardublajweb-purple/40 rounded-[2rem] p-6 md:p-10 shadow-[0_0_80px_rgba(168,85,247,0.1)] relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-stardublajweb-purple/5 pointer-events-none"></div>
               
-              {!steamLoading && steamResults.length === 0 && steamQuery && (
-                 <div className="text-center py-16 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl relative overflow-hidden flex flex-col items-center justify-center">
-                    <div className="w-16 h-16 rounded-full bg-red-500/10 flex items-center justify-center mb-4 border border-red-500/20">
-                      <Search className="w-6 h-6 text-red-500" />
+              <div className="flex items-center gap-6 mb-10 pb-6 border-b-2 border-stardublajweb-purple/20 relative z-10">
+                <div className="p-4 rounded-[1.5rem] bg-stardublajweb-purple/10 border border-stardublajweb-purple/30 shadow-[0_0_30px_rgba(168,85,247,0.3)]">
+                   <Gamepad2 className="w-8 h-8 text-stardublajweb-purple" />
+                </div>
+                <div>
+                   <h2 className="text-3xl font-black italic tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-stardublajweb-purple uppercase drop-shadow-[0_0_10px_purple]">
+                      STEAM NETWORK
+                   </h2>
+                   <p className="text-stardublajweb-purple text-xs font-bold uppercase tracking-[0.2em] mt-1">STEAM SYNC API</p>
+                </div>
+              </div>
+
+              <div className="mb-10 flex gap-4 relative z-10">
+                <input 
+                  type="text" 
+                  value={steamQuery}
+                  onChange={(e) => setSteamQuery(e.target.value)}
+                  placeholder="PC oyunu ara (örn: Witcher 3)" 
+                  className="flex-1 bg-white/5 backdrop-blur-xl border border-stardublajweb-purple/30 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-stardublajweb-cyan focus:ring-2 focus:ring-stardublajweb-cyan/20 transition-all font-medium placeholder:text-white/30"
+                />
+                <button 
+                  disabled={steamLoading}
+                  className="px-8 py-4 bg-gradient-to-r from-stardublajweb-purple to-[#9333ea] hover:scale-105 text-white font-black italic tracking-widest rounded-2xl transition-all shadow-[0_0_30px_rgba(168,85,247,0.4)] flex items-center justify-center gap-2"
+                >
+                  <Search className="w-5 h-5" />
+                  {steamLoading ? 'ARANIYOR...' : 'ARA'}
+                </button>
+              </div>
+
+              <div className="space-y-4 relative z-10 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                {steamResults.map((item: any) => (
+                  <div key={item.id} className="flex flex-col md:flex-row items-center justify-between p-4 bg-black/40 backdrop-blur-xl border border-stardublajweb-purple/20 rounded-2xl gap-4 hover:border-stardublajweb-cyan/50 hover:shadow-[0_0_20px_rgba(106,255,235,0.2)] transition-all group">
+                    <div className="flex items-center gap-6 w-full">
+                      <div className="relative rounded-xl overflow-hidden shadow-lg border border-white/10 group-hover:border-stardublajweb-cyan/30 transition-colors shrink-0">
+                        <img src={item.tiny_image} alt={item.name} className="w-28 h-14 object-cover" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-white font-bold text-base group-hover:text-stardublajweb-cyan transition-colors truncate">{item.name}</h3>
+                        <p className="text-stardublajweb-purple text-xs font-bold tracking-widest uppercase">STEAM ID: {item.id}</p>
+                      </div>
                     </div>
-                    <p className="text-white/40 font-medium">Veritabanında eşleşen oyun bulunamadı.</p>
-                 </div>
-              )}
-            </div>
-          </motion.div>
+                    <button 
+                      onClick={() => addFromSteam(item)}
+                      disabled={steamAdding === item.id.toString()}
+                      className="w-full md:w-auto px-6 py-2.5 bg-white/5 hover:bg-stardublajweb-cyan/20 border border-white/10 hover:border-stardublajweb-cyan/50 disabled:opacity-50 text-white hover:text-stardublajweb-cyan font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 shrink-0 text-sm"
+                    >
+                      <Download className="w-4 h-4" />
+                      {steamAdding === item.id.toString() ? 'EKLENİYOR...' : 'SİSTEME ÇEK'}
+                    </button>
+                  </div>
+                ))}
+                
+                {!steamLoading && steamResults.length === 0 && steamQuery && (
+                   <div className="text-center py-12 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl relative overflow-hidden flex flex-col items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-4 border border-red-500/20">
+                        <Search className="w-5 h-5 text-red-500" />
+                      </div>
+                      <p className="text-white/40 text-sm font-medium">Veritabanında eşleşen oyun bulunamadı.</p>
+                   </div>
+                )}
+              </div>
+            </motion.div>
+
+            {/* Play Store Integration Panel */}
+            <motion.div key="playstore-ekle" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.9 }} transition={{ type: performanceMode === 'ultra' ? 'spring' : 'tween', duration: 0.3 }} className="bg-black/50 backdrop-blur-3xl border border-stardublajweb-cyan/40 rounded-[2rem] p-6 md:p-10 shadow-[0_0_80px_rgba(6,182,212,0.1)] relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-transparent to-stardublajweb-cyan/5 pointer-events-none"></div>
+              
+              <div className="flex items-center gap-6 mb-10 pb-6 border-b-2 border-stardublajweb-cyan/20 relative z-10">
+                <div className="p-4 rounded-[1.5rem] bg-stardublajweb-cyan/10 border border-stardublajweb-cyan/30 shadow-[0_0_30px_rgba(6,182,212,0.3)]">
+                   <Smartphone className="w-8 h-8 text-stardublajweb-cyan" />
+                </div>
+                <div>
+                   <h2 className="text-3xl font-black italic tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white to-stardublajweb-cyan uppercase drop-shadow-[0_0_10px_cyan]">
+                      PLAY STORE
+                   </h2>
+                   <p className="text-stardublajweb-cyan text-xs font-bold uppercase tracking-[0.2em] mt-1">ANDROID SYNC API</p>
+                </div>
+              </div>
+
+              <div className="mb-10 flex gap-4 relative z-10">
+                <input 
+                  type="text" 
+                  value={playstoreQuery}
+                  onChange={(e) => setPlaystoreQuery(e.target.value)}
+                  placeholder="Mobil oyun ara (örn: GTA 3, PUBG)" 
+                  className="flex-1 bg-white/5 backdrop-blur-xl border border-stardublajweb-cyan/30 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-stardublajweb-purple focus:ring-2 focus:ring-stardublajweb-purple/20 transition-all font-medium placeholder:text-white/30"
+                />
+                <button 
+                  disabled={playstoreLoading}
+                  className="px-8 py-4 bg-gradient-to-r from-stardublajweb-cyan to-blue-500 hover:scale-105 text-white font-black italic tracking-widest rounded-2xl transition-all shadow-[0_0_30px_rgba(6,182,212,0.4)] flex items-center justify-center gap-2"
+                >
+                  <Search className="w-5 h-5" />
+                  {playstoreLoading ? 'ARANIYOR...' : 'ARA'}
+                </button>
+              </div>
+
+              <div className="space-y-4 relative z-10 max-h-[500px] overflow-y-auto pr-2 custom-scrollbar">
+                {playstoreResults.map((item: any) => (
+                  <div key={item.id} className="flex flex-col md:flex-row items-center justify-between p-4 bg-black/40 backdrop-blur-xl border border-stardublajweb-cyan/20 rounded-2xl gap-4 hover:border-stardublajweb-purple/50 hover:shadow-[0_0_20px_rgba(168,85,247,0.2)] transition-all group">
+                    <div className="flex items-center gap-6 w-full">
+                      <div className="relative rounded-xl overflow-hidden shadow-lg border border-white/10 group-hover:border-stardublajweb-purple/30 transition-colors shrink-0">
+                        <img src={item.tiny_image} alt={item.name} className="w-14 h-14 rounded-xl object-cover" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent"></div>
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-white font-bold text-base group-hover:text-stardublajweb-cyan transition-colors truncate">{item.name}</h3>
+                        <p className="text-stardublajweb-cyan/70 text-xs font-bold tracking-widest uppercase truncate">PKG: {item.id}</p>
+                      </div>
+                    </div>
+                    <button 
+                      onClick={() => addFromPlayStore(item)}
+                      disabled={playstoreAdding === item.id}
+                      className="w-full md:w-auto px-6 py-2.5 bg-white/5 hover:bg-stardublajweb-purple/20 border border-white/10 hover:border-stardublajweb-purple/50 disabled:opacity-50 text-white hover:text-stardublajweb-purple font-bold uppercase tracking-wider rounded-xl transition-all flex items-center justify-center gap-2 shrink-0 text-sm"
+                    >
+                      <Download className="w-4 h-4" />
+                      {playstoreAdding === item.id ? 'EKLENİYOR...' : 'SİSTEME ÇEK'}
+                    </button>
+                  </div>
+                ))}
+                
+                {!playstoreLoading && playstoreResults.length === 0 && playstoreQuery && (
+                   <div className="text-center py-12 bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl relative overflow-hidden flex flex-col items-center justify-center">
+                      <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-4 border border-red-500/20">
+                        <Search className="w-5 h-5 text-red-500" />
+                      </div>
+                      <p className="text-white/40 text-sm font-medium">Veritabanında eşleşen mobil oyun bulunamadı.</p>
+                   </div>
+                )}
+              </div>
+            </motion.div>
+          </div>
         )}
 
         {/* Site Analytics Tab */}
